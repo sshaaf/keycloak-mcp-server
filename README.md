@@ -15,6 +15,14 @@ The Keycloak MCP Server is a service that leverages the Quarkus framework to ope
 
 ## Getting Started
 
+Starting the local instance of keycloak
+
+```bash
+    docker-compose -f deploy/docker-compose.yml up
+```
+
+
+
 ### Running in Development Mode
 
 Run the application in development mode with live coding enabled:
