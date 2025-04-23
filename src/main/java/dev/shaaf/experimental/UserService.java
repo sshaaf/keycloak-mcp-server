@@ -1,9 +1,8 @@
-package org.acme.experimental;
+package dev.shaaf.experimental;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Response;
-import org.acme.experimental.formatter.KeycloakRepresentationFormatter;
+import jakarta.json.bind.Jsonb;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -16,13 +15,11 @@ public class UserService {
     @Inject
     Keycloak keycloak;
 
+    @Inject
+    Jsonb jsonb;
 
-    String getUsersFormatted(String realm){
-        return KeycloakRepresentationFormatter.formatObjectList(getUsers(realm));
-    }
-
-    List<UserRepresentation> getUsers(String realm) {
-        return keycloak.realm(realm).users().list();
+    String getUsers(String realm) {
+        return jsonb.toJson(keycloak.realm(realm).users().list());
     }
 
     String addUser(String realm, String username, String firstName, String lastName, String email, String password) {
@@ -40,21 +37,16 @@ public class UserService {
         credential.setTemporary(false);
         user.setCredentials(List.of(credential));
 
-        Response response = keycloak.realm(realm).users().create(user);
-        if (response.getStatus() == 204)
-            return String.format("User %s, deleted from %s realm", username, realm);
-        else
-            return "The system encountered an error while creating the user";
+        return jsonb.toJson(keycloak.realm(realm).users().create(user));
     }
 
     String deleteUser(String realm, String username) {
         UserRepresentation user = getUserByUsername(realm, username);
         if (user != null) {
-            Response response = keycloak.realm(realm).users().delete(user.getId());
-            if (response.getStatus() == 204)
-                return String.format("User %s, successfully deleted from %s realm", username, realm);
-           }
-        return "User " + username + " not found.";
+            return jsonb.toJson(keycloak.realm(realm).users().delete(user.getId()));
+        }
+        else
+            return "User not found";
     }
 
     UserRepresentation getUserByUsername(String realm, String username) {

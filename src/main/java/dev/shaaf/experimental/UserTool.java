@@ -1,4 +1,4 @@
-package org.acme.experimental;
+package dev.shaaf.experimental;
 
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
@@ -11,7 +11,7 @@ public class UserTool {
 
     @Tool(description = "Get all users from a keycloak realm")
     String getUsers(@ToolArg(description = "A String denoting the name of the realm where the users reside") String realm) {
-        return userService.getUsersFormatted(realm);
+        return userService.getUsers(realm);
     }
 
     @Tool(description = "Create a new user in keycloak realm with the following mandatory fields realm, username, firstName, lastName, email, password")
