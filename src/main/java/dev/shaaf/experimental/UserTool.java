@@ -1,7 +1,10 @@
 package dev.shaaf.experimental;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.shaaf.experimental.service.UserService;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
+import io.quarkiverse.mcp.server.ToolCallException;
 import jakarta.inject.Inject;
 
 public class UserTool {
@@ -9,9 +12,16 @@ public class UserTool {
     @Inject
     UserService userService;
 
+    @Inject
+    ObjectMapper mapper;
+
     @Tool(description = "Get all users from a keycloak realm")
     String getUsers(@ToolArg(description = "A String denoting the name of the realm where the users reside") String realm) {
-        return userService.getUsers(realm);
+        try {
+            return mapper.writeValueAsString(userService.getUsers(realm));
+        } catch (Exception e) {
+            throw new ToolCallException("Failed to get users from realm");
+        }
     }
 
     @Tool(description = "Create a new user in keycloak realm with the following mandatory fields realm, username, firstName, lastName, email, password")
