@@ -22,6 +22,4 @@ public class RealmTool {
             throw new ToolCallException("Failed to get realms from keycloak");
         }
     }
-
-
 }
