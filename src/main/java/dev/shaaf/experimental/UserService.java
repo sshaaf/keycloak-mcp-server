@@ -36,8 +36,9 @@ public class UserService {
         credential.setValue(password);
         credential.setTemporary(false);
         user.setCredentials(List.of(credential));
-
-        return jsonb.toJson(keycloak.realm(realm).users().create(user));
+        System.out.println(keycloak.realm(realm).users().create(user).toString());
+        System.out.println(jsonb.toJson(user));
+        return jsonb.toJson(user);
     }
 
     String deleteUser(String realm, String username) {
