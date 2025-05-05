@@ -8,6 +8,12 @@ The Keycloak MCP Server is a service that leverages the Quarkus framework to ope
 - **MCP Standard**: Implements the Model-Context Protocol for efficient standard input/output server operations.
 - **Keycloak Integration**: Seamlessly integrates with Keycloak for authentication and authorization.
 
+## Coverage
+- **Realm**
+- **Users**
+- **Clients**
+
+
 ## Prerequisites
 
 - **Java 21 or newer**: Ensure you have Java installed on your system.
@@ -21,19 +27,10 @@ Starting the local instance of keycloak
     docker-compose -f deploy/docker-compose.yml up
 ```
 
-
-
-### Running in Development Mode
-
-Run the application in development mode with live coding enabled:
-
-```bash
-./mvnw quarkus:dev
-```
 To package the application:
 
 ```bash
-./mvnw package
+mvn clean package
 ```
 
 ### Running with Goose
@@ -76,19 +73,3 @@ Here are the users in the "quarkus" realm:
 ( O)> can you delete user sshaaf from realm quarkus
 
 ```
-
-
-
-## Documentation
-
-- [Quarkus Documentation](https://quarkus.io/documentation/)
-- [Keycloak Documentation](https://www.keycloak.org/documentation.html)
-- [MCP Server Guide](https://docs.quarkiverse.io/quarkus-mcp-server/dev/index.html)
-
-## Contributing
-
-Contributions are welcome! Please see the [contributing guidelines](CONTRIBUTING.md) for more information.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
