@@ -1,6 +1,6 @@
 <!-- For a centered logo -->
 <p align="center">
-  <img src=".github/assets/keycloak-mcp-server.png" alt="Project Logo">
+  <img src=".github/assets/keycloak-mcp-server.png" alt="Project Logo" width="128">
 </p>
 <h2 align="center">
   <b> An MCP Server for Keycloak </b>
