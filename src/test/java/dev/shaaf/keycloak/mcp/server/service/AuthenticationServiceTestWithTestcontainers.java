@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.keycloak.representations.idm.AuthenticationFlowRepresentation;
-import org.keycloak.representations.idm.RealmRepresentation;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Integration tests for AuthenticationService using Testcontainers.
  * This class tests the AuthenticationService against a real Keycloak instance running in a Docker container.
+ * It uses the quarkus realm imported from deploy/quarkus-realm.json.
  */
 @QuarkusTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -25,12 +25,10 @@ public class AuthenticationServiceTestWithTestcontainers extends AbstractKeycloa
 
     private AuthenticationService authenticationService;
 
-    private static final String TEST_REALM = "test-realm";
     private static final String TEST_FLOW_ALIAS = "test-flow-" + UUID.randomUUID().toString();
 
     /**
      * Sets up the test environment before each test.
-     * Creates a test realm if it doesn't exist.
      */
     @BeforeEach
     public void setup() {
@@ -45,14 +43,6 @@ public class AuthenticationServiceTestWithTestcontainers extends AbstractKeycloa
         } catch (Exception e) {
             throw new RuntimeException("Failed to set keycloakClient in AuthenticationService", e);
         }
-
-        // Create a test realm if it doesn't exist
-        if (keycloakClient.realms().findAll().stream().noneMatch(realm -> realm.getRealm().equals(TEST_REALM))) {
-            RealmRepresentation realm = new RealmRepresentation();
-            realm.setRealm(TEST_REALM);
-            realm.setEnabled(true);
-            keycloakClient.realms().create(realm);
-        }
     }
 
     /**
@@ -61,11 +51,11 @@ public class AuthenticationServiceTestWithTestcontainers extends AbstractKeycloa
     @Test
     public void testGetAuthenticationFlows_Success_ReturnsFlowList() {
         // Act
-        List<AuthenticationFlowRepresentation> flows = authenticationService.getAuthenticationFlows(TEST_REALM);
+        List<AuthenticationFlowRepresentation> flows = authenticationService.getAuthenticationFlows(QUARKUS_REALM);
 
         // Assert
         assertNotNull(flows);
-        // The test realm should have some default flows
+        // The quarkus realm should have some default flows
         assertTrue(flows.size() > 0);
     }
 
@@ -83,13 +73,13 @@ public class AuthenticationServiceTestWithTestcontainers extends AbstractKeycloa
         flow.setTopLevel(true);
 
         // Act - Create flow
-        String createResult = authenticationService.createAuthenticationFlow(TEST_REALM, flow);
+        String createResult = authenticationService.createAuthenticationFlow(QUARKUS_REALM, flow);
 
         // Assert - Create flow
         assertEquals("Successfully created authentication flow: " + TEST_FLOW_ALIAS, createResult);
 
         // Verify flow exists
-        List<AuthenticationFlowRepresentation> flows = authenticationService.getAuthenticationFlows(TEST_REALM);
+        List<AuthenticationFlowRepresentation> flows = authenticationService.getAuthenticationFlows(QUARKUS_REALM);
         assertTrue(flows.stream().anyMatch(f -> f.getAlias().equals(TEST_FLOW_ALIAS)));
 
         // Get the flow ID
@@ -100,13 +90,13 @@ public class AuthenticationServiceTestWithTestcontainers extends AbstractKeycloa
                 .orElseThrow(() -> new AssertionError("Flow not found"));
 
         // Act - Delete flow
-        String deleteResult = authenticationService.deleteAuthenticationFlow(TEST_REALM, flowId);
+        String deleteResult = authenticationService.deleteAuthenticationFlow(QUARKUS_REALM, flowId);
 
         // Assert - Delete flow
         assertEquals("Successfully deleted authentication flow: " + TEST_FLOW_ALIAS, deleteResult);
 
         // Verify flow no longer exists
-        flows = authenticationService.getAuthenticationFlows(TEST_REALM);
+        flows = authenticationService.getAuthenticationFlows(QUARKUS_REALM);
         assertTrue(flows.stream().noneMatch(f -> f.getAlias().equals(TEST_FLOW_ALIAS)));
     }
 }

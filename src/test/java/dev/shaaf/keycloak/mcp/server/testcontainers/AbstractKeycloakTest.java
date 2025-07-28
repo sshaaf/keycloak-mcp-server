@@ -11,10 +11,16 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 /**
  * Base class for Keycloak integration tests using Testcontainers.
  * This class provides a shared Keycloak container and client for tests.
+ * It also supports using the quarkus realm for tests where applicable.
  */
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractKeycloakTest {
+
+    /**
+     * The name of the quarkus realm imported from deploy/quarkus-realm.json.
+     */
+    protected static final String QUARKUS_REALM = "quarkus";
 
     /**
      * The shared Keycloak container.
@@ -23,7 +29,7 @@ public abstract class AbstractKeycloakTest {
     protected static final KeycloakTestContainer keycloakContainer = new KeycloakTestContainer();
 
     /**
-     * The Keycloak admin client.
+     * The Keycloak admin client connected to the master realm.
      */
     protected Keycloak keycloakClient;
 
@@ -69,5 +75,21 @@ public abstract class AbstractKeycloakTest {
      */
     protected String getKeycloakServerUrl() {
         return keycloakContainer.getKeycloakServerUrl();
+    }
+    
+    /**
+     * Creates a Keycloak client for the quarkus realm.
+     * This method should be used when tests need to interact with the quarkus realm.
+     * 
+     * @return A Keycloak client connected to the quarkus realm
+     */
+    protected Keycloak createQuarkusRealmClient() {
+        return KeycloakBuilder.builder()
+                .serverUrl(getKeycloakServerUrl())
+                .realm(QUARKUS_REALM)
+                .username(keycloakContainer.getAdminUsername())
+                .password(keycloakContainer.getAdminPassword())
+                .clientId("admin-cli")
+                .build();
     }
 }
