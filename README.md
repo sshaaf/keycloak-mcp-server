@@ -30,48 +30,65 @@ The project follows a layered architecture with tool classes that expose functio
 
 Below is a class diagram showing the structure of the tools package and its relationships with the service layer:
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                              Tools Package                               │
-└─────────────────────────────────────────────────────────────────────────┘
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-│   UserTool      │ │   RealmTool     │ │   ClientTool    │ │   RoleTool      │
-├─────────────────┤ ├─────────────────┤ ├─────────────────┤ ├─────────────────┤
-│ - userService   │ │ - realmsService │ │ - clientService │ │ - roleService   │
-│ - mapper        │ │ - mapper        │ │ - mapper        │ │ - mapper        │
-├─────────────────┤ ├─────────────────┤ ├─────────────────┤ ├─────────────────┤
-│ + getUsers()    │ │ + getRealms()   │ │ + getClients()  │ │ + getRealmRoles()│
-│ + addUser()     │ │ + getRealm()    │ │ + getClient()   │ │ + getRealmRole() │
-│ + deleteUser()  │ │ + createRealm() │ │ + addClient()   │ │ + createRealmRole()│
-│ + getUserById() │ │ + updateRealm() │ │ + updateClient()│ │ + updateRealmRole()│
-│ + updateUser()  │ │ + deleteRealm() │ │ + deleteClient()│ │ + deleteRealmRole()│
-│ + ...           │ │ + ...           │ │ + ...           │ │ + ...           │
-└─────────────────┘ └─────────────────┘ └─────────────────┘ └─────────────────┘
+```mermaid
+graph TD
+    subgraph "Goose CLI"
+        GooseCLI[Goose CLI]
+    end
 
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-│   GroupTool     │ │IdentityProviderTool│ │AuthenticationTool│
-├─────────────────┤ ├─────────────────┤ ├─────────────────┤
-│ - groupService  │ │ - idpService    │ │ - authService   │
-│ - mapper        │ │ - mapper        │ │ - mapper        │
-├─────────────────┤ ├─────────────────┤ ├─────────────────┤
-│ + getGroups()   │ │ + getIdPs()     │ │ + getAuthFlows()│
-│ + getGroup()    │ │ + getIdP()      │ │ + getAuthFlow() │
-│ + createGroup() │ │ + createIdP()   │ │ + createAuthFlow()│
-│ + updateGroup() │ │ + updateIdP()   │ │ + deleteAuthFlow()│
-│ + deleteGroup() │ │ + deleteIdP()   │ │ + getFlowExecutions()│
-│ + ...           │ │ + ...           │ │ + ...           │
-└─────────────────┘ └─────────────────┘ └─────────────────┘
+    subgraph "Tools Layer"
+        UserTool["UserTool"]
+        RealmTool["RealmTool"]
+        ClientTool["ClientTool"]
+        RoleTool["RoleTool"]
+        GroupTool["GroupTool"]
+        IdentityProviderTool["IdentityProviderTool"]
+        AuthenticationTool["AuthenticationTool"]
+    end
 
-┌─────────────────────────────────────────────────────────────────────────┐
-│                             Service Layer                                │
-└─────────────────────────────────────────────────────────────────────────┘
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-│  UserService    │ │  RealmService   │ │  ClientService  │ │  RoleService    │
-└─────────────────┘ └─────────────────┘ └─────────────────┘ └─────────────────┘
+    subgraph "Service Layer"
+        UserService["UserService"]
+        RealmService["RealmService"]
+        ClientService["ClientService"]
+        RoleService["RoleService"]
+        GroupService["GroupService"]
+        IdentityProviderService["IdentityProviderService"]
+        AuthenticationService["AuthenticationService"]
+    end
 
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
-│  GroupService   │ │IdentityProviderService│ │AuthenticationService│
-└─────────────────┘ └─────────────────┘ └─────────────────┘
+    subgraph "External Services"
+        Keycloak[("Keycloak")]
+    end
+
+    %% Define Relationships
+    GooseCLI --> UserTool
+    GooseCLI --> RealmTool
+    GooseCLI --> ClientTool
+    GooseCLI --> RoleTool
+    GooseCLI --> GroupTool
+    GooseCLI --> IdentityProviderTool
+    GooseCLI --> AuthenticationTool
+
+    UserTool --> UserService
+    RealmTool --> RealmService
+    ClientTool --> ClientService
+    RoleTool --> RoleService
+    GroupTool --> GroupService
+    IdentityProviderTool --> IdentityProviderService
+    AuthenticationTool --> AuthenticationService
+
+    UserService --> Keycloak
+    RealmService --> Keycloak
+    ClientService --> Keycloak
+    RoleService --> Keycloak
+    GroupService --> Keycloak
+    IdentityProviderService --> Keycloak
+    AuthenticationService --> Keycloak
+
+    %% Styling
+    style GooseCLI fill:#d4edda,stroke:#c3e6cb
+    style Keycloak fill:#f8d7da,stroke:#f5c6cb
+
 ```
 
 ### Tools Package Explanation
