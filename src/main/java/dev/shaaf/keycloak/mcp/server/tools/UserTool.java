@@ -42,7 +42,7 @@ public class UserTool {
         return userService.deleteUser(realm, username);
     }
 
-    @Tool(description = "Find a user by username in a realm")
+    @Tool(description = "Find a user by username in a keycloak realm")
     String getUserByUsername(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
                             @ToolArg(description = "A String denoting the username of the user to find") String username) {
         try {
@@ -52,7 +52,7 @@ public class UserTool {
         }
     }
 
-    @Tool(description = "Get a specific user by ID")
+    @Tool(description = "Find a user by its ID in a keycloak realm")
     String getUserById(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
                       @ToolArg(description = "A String denoting the ID of the user to retrieve") String userId) {
         try {
@@ -62,7 +62,7 @@ public class UserTool {
         }
     }
     
-    @Tool(description = "Update a user's information")
+    @Tool(description = "Update a user's information in a keycloak realm")
     String updateUser(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
                      @ToolArg(description = "A String denoting the ID of the user to update") String userId,
                      @ToolArg(description = "A String denoting the new username (optional)") String username,
@@ -91,7 +91,7 @@ public class UserTool {
         }
     }
     
-    @Tool(description = "Get groups a user belongs to")
+    @Tool(description = "Find groups a user belongs to in a keycloak realm")
     String getUserGroups(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
                         @ToolArg(description = "A String denoting the ID of the user") String userId) {
         try {
@@ -101,21 +101,21 @@ public class UserTool {
         }
     }
     
-    @Tool(description = "Add a user to a group")
+    @Tool(description = "Add user to a group in a keycloak realm")
     String addUserToGroup(@ToolArg(description = "A String denoting the name of the realm where the user and group reside") String realm,
                          @ToolArg(description = "A String denoting the ID of the user") String userId,
                          @ToolArg(description = "A String denoting the ID of the group") String groupId) {
         return userService.addUserToGroup(realm, userId, groupId);
     }
     
-    @Tool(description = "Remove a user from a group")
+    @Tool(description = "Remove user from a group in a keycloak realm")
     String removeUserFromGroup(@ToolArg(description = "A String denoting the name of the realm where the user and group reside") String realm,
                               @ToolArg(description = "A String denoting the ID of the user") String userId,
                               @ToolArg(description = "A String denoting the ID of the group") String groupId) {
         return userService.removeUserFromGroup(realm, userId, groupId);
     }
     
-    @Tool(description = "Get roles assigned to a user")
+    @Tool(description = "Find roles assigned to a user in a keycloak realm")
     String getUserRoles(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
                        @ToolArg(description = "A String denoting the ID of the user") String userId) {
         try {
@@ -125,21 +125,21 @@ public class UserTool {
         }
     }
     
-    @Tool(description = "Add a role to a user")
+    @Tool(description = "Add a role to user in a keycloak realm")
     String addRoleToUser(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
                         @ToolArg(description = "A String denoting the ID of the user") String userId,
                         @ToolArg(description = "A String denoting the name of the role") String roleName) {
         return userService.addRoleToUser(realm, userId, roleName);
     }
     
-    @Tool(description = "Remove a role from a user")
+    @Tool(description = "Remove a role from a user from a keycloak realm")
     String removeRoleFromUser(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
                              @ToolArg(description = "A String denoting the ID of the user") String userId,
                              @ToolArg(description = "A String denoting the name of the role") String roleName) {
         return userService.removeRoleFromUser(realm, userId, roleName);
     }
     
-    @Tool(description = "Reset a user's password")
+    @Tool(description = "Reset user's password in a keycloak realm")
     String resetPassword(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
                         @ToolArg(description = "A String denoting the ID of the user") String userId,
                         @ToolArg(description = "A String denoting the new password") String newPassword,
@@ -147,13 +147,13 @@ public class UserTool {
         return userService.resetPassword(realm, userId, newPassword, temporary);
     }
     
-    @Tool(description = "Send verification email to a user")
+    @Tool(description = "Send verification email to a user in a keycloak realm")
     String sendVerificationEmail(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
                                 @ToolArg(description = "A String denoting the ID of the user") String userId) {
         return userService.sendVerificationEmail(realm, userId);
     }
     
-    @Tool(description = "Count users in a realm")
+    @Tool(description = "Count users in a keycloak realm")
     String countUsers(@ToolArg(description = "A String denoting the name of the realm to count users in") String realm) {
         int count = userService.countUsers(realm);
         return count >= 0 ? String.valueOf(count) : "Failed to count users in realm: " + realm;

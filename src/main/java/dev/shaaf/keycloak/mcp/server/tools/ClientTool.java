@@ -20,7 +20,7 @@ public class ClientTool {
     @Inject
     ObjectMapper mapper;
 
-    @Tool(description = "Get all clients from a realm")
+    @Tool(description = "Get all clients from a keycloak realm")
     String getClients(@ToolArg(description = "A String denoting the name of the realm where the clients reside") String realm) {
         try {
             return mapper.writeValueAsString(clientService.getClients(realm));
@@ -30,7 +30,7 @@ public class ClientTool {
         }
     }
 
-    @Tool(description = "Get a client by client ID")
+    @Tool(description = "Get a client by its ID in a keycloak realm")
     String getClient(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                      @ToolArg(description = "A String denoting the clientId of the client to be retrieved") String clientId) {
         try {
@@ -42,24 +42,16 @@ public class ClientTool {
         }
     }
 
-    @Tool(description = "Get a client by ID")
-    String getClientById(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
-                        @ToolArg(description = "A String denoting the ID of the client to be retrieved") String id) {
-        try {
-            return mapper.writeValueAsString(clientService.getClient(realm, id));
-        } catch (Exception e) {
-            Log.error("Failed to get client by ID: " + id, e);
-            throw new ToolCallException("Failed to get client by ID: " + id);
-        }
-    }
-
-    @Tool(description = "Create a new client in a realm")
+    @Tool(description = "Create a new client in a keycloak realm")
     String addClient(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                      @ToolArg(description = "A String denoting the clientId of the client to be created") String clientId) {
         return clientService.createClient(realm, clientId);
     }
 
-    @Tool(description = "Update a client")
+
+    // CONSIDER: this really feels like an overkill. UX is bad when its json in this context.
+    // the issue or maybe not; is that there are alot of fields in ClientRepresentation.
+    @Tool(description = "Update a client in a keycloak real using its client json")
     String updateClient(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                        @ToolArg(description = "A String denoting the ID of the client to update") String clientId,
                        @ToolArg(description = "A String denoting the updated client representation in JSON format") String clientJson) {
@@ -72,25 +64,25 @@ public class ClientTool {
         }
     }
 
-    @Tool(description = "Delete a client")
+    @Tool(description = "Delete a client from a keycloak realm")
     String deleteClient(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                        @ToolArg(description = "A String denoting the ID of the client to delete") String clientId) {
         return clientService.deleteClient(realm, clientId);
     }
 
-    @Tool(description = "Get client secret")
+    @Tool(description = "Get client secret in a keycloak realm")
     String getClientSecret(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                           @ToolArg(description = "A String denoting the ID of the client") String clientId) {
         return clientService.getClientSecret(realm, clientId);
     }
 
-    @Tool(description = "Generate new client secret")
+    @Tool(description = "Generate new client secret from a keycloak realm")
     String generateNewClientSecret(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                                  @ToolArg(description = "A String denoting the ID of the client") String clientId) {
         return clientService.generateNewClientSecret(realm, clientId);
     }
 
-    @Tool(description = "Get client roles")
+    @Tool(description = "Get client roles from a keycloak realm")
     String getClientRoles(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                          @ToolArg(description = "A String denoting the ID of the client") String clientId) {
         try {
@@ -101,7 +93,7 @@ public class ClientTool {
         }
     }
 
-    @Tool(description = "Create client role")
+    @Tool(description = "Create client role from a keycloak realm")
     String createClientRole(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                            @ToolArg(description = "A String denoting the ID of the client") String clientId,
                            @ToolArg(description = "A String denoting the name of the role") String roleName,
@@ -109,14 +101,14 @@ public class ClientTool {
         return clientService.createClientRole(realm, clientId, roleName, description);
     }
 
-    @Tool(description = "Delete client role")
+    @Tool(description = "Delete client role from a keycloak realm")
     String deleteClientRole(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                            @ToolArg(description = "A String denoting the ID of the client") String clientId,
                            @ToolArg(description = "A String denoting the name of the role") String roleName) {
         return clientService.deleteClientRole(realm, clientId, roleName);
     }
 
-    @Tool(description = "Get service account user")
+    @Tool(description = "Get service account user from a keycloak realm")
     String getServiceAccountUser(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                                @ToolArg(description = "A String denoting the ID of the client") String clientId) {
         try {
@@ -127,7 +119,7 @@ public class ClientTool {
         }
     }
 
-    @Tool(description = "Get client protocol mappers")
+    @Tool(description = "Get client protocol mappers from a keycloak realm")
     String getClientProtocolMappers(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                                   @ToolArg(description = "A String denoting the ID of the client") String clientId) {
         try {
@@ -138,7 +130,7 @@ public class ClientTool {
         }
     }
 
-    @Tool(description = "Add protocol mapper to client")
+    @Tool(description = "Add protocol mapper to client from a keycloak realm")
     String addProtocolMapperToClient(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
                                    @ToolArg(description = "A String denoting the ID of the client") String clientId,
                                    @ToolArg(description = "A String denoting the protocol mapper representation in JSON format") String mapperJson) {

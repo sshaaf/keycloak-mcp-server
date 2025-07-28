@@ -17,7 +17,7 @@ public class GroupTool {
     @Inject
     ObjectMapper mapper;
 
-    @Tool(description = "Get all groups in a realm")
+    @Tool(description = "Get all groups from a keycloak realm")
     String getGroups(@ToolArg(description = "A String denoting the name of the realm") String realm) {
         try {
             return mapper.writeValueAsString(groupService.getGroups(realm));
@@ -27,7 +27,7 @@ public class GroupTool {
         }
     }
 
-    @Tool(description = "Get a specific group")
+    @Tool(description = "Get a specific group from a keycloak realm")
     String getGroup(@ToolArg(description = "A String denoting the name of the realm") String realm,
                    @ToolArg(description = "A String denoting the ID of the group") String groupId) {
         try {
@@ -38,13 +38,13 @@ public class GroupTool {
         }
     }
 
-    @Tool(description = "Create a group in a realm")
+    @Tool(description = "Create a group from a keycloak realm")
     String createGroup(@ToolArg(description = "A String denoting the name of the realm") String realm,
                       @ToolArg(description = "A String denoting the name of the group") String groupName) {
         return groupService.createGroup(realm, groupName);
     }
 
-    @Tool(description = "Update a group")
+    @Tool(description = "Update a group from a keycloak realm")
     String updateGroup(@ToolArg(description = "A String denoting the name of the realm") String realm,
                       @ToolArg(description = "A String denoting the ID of the group") String groupId,
                       @ToolArg(description = "A String denoting the updated group representation in JSON format") String groupJson) {
@@ -57,13 +57,13 @@ public class GroupTool {
         }
     }
 
-    @Tool(description = "Delete a group")
+    @Tool(description = "Delete a group from a keycloak realm")
     String deleteGroup(@ToolArg(description = "A String denoting the name of the realm") String realm,
                       @ToolArg(description = "A String denoting the ID of the group") String groupId) {
         return groupService.deleteGroup(realm, groupId);
     }
 
-    @Tool(description = "Get group members")
+    @Tool(description = "Get group members from a keycloak realm")
     String getGroupMembers(@ToolArg(description = "A String denoting the name of the realm") String realm,
                           @ToolArg(description = "A String denoting the ID of the group") String groupId) {
         try {
@@ -74,7 +74,7 @@ public class GroupTool {
         }
     }
 
-    @Tool(description = "Get group roles")
+    @Tool(description = "Get group roles from a keycloak realm")
     String getGroupRoles(@ToolArg(description = "A String denoting the name of the realm") String realm,
                         @ToolArg(description = "A String denoting the ID of the group") String groupId) {
         try {
@@ -85,21 +85,21 @@ public class GroupTool {
         }
     }
 
-    @Tool(description = "Add role to group")
+    @Tool(description = "Add role to group in a keycloak realm")
     String addRoleToGroup(@ToolArg(description = "A String denoting the name of the realm") String realm,
                          @ToolArg(description = "A String denoting the ID of the group") String groupId,
                          @ToolArg(description = "A String denoting the name of the role") String roleName) {
         return groupService.addRoleToGroup(realm, groupId, roleName);
     }
 
-    @Tool(description = "Remove role from group")
+    @Tool(description = "Remove role from group from a keycloak realm")
     String removeRoleFromGroup(@ToolArg(description = "A String denoting the name of the realm") String realm,
                               @ToolArg(description = "A String denoting the ID of the group") String groupId,
                               @ToolArg(description = "A String denoting the name of the role") String roleName) {
         return groupService.removeRoleFromGroup(realm, groupId, roleName);
     }
 
-    @Tool(description = "Create subgroup")
+    @Tool(description = "Create subgroup in a keycloak realm")
     String createSubGroup(@ToolArg(description = "A String denoting the name of the realm") String realm,
                          @ToolArg(description = "A String denoting the ID of the parent group") String parentGroupId,
                          @ToolArg(description = "A String denoting the name of the subgroup") String subGroupName) {

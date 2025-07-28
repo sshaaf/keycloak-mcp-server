@@ -18,7 +18,7 @@ public class IdentityProviderTool {
     @Inject
     ObjectMapper mapper;
 
-    @Tool(description = "Get all identity providers in a realm")
+    @Tool(description = "Get all identity providers from a keycloak realm")
     String getIdentityProviders(@ToolArg(description = "A String denoting the name of the realm") String realm) {
         try {
             return mapper.writeValueAsString(identityProviderService.getIdentityProviders(realm));
@@ -28,7 +28,7 @@ public class IdentityProviderTool {
         }
     }
 
-    @Tool(description = "Get a specific identity provider")
+    @Tool(description = "Get a specific identity provider from a keycloak realm")
     String getIdentityProvider(@ToolArg(description = "A String denoting the name of the realm") String realm,
                               @ToolArg(description = "A String denoting the alias of the identity provider") String alias) {
         try {
@@ -39,7 +39,7 @@ public class IdentityProviderTool {
         }
     }
 
-    @Tool(description = "Create an identity provider")
+    @Tool(description = "Create an identity provider in a keycloak realm")
     String createIdentityProvider(@ToolArg(description = "A String denoting the name of the realm") String realm,
                                  @ToolArg(description = "A String denoting the identity provider representation in JSON format") String idpJson) {
         try {
@@ -51,7 +51,7 @@ public class IdentityProviderTool {
         }
     }
 
-    @Tool(description = "Update an identity provider")
+    @Tool(description = "Update an identity provider in a keycloak realm")
     String updateIdentityProvider(@ToolArg(description = "A String denoting the name of the realm") String realm,
                                  @ToolArg(description = "A String denoting the alias of the identity provider") String alias,
                                  @ToolArg(description = "A String denoting the updated identity provider representation in JSON format") String idpJson) {
@@ -64,13 +64,13 @@ public class IdentityProviderTool {
         }
     }
 
-    @Tool(description = "Delete an identity provider")
+    @Tool(description = "Delete an identity provider from a keycloak realm")
     String deleteIdentityProvider(@ToolArg(description = "A String denoting the name of the realm") String realm,
                                  @ToolArg(description = "A String denoting the alias of the identity provider") String alias) {
         return identityProviderService.deleteIdentityProvider(realm, alias);
     }
 
-    @Tool(description = "Get identity provider mappers")
+    @Tool(description = "Get identity provider mappers from a keycloak realm")
     String getIdentityProviderMappers(@ToolArg(description = "A String denoting the name of the realm") String realm,
                                      @ToolArg(description = "A String denoting the alias of the identity provider") String alias) {
         try {
@@ -81,7 +81,7 @@ public class IdentityProviderTool {
         }
     }
 
-    @Tool(description = "Create identity provider mapper")
+    @Tool(description = "Create identity provider mapper in a keycloak realm")
     String createIdentityProviderMapper(@ToolArg(description = "A String denoting the name of the realm") String realm,
                                        @ToolArg(description = "A String denoting the alias of the identity provider") String alias,
                                        @ToolArg(description = "A String denoting the identity provider mapper representation in JSON format") String mapperJson) {

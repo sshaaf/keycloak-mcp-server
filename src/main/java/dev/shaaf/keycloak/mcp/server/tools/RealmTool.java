@@ -37,14 +37,14 @@ public class RealmTool {
         }
     }
     
-    @Tool(description = "Create a new realm")
+    @Tool(description = "Create a new keycloak realm with a realmName, its displayName and if it should be enabled by default")
     String createRealm(@ToolArg(description = "A String denoting the name of the realm to create") String realmName,
                       @ToolArg(description = "A String denoting the display name for the realm") String displayName,
                       @ToolArg(description = "A boolean indicating whether the realm should be enabled") boolean enabled) {
         return realmsService.createRealm(realmName, displayName, enabled);
     }
     
-    @Tool(description = "Update a realm")
+    @Tool(description = "Update a keycloak realm with its realmjson")
     String updateRealm(@ToolArg(description = "A String denoting the name of the realm to update") String realmName,
                       @ToolArg(description = "A String denoting the updated realm representation in JSON format") String realmJson) {
         try {
@@ -56,18 +56,18 @@ public class RealmTool {
         }
     }
     
-    @Tool(description = "Delete a realm")
+    @Tool(description = "Delete a keycloak realm")
     String deleteRealm(@ToolArg(description = "A String denoting the name of the realm to delete") String realmName) {
         return realmsService.deleteRealm(realmName);
     }
     
-    @Tool(description = "Enable or disable a realm")
+    @Tool(description = "Enable or disable a keycloak realm")
     String setRealmEnabled(@ToolArg(description = "A String denoting the name of the realm to update") String realmName,
                           @ToolArg(description = "A boolean indicating whether the realm should be enabled") boolean enabled) {
         return realmsService.setRealmEnabled(realmName, enabled);
     }
     
-    @Tool(description = "Get realm events configuration")
+    @Tool(description = "Get realm events configuration from a keycloak realm")
     String getRealmEventsConfig(@ToolArg(description = "A String denoting the name of the realm") String realmName) {
         try {
             return mapper.writeValueAsString(realmsService.getRealmEventsConfig(realmName));
@@ -77,7 +77,7 @@ public class RealmTool {
         }
     }
     
-    @Tool(description = "Update realm events configuration")
+    @Tool(description = "Update realm events configuration in from a keycloak realm a keycloak realm")
     String updateRealmEventsConfig(@ToolArg(description = "A String denoting the name of the realm") String realmName,
                                   @ToolArg(description = "A String denoting the updated events configuration in JSON format") String eventsConfigJson) {
         try {

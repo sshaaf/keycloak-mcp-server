@@ -17,7 +17,7 @@ public class RoleTool {
     @Inject
     ObjectMapper mapper;
 
-    @Tool(description = "Get all realm roles")
+    @Tool(description = "Get all roles from a keycloak realm")
     String getRealmRoles(@ToolArg(description = "A String denoting the name of the realm") String realm) {
         try {
             return mapper.writeValueAsString(roleService.getRealmRoles(realm));
@@ -27,7 +27,7 @@ public class RoleTool {
         }
     }
 
-    @Tool(description = "Get a specific realm role")
+    @Tool(description = "Get a specific role from a keycloak realm")
     String getRealmRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
                        @ToolArg(description = "A String denoting the name of the role") String roleName) {
         try {
@@ -38,14 +38,14 @@ public class RoleTool {
         }
     }
 
-    @Tool(description = "Create a realm role")
+    @Tool(description = "Create a role in a keycloak realm")
     String createRealmRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
                           @ToolArg(description = "A String denoting the name of the role") String roleName,
                           @ToolArg(description = "A String denoting the description of the role") String description) {
         return roleService.createRealmRole(realm, roleName, description);
     }
 
-    @Tool(description = "Update a realm role")
+    @Tool(description = "Update a role in a keycloak realm")
     String updateRealmRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
                           @ToolArg(description = "A String denoting the name of the role") String roleName,
                           @ToolArg(description = "A String denoting the updated role representation in JSON format") String roleJson) {
@@ -58,13 +58,13 @@ public class RoleTool {
         }
     }
 
-    @Tool(description = "Delete a realm role")
+    @Tool(description = "Delete a role from a keycloak realm")
     String deleteRealmRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
                           @ToolArg(description = "A String denoting the name of the role") String roleName) {
         return roleService.deleteRealmRole(realm, roleName);
     }
 
-    @Tool(description = "Get role composites")
+    @Tool(description = "Get role composites from a keycloak realm")
     String getRoleComposites(@ToolArg(description = "A String denoting the name of the realm") String realm,
                             @ToolArg(description = "A String denoting the name of the role") String roleName) {
         try {
@@ -75,14 +75,14 @@ public class RoleTool {
         }
     }
 
-    @Tool(description = "Add composite to role")
+    @Tool(description = "Add composite to role in a keycloak realm")
     String addCompositeToRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
                              @ToolArg(description = "A String denoting the name of the role") String roleName,
                              @ToolArg(description = "A String denoting the name of the composite role") String compositeRoleName) {
         return roleService.addCompositeToRole(realm, roleName, compositeRoleName);
     }
 
-    @Tool(description = "Remove composite from role")
+    @Tool(description = "Remove composite from role from a keycloak realm")
     String removeCompositeFromRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
                                   @ToolArg(description = "A String denoting the name of the role") String roleName,
                                   @ToolArg(description = "A String denoting the name of the composite role") String compositeRoleName) {

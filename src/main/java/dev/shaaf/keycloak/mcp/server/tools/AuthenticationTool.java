@@ -18,7 +18,7 @@ public class AuthenticationTool {
     @Inject
     ObjectMapper mapper;
 
-    @Tool(description = "Get all authentication flows in a realm")
+    @Tool(description = "Get all authentication flows from a keycloak realm")
     String getAuthenticationFlows(@ToolArg(description = "A String denoting the name of the realm") String realm) {
         try {
             return mapper.writeValueAsString(authenticationService.getAuthenticationFlows(realm));
@@ -28,7 +28,7 @@ public class AuthenticationTool {
         }
     }
 
-    @Tool(description = "Get a specific authentication flow")
+    @Tool(description = "Get a specific authentication flow from a keycloak realm")
     String getAuthenticationFlow(@ToolArg(description = "A String denoting the name of the realm") String realm,
                                 @ToolArg(description = "A String denoting the ID of the flow") String flowId) {
         try {
@@ -39,7 +39,7 @@ public class AuthenticationTool {
         }
     }
 
-    @Tool(description = "Create an authentication flow")
+    @Tool(description = "Create an authentication flow from a keycloak realm")
     String createAuthenticationFlow(@ToolArg(description = "A String denoting the name of the realm") String realm,
                                    @ToolArg(description = "A String denoting the authentication flow representation in JSON format") String flowJson) {
         try {
@@ -51,13 +51,13 @@ public class AuthenticationTool {
         }
     }
 
-    @Tool(description = "Delete an authentication flow")
+    @Tool(description = "Delete an authentication flow from a keycloak realm")
     String deleteAuthenticationFlow(@ToolArg(description = "A String denoting the name of the realm") String realm,
                                    @ToolArg(description = "A String denoting the ID of the flow") String flowId) {
         return authenticationService.deleteAuthenticationFlow(realm, flowId);
     }
 
-    @Tool(description = "Get flow executions")
+    @Tool(description = "Get flow executions for a flow alias from a keycloak realm")
     String getFlowExecutions(@ToolArg(description = "A String denoting the name of the realm") String realm,
                             @ToolArg(description = "A String denoting the alias of the flow") String flowAlias) {
         try {
@@ -68,7 +68,7 @@ public class AuthenticationTool {
         }
     }
 
-    @Tool(description = "Update flow execution")
+    @Tool(description = "Update flow execution from a keycloak realm given a flow alias and execution json")
     String updateFlowExecution(@ToolArg(description = "A String denoting the name of the realm") String realm,
                               @ToolArg(description = "A String denoting the alias of the flow") String flowAlias,
                               @ToolArg(description = "A String denoting the execution representation in JSON format") String executionJson) {
