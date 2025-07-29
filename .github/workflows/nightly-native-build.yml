@@ -42,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: keycloak-mcp-server-linux
-          path: build/keycloak-mcp-server-*-runner
+          path: build/keycloak-mcp-server-0.1
           retention-days: 7
 
   native-macos:
@@ -80,7 +80,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: keycloak-mcp-server-macos
-          path: build/keycloak-mcp-server-*-runner
+          path: build/keycloak-mcp-server-0.1
           retention-days: 7
 
   native-windows:
@@ -145,7 +145,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: keycloak-mcp-server-windows
-          path: build/keycloak-mcp-server-*-runner.exe
+          path: build/keycloak-mcp-server-0.1.exe
           retention-days: 7
 
   create-nightly-release:
