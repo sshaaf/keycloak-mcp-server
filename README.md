@@ -56,9 +56,23 @@ Each tool class follows a similar pattern:
 
 ## Getting started - configuration
 
-The Keycloak MCP server is build output of 4 artifacts. 
-- Native [MacOS, Linux, Windows]
-- Uber jar
+The Keycloak MCP server is available in the following formats:
+- **Uber JAR**: Available in regular releases and builds
+- **Native Binaries**: Available through nightly builds for MacOS, Linux, and Windows
+
+### Accessing Build Artifacts
+
+#### Regular Builds
+Regular builds produce only the JVM artifacts (JAR and Uber JAR). These are available:
+- As GitHub release assets for official releases
+- As build artifacts in GitHub Actions for all builds
+
+#### Nightly Native Builds
+Native binaries are built nightly and are available:
+- As GitHub pre-releases tagged with `nightly-YYYY-MM-DD`
+- As build artifacts in the GitHub Actions "Nightly Native Build" workflow
+
+You can also manually trigger a native build using the "Run workflow" button on the "Nightly Native Build" workflow page in GitHub Actions.
 
 ### Cursor
 You can add the following in the config in the `~/.cursor/mcp.json`
@@ -181,6 +195,25 @@ Here are the users in the "quarkus" realm:
 ( O)> can you delete user sshaaf from realm quarkus
 
 ```
+### Releases
+The Keycloak MCP server is available in the following formats:
+- **Uber JAR**: Available in regular releases and builds
+- **Native Binaries**: Available through nightly builds for MacOS, Linux, and Windows
+
+### Accessing Build Artifacts
+
+#### Regular Builds
+Regular builds produce only the JVM artifacts (JAR and Uber JAR). These are available:
+- As GitHub release assets for official releases
+- As build artifacts in GitHub Actions for all builds
+
+#### Nightly Native Builds
+Native binaries are built nightly and are available:
+- As GitHub pre-releases tagged with `nightly-YYYY-MM-DD`
+- As build artifacts in the GitHub Actions "Nightly Native Build" workflow
+
+You can also manually trigger a native build using the "Run workflow" button on the "Nightly Native Build" workflow page in GitHub Actions.
+
 
 ## References
 

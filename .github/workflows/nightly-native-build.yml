@@ -1,0 +1,188 @@
+name: Nightly Native Build
+
+on:
+  schedule:
+    # Run at midnight UTC every day
+    - cron: '0 1 * * *'
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+
+jobs:
+  native-linux:
+    name: Build Native Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      - name: Build Native Image
+        run: |
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.native.builder-image.build=false
+          # Ensure build output data is available for GraalVM reporting
+          mkdir -p $HOME/.native-image
+          cp -r build/native-image-reports/* $HOME/.native-image/ || true
+
+      - name: Upload Linux Native Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: keycloak-mcp-server-linux
+          path: build/keycloak-mcp-server-*-runner
+          retention-days: 7
+
+  native-macos:
+    name: Build Native macOS (Apple Silicon)
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      - name: Build Native Image
+        run: |
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.native.builder-image.build=false
+          # Ensure build output data is available for GraalVM reporting
+          mkdir -p $HOME/.native-image
+          cp -r build/native-image-reports/* $HOME/.native-image/ || true
+
+      - name: Upload macOS Native Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: keycloak-mcp-server-macos
+          path: build/keycloak-mcp-server-*-runner
+          retention-days: 7
+
+  native-windows:
+    name: Build Native Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+          
+      - name: Set up Visual Studio Developer Command Prompt
+        uses: microsoft/setup-msbuild@v1.1
+        
+      - name: Set up Visual C++ Build Tools
+        shell: powershell
+        run: |
+          # Add Visual C++ build tools to PATH
+          $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          $vcvarsallPath = Join-Path $vsPath "VC\Auxiliary\Build\vcvarsall.bat"
+          
+          # Create a batch file to set up the environment
+          Set-Content -Path setup-env.bat -Value "@call `"$vcvarsallPath`" x64"
+          
+          # Execute the batch file and export the environment variables
+          cmd /c "setup-env.bat && set > env-vars.txt"
+          
+          # Read the environment variables and set them for the current process
+          Get-Content env-vars.txt | ForEach-Object {
+            if ($_ -match "^([^=]+)=(.*)$") {
+              $name = $matches[1]
+              $value = $matches[2]
+              # Set environment variable for the current process
+              [System.Environment]::SetEnvironmentVariable($name, $value)
+              # Also set it for GitHub Actions
+              echo "$name=$value" >> $env:GITHUB_ENV
+            }
+          }
+
+      - name: Build Native Image
+        run: |
+          ./gradlew build --system-prop quarkus.package.type=native --system-prop quarkus.native.container-build=false --system-prop quarkus.native.builder-image.build=false
+          # Ensure build output data is available for GraalVM reporting
+          mkdir -p $HOME/.native-image
+          if (Test-Path -Path "build/native-image-reports") {
+            Copy-Item -Path "build/native-image-reports/*" -Destination "$HOME/.native-image/" -Recurse -Force -ErrorAction SilentlyContinue
+          }
+
+      - name: Upload Windows Native Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: keycloak-mcp-server-windows
+          path: build/keycloak-mcp-server-*-runner.exe
+          retention-days: 7
+
+  create-nightly-release:
+    name: Create Nightly Release
+    needs: [native-linux, native-macos, native-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # To create release tags and releases
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+      
+      - name: Prepare release assets directory
+        run: mkdir -p release-assets
+      
+      - name: Get current date
+        id: date
+        run: echo "DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      
+      - name: Prepare release assets with date
+        run: |
+          cp keycloak-mcp-server-linux/* release-assets/keycloak-mcp-server-nightly-${DATE}-linux
+          cp keycloak-mcp-server-macos/* release-assets/keycloak-mcp-server-nightly-${DATE}-macos
+          cp keycloak-mcp-server-windows/* release-assets/keycloak-mcp-server-nightly-${DATE}-windows.exe
+      
+      - name: Create nightly release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: nightly-${{ env.DATE }}
+          name: Nightly Build ${{ env.DATE }}
+          draft: false
+          prerelease: true
+          files: |
+            release-assets/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
