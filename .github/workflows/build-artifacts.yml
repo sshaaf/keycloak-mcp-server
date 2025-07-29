@@ -77,7 +77,7 @@ jobs:
       - name: Upload Uber JAR
         uses: actions/upload-artifact@v4
         with:
-          name: uber-jar
+          name: keycloak-mcp-server-uber-jar
           path: build/keycloak-mcp-server-0.1.jar
 
   native-linux:

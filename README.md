@@ -60,6 +60,44 @@ The Keycloak MCP server is build output of 4 artifacts.
 - Native [MacOS, Linux, Windows]
 - Uber jar
 
+### Cursor
+You can add the following in the config in the `~/.cursor/mcp.json`
+```yaml
+{
+  "mcpServers": {
+    "keycloak_mcp_server": {
+      "type": "stdio",
+      "command": "<full path> keycloak-mcp-server-0.1",
+      "args": [],
+      "env": {
+        "KC_URL": "http://localhost:8081",
+        "KC_USER": "admin",
+        "KC_PASSWORD": "admin"
+      }
+    }
+  }
+}
+
+```
+
+
+You can add the keycloak server by adding the following to `claude_desktop_config`.
+### Claude Code
+```yaml
+{
+  "mcpServers": {
+    "keycloak": {
+      "command": "<full path>/keycloak-mcp-server-0.1",
+      "args": [],
+      "env": {
+        "KC_URL": "http://localhost:8081",
+        "KC_USER": "admin",
+        "KC_PASSWORD": "admin"
+      }
+    }
+  }
+}
+```
 ### VSCode
 You can add the keycloak MCP server tools into VS Code by adding the following to your `mcp.json`.
 
@@ -96,13 +134,17 @@ e.g.
 export KC_URL=http://localhost:8081
 ```
 
+Now you can run `goose session` and the extension should be loaded.
+
+### Uber Jar
+The examples below are for native binaries. however you can also use the uber-jar
 If using the uber jar change the `cmd` and `args` as follows
 ```yaml
-    cmd: "java"
+    cmd|command: "java"
     args: ["-jar", "path to jar"]
 ```
 
-Now you can run `goose session` and the extension should be loaded.
+
 
 ## Example Usage
 

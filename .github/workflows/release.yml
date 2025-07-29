@@ -44,7 +44,7 @@ jobs:
     - name: Upload artifact for release job
       uses: actions/upload-artifact@v4
       with:
-        name: uber-jar
+        name: keycloak-mcp-server-uber-jar
         path: build/keycloak-mcp-server-*-runner.jar
     
     - name: Upload Native Binary (Linux)
@@ -176,7 +176,7 @@ jobs:
     - name: Prepare release assets with version
       if: steps.semantic_release.outputs.new_release_published == 'true'
       run: |
-        cp uber-jar/* release-assets/
+        cp keycloak-mcp-server-uber-jar/* release-assets/keycloak-mcp-server-${VERSION}-uber.jar
         cp native-linux/* release-assets/keycloak-mcp-server-${VERSION}-linux
         cp native-macos/* release-assets/keycloak-mcp-server-${VERSION}-macos
         cp native-windows/* release-assets/keycloak-mcp-server-${VERSION}-windows.exe
