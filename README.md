@@ -60,6 +60,21 @@ The Keycloak MCP server is build output of 4 artifacts.
 - Native [MacOS, Linux, Windows]
 - Uber jar
 
+### VSCode
+You can add the keycloak MCP server tools into VS Code by adding the following to your `mcp.json`
+
+```yaml
+  "keycloak_mcp_server": {
+    "type": "stdio",
+    "command": "<full path> keycloak-mcp-server-0.1",
+    "args": [],
+    "env": {
+      "KC_URL": "http://localhost:8081",
+      "KC_USER": "admin",
+      "KC_PASSWORD": "admin"
+    }
+```
+
 ### Goose CLI
 
 ```yaml
