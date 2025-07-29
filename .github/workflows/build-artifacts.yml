@@ -1,125 +1,159 @@
-name: Build Artifacts
+name: Build and Release
 
 on:
   push:
     branches: [ main ]
     paths-ignore:
+      - '**/*.md'
+      - '**/*.png'
       - '**/*.jpg'
       - '**/*.jpeg'
-      - '**/*.png'
       - '**/*.gif'
       - '**/*.svg'
-      - '**/*.txt'
-      - '**/*.md'
+      - '**/*.ico'
+      - '**/*.webp'
   pull_request:
     branches: [ main ]
     paths-ignore:
+      - '**/*.md'
+      - '**/*.png'
       - '**/*.jpg'
       - '**/*.jpeg'
-      - '**/*.png'
       - '**/*.gif'
       - '**/*.svg'
-      - '**/*.txt'
-      - '**/*.md'
+      - '**/*.ico'
+      - '**/*.webp'
+  workflow_dispatch:
 
 jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: kaycloak-mcp-server-jar
+          path: build/libs/*.jar
+
   build-uber-jar:
     name: Build Uber JAR
     runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up JDK 21
-      uses: actions/setup-java@v3
-      with:
-        java-version: '21'
-        distribution: 'temurin'
-        cache: gradle
-    
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    
-    - name: Build Uber JAR
-      run: ./gradlew quarkusBuild -Dquarkus.package.type=uber-jar
-    
-    - name: Upload Uber JAR
-      uses: actions/upload-artifact@v4
-      with:
-        name: uber-jar
-        path: build/keycloak-mcp-server-*-runner.jar
 
-  build-native-linux:
-    name: Build Native Binary (Linux)
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Uber JAR
+        run: ./gradlew quarkusBuild -Dquarkus.package.type=uber-jar
+
+      - name: Upload Uber JAR
+        uses: actions/upload-artifact@v3
+        with:
+          name: uber-jar
+          path: build/keycloak-mcp-server-*-runner.jar
+
+  native-linux:
+    name: Build Native Linux
+    needs: build
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up GraalVM
-      uses: graalvm/setup-graalvm@v1
-      with:
-        java-version: '21'
-        distribution: 'graalvm'
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    
-    - name: Build Native Binary (Linux)
-      run: ./gradlew build -Dquarkus.package.type=native
-    
-    - name: Upload Native Binary (Linux)
-      uses: actions/upload-artifact@v4
-      with:
-        name: native-linux
-        path: build/*-runner
+      - uses: actions/checkout@v3
 
-  build-native-macos:
-    name: Build Native Binary (MacOS)
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Native Image
+        run: ./gradlew nativeCompile --no-configuration-cache
+
+      - name: Upload Linux Native Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: kaycloak-mcp-server-linux
+          path: build/native/nativeCompile/kaycloak-mcp-server-linux
+
+  native-macos:
+    name: Build Native macOS (Apple Silicon)
+    needs: build
     runs-on: macos-latest
-    
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up GraalVM
-      uses: graalvm/setup-graalvm@v1
-      with:
-        java-version: '21'
-        distribution: 'graalvm'
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    
-    - name: Build Native Binary (MacOS)
-      run: ./gradlew build -Dquarkus.package.type=native
-    
-    - name: Upload Native Binary (MacOS)
-      uses: actions/upload-artifact@v4
-      with:
-        name: native-macos
-        path: build/*-runner
+      - uses: actions/checkout@v3
 
-  build-native-windows:
-    name: Build Native Binary (Windows)
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Native Image
+        run: ./gradlew nativeCompile --no-configuration-cache
+
+      - name: Upload macOS Native Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: kaycloak-mcp-server-macos
+          path: build/native/nativeCompile/kaycloak-mcp-server-macos
+
+  native-windows:
+    name: Build Native Windows
+    needs: build
     runs-on: windows-latest
-    
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up GraalVM
-      uses: graalvm/setup-graalvm@v1
-      with:
-        java-version: '21'
-        distribution: 'graalvm'
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Build Native Binary (Windows)
-      run: ./gradlew build -Dquarkus.package.type=native
-    
-    - name: Upload Native Binary (Windows)
-      uses: actions/upload-artifact@v4
-      with:
-        name: native-windows
-        path: build/*-runner.exe
+      - uses: actions/checkout@v3
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      - name: Build Native Image
+        run: ./gradlew nativeCompile --no-configuration-cache
+
+      - name: Upload Windows Native Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: kaycloak-mcp-server-windows
+          path: build/native/nativeCompile/kaycloak-mcp-server.exe

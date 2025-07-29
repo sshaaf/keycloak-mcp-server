@@ -56,11 +56,13 @@ Each tool class follows a similar pattern:
 
 ## Getting started - configuration
 
-Assuming you have already downloaded the keycloak-mcp-server jar artifact.
+The Keycloak MCP server is build output of 4 artifacts. 
+- Native [MacOS, Linux, Windows]
+- Uber jar
 
 ### Goose CLI
 
-```
+```yaml
 extensions:
   keycloak_mcp_server:
     display_name: Keycloak MCP Server
@@ -68,8 +70,8 @@ extensions:
     name: keycloak-mcp-server
     timeout: 300
     type: stdio
-    cmd: "java"
-    args: ["-jar", "path to jar"]
+    cmd: "<full path>keycloak-mcp-server-0.1"
+    args: []
     env_keys:
       - "KC_URL"
 ```
@@ -77,6 +79,12 @@ You need to set an environment variable:
 e.g.
 ```bash
 export KC_URL=http://localhost:8081
+```
+
+If using the uber jar change the `cmd` and `args` as follows
+```yaml
+    cmd: "java"
+    args: ["-jar", "path to jar"]
 ```
 
 Now you can run `goose session` and the extension should be loaded.
