@@ -44,7 +44,7 @@ jobs:
       run: ./gradlew quarkusBuild -Dquarkus.package.type=uber-jar
     
     - name: Upload Uber JAR
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: uber-jar
         path: build/keycloak-mcp-server-*-runner.jar
@@ -70,7 +70,7 @@ jobs:
       run: ./gradlew build -Dquarkus.package.type=native
     
     - name: Upload Native Binary (Linux)
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: native-linux
         path: build/*-runner
@@ -96,7 +96,7 @@ jobs:
       run: ./gradlew build -Dquarkus.package.type=native
     
     - name: Upload Native Binary (MacOS)
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: native-macos
         path: build/*-runner
@@ -119,7 +119,7 @@ jobs:
       run: ./gradlew build -Dquarkus.package.type=native
     
     - name: Upload Native Binary (Windows)
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: native-windows
         path: build/*-runner.exe

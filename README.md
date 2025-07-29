@@ -79,7 +79,7 @@ e.g.
 export KC_URL=http://localhost:8081
 ```
 
-
+Now you can run `goose session` and the extension should be loaded.
 
 ## Example Usage
 
