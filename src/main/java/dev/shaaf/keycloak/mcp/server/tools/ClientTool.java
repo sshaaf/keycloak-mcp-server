@@ -129,17 +129,4 @@ public class ClientTool {
             throw new ToolCallException("Failed to get client protocol mappers: " + clientId);
         }
     }
-
-    @Tool(description = "Add protocol mapper to client from a keycloak realm")
-    String addProtocolMapperToClient(@ToolArg(description = "A String denoting the name of the realm where the client resides") String realm,
-                                   @ToolArg(description = "A String denoting the ID of the client") String clientId,
-                                   @ToolArg(description = "A String denoting the protocol mapper representation in JSON format") String mapperJson) {
-        try {
-            ProtocolMapperRepresentation protocolMapper = mapper.readValue(mapperJson, ProtocolMapperRepresentation.class);
-            return clientService.addProtocolMapperToClient(realm, clientId, protocolMapper);
-        } catch (Exception e) {
-            Log.error("Failed to add protocol mapper to client: " + clientId, e);
-            throw new ToolCallException("Failed to add protocol mapper to client: " + clientId + " - " + e.getMessage());
-        }
-    }
 }

@@ -38,32 +38,6 @@ public class RoleTool {
         }
     }
 
-    @Tool(description = "Create a role in a keycloak realm")
-    String createRealmRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                          @ToolArg(description = "A String denoting the name of the role") String roleName,
-                          @ToolArg(description = "A String denoting the description of the role") String description) {
-        return roleService.createRealmRole(realm, roleName, description);
-    }
-
-    @Tool(description = "Update a role in a keycloak realm")
-    String updateRealmRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                          @ToolArg(description = "A String denoting the name of the role") String roleName,
-                          @ToolArg(description = "A String denoting the updated role representation in JSON format") String roleJson) {
-        try {
-            RoleRepresentation roleRepresentation = mapper.readValue(roleJson, RoleRepresentation.class);
-            return roleService.updateRealmRole(realm, roleName, roleRepresentation);
-        } catch (Exception e) {
-            Log.error("Failed to update realm role: " + roleName, e);
-            throw new ToolCallException("Failed to update realm role: " + roleName + " - " + e.getMessage());
-        }
-    }
-
-    @Tool(description = "Delete a role from a keycloak realm")
-    String deleteRealmRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                          @ToolArg(description = "A String denoting the name of the role") String roleName) {
-        return roleService.deleteRealmRole(realm, roleName);
-    }
-
     @Tool(description = "Get role composites from a keycloak realm")
     String getRoleComposites(@ToolArg(description = "A String denoting the name of the realm") String realm,
                             @ToolArg(description = "A String denoting the name of the role") String roleName) {
@@ -73,19 +47,5 @@ public class RoleTool {
             Log.error("Failed to get role composites: " + roleName, e);
             throw new ToolCallException("Failed to get role composites: " + roleName);
         }
-    }
-
-    @Tool(description = "Add composite to role in a keycloak realm")
-    String addCompositeToRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                             @ToolArg(description = "A String denoting the name of the role") String roleName,
-                             @ToolArg(description = "A String denoting the name of the composite role") String compositeRoleName) {
-        return roleService.addCompositeToRole(realm, roleName, compositeRoleName);
-    }
-
-    @Tool(description = "Remove composite from role from a keycloak realm")
-    String removeCompositeFromRole(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                                  @ToolArg(description = "A String denoting the name of the role") String roleName,
-                                  @ToolArg(description = "A String denoting the name of the composite role") String compositeRoleName) {
-        return roleService.removeCompositeFromRole(realm, roleName, compositeRoleName);
     }
 }

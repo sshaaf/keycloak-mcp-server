@@ -35,13 +35,6 @@ public class UserTool {
         return userService.addUser(realm, username, firstName, lastName, email, password);
     }
 
-    // Just testing.. but probably lots of caution required for delete operations :)
-    @Tool(description = "Delete a user in a keycloak realm")
-    String deleteUser(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
-                      @ToolArg(description = "A String denoting the username of the user to be deleted") String username) {
-        return userService.deleteUser(realm, username);
-    }
-
     @Tool(description = "Find a user by username in a keycloak realm")
     String getUserByUsername(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
                             @ToolArg(description = "A String denoting the username of the user to find") String username) {

@@ -51,12 +51,6 @@ public class AuthenticationTool {
         }
     }
 
-    @Tool(description = "Delete an authentication flow from a keycloak realm")
-    String deleteAuthenticationFlow(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                                   @ToolArg(description = "A String denoting the ID of the flow") String flowId) {
-        return authenticationService.deleteAuthenticationFlow(realm, flowId);
-    }
-
     @Tool(description = "Get flow executions for a flow alias from a keycloak realm")
     String getFlowExecutions(@ToolArg(description = "A String denoting the name of the realm") String realm,
                             @ToolArg(description = "A String denoting the alias of the flow") String flowAlias) {
@@ -65,19 +59,6 @@ public class AuthenticationTool {
         } catch (Exception e) {
             Log.error("Failed to get flow executions: " + flowAlias, e);
             throw new ToolCallException("Failed to get flow executions: " + flowAlias);
-        }
-    }
-
-    @Tool(description = "Update flow execution from a keycloak realm given a flow alias and execution json")
-    String updateFlowExecution(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                              @ToolArg(description = "A String denoting the alias of the flow") String flowAlias,
-                              @ToolArg(description = "A String denoting the execution representation in JSON format") String executionJson) {
-        try {
-            AuthenticationExecutionInfoRepresentation execution = mapper.readValue(executionJson, AuthenticationExecutionInfoRepresentation.class);
-            return authenticationService.updateFlowExecution(realm, flowAlias, execution);
-        } catch (Exception e) {
-            Log.error("Failed to update flow execution", e);
-            throw new ToolCallException("Failed to update flow execution - " + e.getMessage());
         }
     }
 }

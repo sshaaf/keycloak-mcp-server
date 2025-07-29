@@ -39,37 +39,6 @@ public class IdentityProviderTool {
         }
     }
 
-    @Tool(description = "Create an identity provider in a keycloak realm")
-    String createIdentityProvider(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                                 @ToolArg(description = "A String denoting the identity provider representation in JSON format") String idpJson) {
-        try {
-            IdentityProviderRepresentation identityProvider = mapper.readValue(idpJson, IdentityProviderRepresentation.class);
-            return identityProviderService.createIdentityProvider(realm, identityProvider);
-        } catch (Exception e) {
-            Log.error("Failed to create identity provider", e);
-            throw new ToolCallException("Failed to create identity provider - " + e.getMessage());
-        }
-    }
-
-    @Tool(description = "Update an identity provider in a keycloak realm")
-    String updateIdentityProvider(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                                 @ToolArg(description = "A String denoting the alias of the identity provider") String alias,
-                                 @ToolArg(description = "A String denoting the updated identity provider representation in JSON format") String idpJson) {
-        try {
-            IdentityProviderRepresentation identityProvider = mapper.readValue(idpJson, IdentityProviderRepresentation.class);
-            return identityProviderService.updateIdentityProvider(realm, alias, identityProvider);
-        } catch (Exception e) {
-            Log.error("Failed to update identity provider: " + alias, e);
-            throw new ToolCallException("Failed to update identity provider: " + alias + " - " + e.getMessage());
-        }
-    }
-
-    @Tool(description = "Delete an identity provider from a keycloak realm")
-    String deleteIdentityProvider(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                                 @ToolArg(description = "A String denoting the alias of the identity provider") String alias) {
-        return identityProviderService.deleteIdentityProvider(realm, alias);
-    }
-
     @Tool(description = "Get identity provider mappers from a keycloak realm")
     String getIdentityProviderMappers(@ToolArg(description = "A String denoting the name of the realm") String realm,
                                      @ToolArg(description = "A String denoting the alias of the identity provider") String alias) {
@@ -78,19 +47,6 @@ public class IdentityProviderTool {
         } catch (Exception e) {
             Log.error("Failed to get identity provider mappers: " + alias, e);
             throw new ToolCallException("Failed to get identity provider mappers: " + alias);
-        }
-    }
-
-    @Tool(description = "Create identity provider mapper in a keycloak realm")
-    String createIdentityProviderMapper(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                                       @ToolArg(description = "A String denoting the alias of the identity provider") String alias,
-                                       @ToolArg(description = "A String denoting the identity provider mapper representation in JSON format") String mapperJson) {
-        try {
-            IdentityProviderMapperRepresentation mapperRepresentation = mapper.readValue(mapperJson, IdentityProviderMapperRepresentation.class);
-            return identityProviderService.createIdentityProviderMapper(realm, alias, mapperRepresentation);
-        } catch (Exception e) {
-            Log.error("Failed to create identity provider mapper", e);
-            throw new ToolCallException("Failed to create identity provider mapper - " + e.getMessage());
         }
     }
 }
