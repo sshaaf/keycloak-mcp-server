@@ -12,67 +12,31 @@
 
 This project is designed to work with Keycloak for identity and access management, providing a robust and scalable solution for managing Keycloak resources through a command-line interface.
 
+### Releases
+The Keycloak MCP server is available in the following formats:
+- **Uber JAR**: Available in regular releases and builds
+- **Native Binaries**: Available through nightly builds for MacOS, Linux, and Windows
+
 ## Features
 
 - **MCP Standard**: Implements the Model-Context Protocol for efficient standard input/output server operations.
 - **Keycloak Integration**: Seamlessly integrates with Keycloak for authentication and authorization.
 - **Comprehensive API**: Provides tools for managing various Keycloak resources:
-  - Realms
-  - Users
-  - Clients
-  - Roles
-  - Groups
-  - Identity Providers
-  - Authentication Flows
+```mermaid
+graph LR
+    subgraph Realm
+        U[Users]
+        C[Clients]
+        R[Roles]
+        G[Groups]
+        IdP[Identity Providers]
+        Auth[Authentication Flows]
+    end
+
+```
 - **Quarkus Framework**: Built using Quarkus to provide fast startup times and low memory footprint.
 
-## Architecture
-
-The project follows a layered architecture with tool classes that expose functionality through the MCP protocol and service classes that handle the actual operations with Keycloak.
-
-### Tools Package Explanation
-
-The tools package contains classes that expose Keycloak functionality through the MCP protocol:
-
-1. **UserTool**: Manages Keycloak users, including creation, deletion, updating user information, and managing user roles and groups.
-
-2. **RealmTool**: Manages Keycloak realms, including creation, deletion, updating realm settings, and managing realm events configuration.
-
-3. **ClientTool**: Manages Keycloak clients, including creation, deletion, updating client settings, managing client secrets, and client roles.
-
-4. **RoleTool**: Manages Keycloak roles, including creation, deletion, updating role settings, and managing role composites.
-
-5. **GroupTool**: Manages Keycloak groups, including creation, deletion, updating group settings, managing group members, and group roles.
-
-6. **IdentityProviderTool**: Manages Keycloak identity providers, including creation, deletion, updating identity provider settings, and managing identity provider mappers.
-
-7. **AuthenticationTool**: Manages Keycloak authentication flows, including creation, deletion, and managing flow executions.
-
-Each tool class follows a similar pattern:
-- Injects a corresponding service class that handles the actual operations with Keycloak
-- Injects an ObjectMapper for JSON serialization/deserialization
-- Exposes methods with @Tool annotations that delegate to the service class
-- Handles exceptions and provides meaningful error messages
-
 ## Getting started - configuration
-
-The Keycloak MCP server is available in the following formats:
-- **Uber JAR**: Available in regular releases and builds
-- **Native Binaries**: Available through nightly builds for MacOS, Linux, and Windows
-
-### Accessing Build Artifacts
-
-#### Regular Builds
-Regular builds produce only the JVM artifacts (JAR and Uber JAR). These are available:
-- As GitHub release assets for official releases
-- As build artifacts in GitHub Actions for all builds
-
-#### Nightly Native Builds
-Native binaries are built nightly and are available:
-- As GitHub pre-releases tagged with `nightly-YYYY-MM-DD`
-- As build artifacts in the GitHub Actions "Nightly Native Build" workflow
-
-You can also manually trigger a native build using the "Run workflow" button on the "Nightly Native Build" workflow page in GitHub Actions.
 
 ### Cursor
 You can add the following in the config in the `~/.cursor/mcp.json`
@@ -195,10 +159,6 @@ Here are the users in the "quarkus" realm:
 ( O)> can you delete user sshaaf from realm quarkus
 
 ```
-### Releases
-The Keycloak MCP server is available in the following formats:
-- **Uber JAR**: Available in regular releases and builds
-- **Native Binaries**: Available through nightly builds for MacOS, Linux, and Windows
 
 ### Accessing Build Artifacts
 

@@ -158,7 +158,33 @@ graph TD
     style Keycloak fill:#f8d7da,stroke:#f5c6cb
 
 ```
+## Architecture
 
+The project follows a layered architecture with tool classes that expose functionality through the MCP protocol and service classes that handle the actual operations with Keycloak.
+
+### Tools Package Explanation
+
+The tools package contains classes that expose Keycloak functionality through the MCP protocol:
+
+1. **UserTool**: Manages Keycloak users, including creation, deletion, updating user information, and managing user roles and groups.
+
+2. **RealmTool**: Manages Keycloak realms, including creation, deletion, updating realm settings, and managing realm events configuration.
+
+3. **ClientTool**: Manages Keycloak clients, including creation, deletion, updating client settings, managing client secrets, and client roles.
+
+4. **RoleTool**: Manages Keycloak roles, including creation, deletion, updating role settings, and managing role composites.
+
+5. **GroupTool**: Manages Keycloak groups, including creation, deletion, updating group settings, managing group members, and group roles.
+
+6. **IdentityProviderTool**: Manages Keycloak identity providers, including creation, deletion, updating identity provider settings, and managing identity provider mappers.
+
+7. **AuthenticationTool**: Manages Keycloak authentication flows, including creation, deletion, and managing flow executions.
+
+Each tool class follows a similar pattern:
+- Injects a corresponding service class that handles the actual operations with Keycloak
+- Injects an ObjectMapper for JSON serialization/deserialization
+- Exposes methods with @Tool annotations that delegate to the service class
+- Handles exceptions and provides meaningful error messages
 
 ### Building via source and running locally
 
