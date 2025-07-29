@@ -1,0 +1,136 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+      prerelease:
+        description: 'Is this a pre-release?'
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    name: Build Release Artifacts
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 21
+      uses: actions/setup-java@v3
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: gradle
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    - name: Build Uber JAR
+      run: ./gradlew quarkusBuild -Dquarkus.package.type=uber-jar
+    
+    - name: Set up GraalVM
+      uses: graalvm/setup-graalvm@v1
+      with:
+        java-version: '21'
+        distribution: 'graalvm'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Build Native Binary (Linux)
+      run: ./gradlew build -Dquarkus.package.type=native
+    
+    - name: Upload Uber JAR
+      uses: actions/upload-artifact@v3
+      with:
+        name: uber-jar
+        path: build/keycloak-mcp-server-*-runner.jar
+    
+    - name: Upload Native Binary (Linux)
+      uses: actions/upload-artifact@v3
+      with:
+        name: native-linux
+        path: build/*-runner
+
+  build-macos:
+    name: Build MacOS Native Binary
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up GraalVM
+      uses: graalvm/setup-graalvm@v1
+      with:
+        java-version: '21'
+        distribution: 'graalvm'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    - name: Build Native Binary (MacOS)
+      run: ./gradlew build -Dquarkus.package.type=native
+    
+    - name: Upload Native Binary (MacOS)
+      uses: actions/upload-artifact@v3
+      with:
+        name: native-macos
+        path: build/*-runner
+
+  build-windows:
+    name: Build Windows Native Binary
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up GraalVM
+      uses: graalvm/setup-graalvm@v1
+      with:
+        java-version: '21'
+        distribution: 'graalvm'
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Build Native Binary (Windows)
+      run: ./gradlew build -Dquarkus.package.type=native
+    
+    - name: Upload Native Binary (Windows)
+      uses: actions/upload-artifact@v3
+      with:
+        name: native-windows
+        path: build/*-runner.exe
+
+  create-release:
+    name: Create GitHub Release
+    needs: [build, build-macos, build-windows]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Download all artifacts
+      uses: actions/download-artifact@v3
+      
+    - name: Prepare release assets
+      run: |
+        mkdir -p release-assets
+        cp uber-jar/* release-assets/
+        cp native-linux/* release-assets/keycloak-mcp-server-${{ github.event.inputs.version }}-linux
+        cp native-macos/* release-assets/keycloak-mcp-server-${{ github.event.inputs.version }}-macos
+        cp native-windows/* release-assets/keycloak-mcp-server-${{ github.event.inputs.version }}-windows.exe
+    
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ github.event.inputs.version }}
+        name: Release v${{ github.event.inputs.version }}
+        draft: false
+        prerelease: ${{ github.event.inputs.prerelease }}
+        files: |
+          release-assets/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

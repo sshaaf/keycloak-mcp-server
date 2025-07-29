@@ -6,6 +6,10 @@
   <b> An MCP Server for Keycloak </b>
 </h2>
 
+[![Java 21](https://img.shields.io/badge/Java-21-blue.svg)](https://openjdk.org/projects/jdk/21/)
+[![Gradle 8](https://img.shields.io/badge/Gradle-8-green.svg)](https://gradle.org/)
+[![Quarkus 3](https://img.shields.io/badge/Quarkus-3-blue.svg)](https://gradle.org/)
+
 This project is designed to work with Keycloak for identity and access management, providing a robust and scalable solution for managing Keycloak resources through a command-line interface.
 
 ## Features
@@ -25,71 +29,6 @@ This project is designed to work with Keycloak for identity and access managemen
 ## Architecture
 
 The project follows a layered architecture with tool classes that expose functionality through the MCP protocol and service classes that handle the actual operations with Keycloak.
-
-### Class Diagram
-
-Below is a class diagram showing the structure of the tools package and its relationships with the service layer:
-
-```mermaid
-graph TD
-    subgraph "Goose CLI"
-        GooseCLI[Goose CLI]
-    end
-
-    subgraph "Tools Layer"
-        UserTool["UserTool"]
-        RealmTool["RealmTool"]
-        ClientTool["ClientTool"]
-        RoleTool["RoleTool"]
-        GroupTool["GroupTool"]
-        IdentityProviderTool["IdentityProviderTool"]
-        AuthenticationTool["AuthenticationTool"]
-    end
-
-    subgraph "Service Layer"
-        UserService["UserService"]
-        RealmService["RealmService"]
-        ClientService["ClientService"]
-        RoleService["RoleService"]
-        GroupService["GroupService"]
-        IdentityProviderService["IdentityProviderService"]
-        AuthenticationService["AuthenticationService"]
-    end
-
-    subgraph "External Services"
-        Keycloak[("Keycloak")]
-    end
-
-    %% Define Relationships
-    GooseCLI --> UserTool
-    GooseCLI --> RealmTool
-    GooseCLI --> ClientTool
-    GooseCLI --> RoleTool
-    GooseCLI --> GroupTool
-    GooseCLI --> IdentityProviderTool
-    GooseCLI --> AuthenticationTool
-
-    UserTool --> UserService
-    RealmTool --> RealmService
-    ClientTool --> ClientService
-    RoleTool --> RoleService
-    GroupTool --> GroupService
-    IdentityProviderTool --> IdentityProviderService
-    AuthenticationTool --> AuthenticationService
-
-    UserService --> Keycloak
-    RealmService --> Keycloak
-    ClientService --> Keycloak
-    RoleService --> Keycloak
-    GroupService --> Keycloak
-    IdentityProviderService --> Keycloak
-    AuthenticationService --> Keycloak
-
-    %% Styling
-    style GooseCLI fill:#d4edda,stroke:#c3e6cb
-    style Keycloak fill:#f8d7da,stroke:#f5c6cb
-
-```
 
 ### Tools Package Explanation
 
@@ -115,49 +54,32 @@ Each tool class follows a similar pattern:
 - Exposes methods with @Tool annotations that delegate to the service class
 - Handles exceptions and provides meaningful error messages
 
-## Prerequisites
+## Getting started - configuration
 
-- **Java 21 or newer**: Ensure you have Java installed on your system.
-- **Gradle**: Required for building and running the project.
-- **Docker**: Required for running a local Keycloak instance (optional).
+Assuming you have already downloaded the keycloak-mcp-server jar artifact.
 
-## Getting Started
+### Goose CLI
 
-### Starting a Local Keycloak Instance
-
-You can start a local Keycloak instance using Docker Compose:
-
+```
+extensions:
+  keycloak_mcp_server:
+    display_name: Keycloak MCP Server
+    enabled: true
+    name: keycloak-mcp-server
+    timeout: 300
+    type: stdio
+    cmd: "java"
+    args: ["-jar", "path to jar"]
+    env_keys:
+      - "KC_URL"
+```
+You need to set an environment variable:
+e.g.
 ```bash
-docker-compose -f deploy/docker-compose.yml up
+export KC_URL=http://localhost:8081
 ```
 
-### Building the Application
 
-To build the application using Gradle:
-
-```bash
-./gradlew build
-```
-
-To build an uber jar:
-
-```bash
-./gradlew quarkusBuild -Dquarkus.package.type=uber-jar
-```
-
-### Running with Goose
-
-[Goose](https://github.com/goose-ai/goose) is a command-line interface for AI assistants. You can integrate and run this project as an extension with Goose:
-
-```bash
-goose session --with-extension="java -jar build/quarkus-app/quarkus-run.jar"
-```
-
-Or with the uber jar:
-
-```bash
-goose session --with-extension="java -jar build/keycloak-mcp-server-1.0.0-Alpha1-runner.jar"
-```
 
 ## Example Usage
 
@@ -205,7 +127,3 @@ Here are the users in the "quarkus" realm:
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the Apache License 2.0 - see the LICENSE file for details.

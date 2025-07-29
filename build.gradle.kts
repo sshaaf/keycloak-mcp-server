@@ -27,10 +27,20 @@ dependencies {
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-rest")
-    implementation("io.quarkus:quarkus-keycloak-admin-rest-client")
     implementation("io.quarkus:quarkus-jsonb")
+
+    // MCP
+
     implementation("io.quarkiverse.mcp:quarkus-mcp-server-stdio:1.4.0")
-    
+
+    // MCP SSE
+    //implementation("io.quarkiverse.mcp:quarkus-mcp-server-sse")
+
+    implementation("io.quarkus:quarkus-rest-qute")
+
+    // Keycloak admin client
+    implementation("io.quarkus:quarkus-keycloak-admin-rest-client")
+
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")
     testImplementation("io.quarkus:quarkus-junit5-mockito")
@@ -39,7 +49,7 @@ dependencies {
 }
 
 group = "dev.shaaf.keycloak.mcp.server"
-version = "1.0.0-Alpha1"
+version = "0.0.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
