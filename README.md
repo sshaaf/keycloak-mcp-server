@@ -125,6 +125,55 @@ Here are the users in the "quarkus" realm:
 
 ```
 
+## CI/CD with GitHub Actions
+
+This project uses GitHub Actions for continuous integration and delivery. The following workflows are available:
+
+### Build and Test
+
+The Build and Test workflow runs automatically on push and pull requests to the main branch. It:
+- Builds the project
+- Runs all tests
+- Uploads test results as artifacts
+
+This workflow ignores changes to image files (jpg, jpeg, png, gif, svg), txt files, and markdown files.
+
+### Build Artifacts
+
+The Build Artifacts workflow runs automatically on push and pull requests to the main branch. It:
+- Builds an uber-jar
+- Builds native binaries for Linux, MacOS, and Windows using GraalVM
+- Uploads all artifacts
+
+This workflow ignores changes to image files (jpg, jpeg, png, gif, svg), txt files, and markdown files.
+
+### Release
+
+The Release workflow is triggered manually and allows you to create a new release. To create a release:
+1. Go to the Actions tab in the GitHub repository
+2. Select the "Release" workflow
+3. Click "Run workflow"
+4. Enter the release version (e.g., "1.0.0")
+5. Select whether this is a pre-release
+6. Click "Run workflow"
+
+The workflow will:
+- Build an uber-jar
+- Build native binaries for Linux, MacOS, and Windows
+- Create a GitHub release with all artifacts
+
+### Windows Native Build Requirements
+
+Building native images on Windows requires Microsoft Visual C++ Build Tools. The GitHub Actions workflows have been configured to:
+
+1. Set up the Visual Studio Developer Command Prompt using the `microsoft/setup-msbuild` action
+2. Configure the Visual C++ build environment by:
+   - Finding the Visual Studio installation path
+   - Setting up the environment using `vcvarsall.bat`
+   - Exporting all environment variables to make them available to the build process
+
+This ensures that the `cl.exe` compiler (required by GraalVM for native image compilation on Windows) is available in the PATH environment variable.
+
 ## References
 
 - [Keycloak](https://www.keycloak.org/) - Open Source Identity and Access Management

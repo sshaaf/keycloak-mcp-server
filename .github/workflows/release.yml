@@ -94,6 +94,34 @@ jobs:
         distribution: 'graalvm'
         github-token: ${{ secrets.GITHUB_TOKEN }}
     
+    - name: Set up Visual Studio Developer Command Prompt
+      uses: microsoft/setup-msbuild@v1.1
+      
+    - name: Set up Visual C++ Build Tools
+      shell: powershell
+      run: |
+        # Add Visual C++ build tools to PATH
+        $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+        $vcvarsallPath = Join-Path $vsPath "VC\Auxiliary\Build\vcvarsall.bat"
+        
+        # Create a batch file to set up the environment
+        Set-Content -Path setup-env.bat -Value "@call `"$vcvarsallPath`" x64"
+        
+        # Execute the batch file and export the environment variables
+        cmd /c "setup-env.bat && set > env-vars.txt"
+        
+        # Read the environment variables and set them for the current process
+        Get-Content env-vars.txt | ForEach-Object {
+          if ($_ -match "^([^=]+)=(.*)$") {
+            $name = $matches[1]
+            $value = $matches[2]
+            # Set environment variable for the current process
+            [System.Environment]::SetEnvironmentVariable($name, $value)
+            # Also set it for GitHub Actions
+            echo "$name=$value" >> $env:GITHUB_ENV
+          }
+        }
+    
     - name: Build Native Binary (Windows)
       run: ./gradlew build --system-prop quarkus.package.type=native
     
