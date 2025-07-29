@@ -1,23 +1,20 @@
 name: Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version'
-        required: true
-      prerelease:
-        description: 'Is this a pre-release?'
-        type: boolean
-        default: false
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
 
 jobs:
+  # --- Build job for creating artifacts ---
   build:
     name: Build Release Artifacts
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v4
     
     - name: Set up JDK 21
       uses: actions/setup-java@v3
@@ -29,8 +26,10 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     
-    - name: Build Uber JAR
-      run: ./gradlew quarkusBuild -Dquarkus.package.type=uber-jar
+    - name: Install dependencies and build
+      run: |
+        ./gradlew build
+        ./gradlew quarkusBuild -Dquarkus.package.type=uber-jar
     
     - name: Set up GraalVM
       uses: graalvm/setup-graalvm@v1
@@ -42,7 +41,7 @@ jobs:
     - name: Build Native Binary (Linux)
       run: ./gradlew build -Dquarkus.package.type=native
     
-    - name: Upload Uber JAR
+    - name: Upload artifact for release job
       uses: actions/upload-artifact@v4
       with:
         name: uber-jar
@@ -131,33 +130,64 @@ jobs:
         name: native-windows
         path: build/*-runner.exe
 
-  create-release:
+  release:
     name: Create GitHub Release
     needs: [build, build-macos, build-windows]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # To create release tags and releases
+      issues: write # To comment on issues and PRs
+      pull-requests: write # To comment on issues and PRs
     
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        # We need to fetch all history and tags for semantic-release to work
+        fetch-depth: 0
     
     - name: Download all artifacts
       uses: actions/download-artifact@v4
       
-    - name: Prepare release assets
+    - name: Prepare release assets directory
+      run: mkdir -p release-assets
+      
+    - name: Semantic Release
+      id: semantic_release
+      uses: cycjimmy/semantic-release-action@v4
+      with:
+        extra_plugins: |
+          @semantic-release/git
+          @semantic-release/github
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Get version from semantic-release
+      id: get_version
       run: |
-        mkdir -p release-assets
-        cp uber-jar/* release-assets/
-        cp native-linux/* release-assets/keycloak-mcp-server-${{ github.event.inputs.version }}-linux
-        cp native-macos/* release-assets/keycloak-mcp-server-${{ github.event.inputs.version }}-macos
-        cp native-windows/* release-assets/keycloak-mcp-server-${{ github.event.inputs.version }}-windows.exe
+        if [ "${{ steps.semantic_release.outputs.new_release_published }}" = "true" ]; then
+          echo "VERSION=${{ steps.semantic_release.outputs.new_release_version }}" >> $GITHUB_ENV
+          echo "New version: ${{ steps.semantic_release.outputs.new_release_version }}"
+        else
+          echo "No new version published"
+          exit 0
+        fi
     
-    - name: Create Release
-      id: create_release
+    - name: Prepare release assets with version
+      if: steps.semantic_release.outputs.new_release_published == 'true'
+      run: |
+        cp uber-jar/* release-assets/
+        cp native-linux/* release-assets/keycloak-mcp-server-${VERSION}-linux
+        cp native-macos/* release-assets/keycloak-mcp-server-${VERSION}-macos
+        cp native-windows/* release-assets/keycloak-mcp-server-${VERSION}-windows.exe
+    
+    - name: Upload release assets
+      if: steps.semantic_release.outputs.new_release_published == 'true'
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: v${{ github.event.inputs.version }}
-        name: Release v${{ github.event.inputs.version }}
+        tag_name: v${{ env.VERSION }}
+        name: Release v${{ env.VERSION }}
         draft: false
-        prerelease: ${{ github.event.inputs.prerelease }}
         files: |
           release-assets/*
       env:

@@ -220,15 +220,42 @@ This workflow ignores changes to image files (jpg, jpeg, png, gif, svg), txt fil
 
 ### Release
 
-The Release workflow is triggered manually and allows you to create a new release. To create a release:
+The Release workflow is triggered automatically on pushes to the main branch and can also be triggered manually. It uses semantic-release to automatically determine the next version number based on commit messages.
+
+#### Automatic Release Process
+
+When changes are pushed to the main branch, the release workflow will:
+1. Build an uber-jar and native binaries for Linux, MacOS, and Windows
+2. Use semantic-release to analyze commit messages and determine if a new release is needed
+3. If a new release is needed, semantic-release will:
+  - Determine the next version number based on commit messages
+  - Generate release notes
+  - Create a GitHub release with all artifacts
+  - Update version references in the codebase
+
+#### Manual Release Process
+
+You can also trigger the release workflow manually:
 1. Go to the Actions tab in the GitHub repository
 2. Select the "Release" workflow
 3. Click "Run workflow"
-4. Enter the release version (e.g., "1.0.0")
-5. Select whether this is a pre-release
-6. Click "Run workflow"
+4. Click "Run workflow" again to start the process
 
-The workflow will:
-- Build an uber-jar
-- Build native binaries for Linux, MacOS, and Windows
-- Create a GitHub release with all artifacts
+#### Commit Message Format
+
+To control the version number, use conventional commit messages:
+- `fix: ...` - for bug fixes (creates a PATCH release)
+- `feat: ...` - for new features (creates a MINOR release)
+- `feat!: ...` or `fix!: ...` or any commit with `BREAKING CHANGE:` in the footer - for breaking changes (creates a MAJOR release)
+
+### Windows Native Build Requirements
+
+Building native images on Windows requires Microsoft Visual C++ Build Tools. The GitHub Actions workflows have been configured to:
+
+1. Set up the Visual Studio Developer Command Prompt using the `microsoft/setup-msbuild` action
+2. Configure the Visual C++ build environment by:
+  - Finding the Visual Studio installation path
+  - Setting up the environment using `vcvarsall.bat`
+  - Exporting all environment variables to make them available to the build process
+
+This ensures that the `cl.exe` compiler (required by GraalVM for native image compilation on Windows) is available in the PATH environment variable.
