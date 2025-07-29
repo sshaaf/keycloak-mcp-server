@@ -51,7 +51,7 @@ jobs:
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
-          name: kaycloak-mcp-server-jar
+          name: keycloak-mcp-server-jar
           path: build/libs/*.jar
 
   build-uber-jar:
@@ -104,8 +104,8 @@ jobs:
       - name: Upload Linux Native Executable
         uses: actions/upload-artifact@v4
         with:
-          name: kaycloak-mcp-server-linux
-          path: build/native/nativeCompile/kaycloak-mcp-server-linux
+          name: keycloak-mcp-server-linux
+          path: build/native/nativeCompile/keycloak-mcp-server-linux
 
   native-macos:
     name: Build Native macOS (Apple Silicon)
@@ -131,8 +131,8 @@ jobs:
       - name: Upload macOS Native Executable
         uses: actions/upload-artifact@v4
         with:
-          name: kaycloak-mcp-server-macos
-          path: build/native/nativeCompile/kaycloak-mcp-server-macos
+          name: keycloak-mcp-server-macos
+          path: build/native/nativeCompile/keycloak-mcp-server-macos
 
   native-windows:
     name: Build Native Windows
@@ -155,5 +155,5 @@ jobs:
       - name: Upload Windows Native Executable
         uses: actions/upload-artifact@v4
         with:
-          name: kaycloak-mcp-server-windows
-          path: build/native/nativeCompile/kaycloak-mcp-server.exe
+          name: keycloak-mcp-server-windows
+          path: build/native/nativeCompile/keycloak-mcp-server.exe
