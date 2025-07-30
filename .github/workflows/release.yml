@@ -195,60 +195,60 @@ jobs:
           path: build/${{ env.APP_NAME }}-${{ env.APP_VERSION }}.exe
           retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
-release:
-  name: Create GitHub Release
-  needs: [build-uber-jar, native-linux, native-macos, native-windows]
-  runs-on: ubuntu-latest
-  permissions:
-    contents: write
+  release:
+    name: Create GitHub Release
+    needs: [build-uber-jar, native-linux, native-macos, native-windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Download all build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: artifacts/
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
 
-    - name: Set up Node.js for semantic-release
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      - name: Set up Node.js for semantic-release
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
-    - name: Semantic Release
-      id: semantic
-      uses: cycjimmy/semantic-release-action@v4
-      with:
-        extra_plugins: |
-          @semantic-release/git
-          @semantic-release/github
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Semantic Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          extra_plugins: |
+            @semantic-release/git
+            @semantic-release/github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Prepare and rename release assets
-      if: steps.semantic.outputs.new_release_published == 'true'
-      id: prepare_assets
-      run: |
-        VERSION=${{ steps.semantic.outputs.new_release_version }}
-        echo "Preparing assets for new version: $VERSION"
-        
-        # Create a directory for the final assets
-        mkdir release-assets
+      - name: Prepare and rename release assets
+        if: steps.semantic.outputs.new_release_published == 'true'
+        id: prepare_assets
+        run: |
+          VERSION=${{ steps.semantic.outputs.new_release_version }}
+          echo "Preparing assets for new version: $VERSION"
+          
+          # Create a directory for the final assets
+          mkdir release-assets
+  
+          # Find and rename artifacts (paths reflect download-artifact@v4 structure)
+          mv artifacts/${{ env.APP_NAME }}-uber-jar/* release-assets/${{ env.APP_NAME }}-${VERSION}-uber.jar
+          mv artifacts/${{ env.APP_NAME }}-linux/* release-assets/${{ env.APP_NAME }}-${VERSION}-linux
+          mv artifacts/${{ env.APP_NAME }}-macos/* release-assets/${{ env.APP_NAME }}-${VERSION}-macos
+          mv artifacts/${{ env.APP_NAME }}-windows/* release-assets/${{ env.APP_NAME }}-${VERSION}-windows.exe
 
-        # Find and rename artifacts (paths reflect download-artifact@v4 structure)
-        mv artifacts/${{ env.APP_NAME }}-uber-jar/* release-assets/${{ env.APP_NAME }}-${VERSION}-uber.jar
-        mv artifacts/${{ env.APP_NAME }}-linux/* release-assets/${{ env.APP_NAME }}-${VERSION}-linux
-        mv artifacts/${{ env.APP_NAME }}-macos/* release-assets/${{ env.APP_NAME }}-${VERSION}-macos
-        mv artifacts/${{ env.APP_NAME }}-windows/* release-assets/${{ env.APP_NAME }}-${VERSION}-windows.exe
-
-    - name: Upload release assets to GitHub Release
-      if: steps.semantic.outputs.new_release_published == 'true'
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: ${{ steps.semantic.outputs.new_release_tag }}
-        name: Release ${{ steps.semantic.outputs.new_release_version }}
-        body: ${{ steps.semantic.outputs.new_release_notes }}
-        files: release-assets/*
+      - name: Upload release assets to GitHub Release
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.semantic.outputs.new_release_tag }}
+          name: Release ${{ steps.semantic.outputs.new_release_version }}
+          body: ${{ steps.semantic.outputs.new_release_notes }}
+          files: release-assets/*
