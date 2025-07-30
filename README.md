@@ -9,6 +9,7 @@
 [![Java 21](https://img.shields.io/badge/Java-21-blue.svg)](https://openjdk.org/projects/jdk/21/)
 [![Gradle 8](https://img.shields.io/badge/Gradle-8-green.svg)](https://gradle.org/)
 [![Quarkus 3](https://img.shields.io/badge/Quarkus-3-blue.svg)](https://gradle.org/)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sshaaf/keycloak-mcp-server)
 
 This project is designed to work with Keycloak for identity and access management, providing a robust and scalable solution for managing Keycloak resources through a command-line interface.
 
