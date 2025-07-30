@@ -105,7 +105,7 @@ jobs:
 
       - name: Build Native Image
         run: |
-          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.native.builder-image.build=false
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.native.builder-image.build=false quarkus.native.enable-reports=true
           # Ensure build output data is available for GraalVM reporting
           mkdir -p $HOME/.native-image
           if [ -d "build/native-image-reports" ]; then
@@ -145,7 +145,7 @@ jobs:
 
       - name: Build Native Image
         run: |
-          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.native.builder-image.build=false
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.native.builder-image.build=false quarkus.native.enable-reports=true
           # Ensure build output data is available for GraalVM reporting
           mkdir -p $HOME/.native-image
           if [ -d "build/native-image-reports" ]; then
@@ -210,7 +210,7 @@ jobs:
 
       - name: Build Native Image
         run: |
-          ./gradlew build --system-prop quarkus.package.type=native --system-prop quarkus.native.container-build=false --system-prop quarkus.native.builder-image.build=false
+          ./gradlew build --system-prop quarkus.package.type=native --system-prop quarkus.native.container-build=false --system-prop quarkus.native.builder-image.build=false quarkus.native.enable-reports=true
           # Ensure build output data is available for GraalVM reporting
           $nativeImageDir = Join-Path $HOME ".native-image"
           New-Item -Path $nativeImageDir -ItemType Directory -Force
