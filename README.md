@@ -16,7 +16,7 @@ This project is designed to work with Keycloak for identity and access managemen
 ### Releases
 The Keycloak MCP server is available in the following formats:
 - **Uber JAR**: Available in regular releases and builds
-- **Native Binaries**: Available through nightly builds for MacOS, Linux, and Windows
+- **Native Binaries**: Available in regular releases and builds for MacOS, Linux, and Windows
 
 ## Features
 
@@ -161,21 +161,6 @@ Here are the users in the "quarkus" realm:
 
 ```
 
-### Accessing Build Artifacts
-
-#### Regular Builds
-Regular builds produce only the JVM artifacts (JAR and Uber JAR). These are available:
-- As GitHub release assets for official releases
-- As build artifacts in GitHub Actions for all builds
-
-#### Nightly Native Builds
-Native binaries are built nightly and are available:
-- As GitHub pre-releases tagged with `nightly-YYYY-MM-DD`
-- As build artifacts in the GitHub Actions "Nightly Native Build" workflow
-
-You can also manually trigger a native build using the "Run workflow" button on the "Nightly Native Build" workflow page in GitHub Actions.
-
-
 ## References
 
 - [Keycloak](https://www.keycloak.org/) - Open Source Identity and Access Management
@@ -185,4 +170,7 @@ You can also manually trigger a native build using the "Run workflow" button on 
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! For more information please read the following documents. 
+- [Developers guide](DEVELOPERS.md)
+- [Contributors guide](CONTRIBUTORS.md)
+- [Release workflow](RELEASE_WORKFLOW.md)
