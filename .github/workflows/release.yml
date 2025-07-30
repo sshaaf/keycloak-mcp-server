@@ -1,4 +1,11 @@
 name: Release
+env:
+  JAVA_BUILD_VERSION: '21'
+  JAVA_DISTRIBUTION: 'temurin'
+  GRAALVM_DISTRIBUTION: 'graalvm'
+  APP_NAME: 'keycloak-mcp-server'
+  APP_VERSION: '0.1'
+  ARTIFACT_RETENTION_DAYS: 7
 
 on:
   push:
@@ -7,32 +14,60 @@ on:
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
 
 jobs:
-  # --- Build job for creating artifacts ---
-  build-uber-jar:
-    name: Build Uber JAR
+  build:
+    name: Build and Test
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-jar
+          path: build/libs/*.jar
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+  build-uber-jar:
+    name: Build Uber JAR
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: gradle
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build Uber JAR
-        run: ./gradlew quarkusBuild -Dquarkus.package.type=uber-jar
+        run: ./gradlew quarkusBuild -Dquarkus.package.jar.type=uber-jar -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }}
 
       - name: Upload Uber JAR
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-mcp-server-uber-jar
-          path: build/keycloak-mcp-server-0.1.jar
+          name: ${{ env.APP_NAME }}-uber-jar
+          path: build/${{ env.APP_NAME }}-${{ env.APP_VERSION }}.jar
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
   native-linux:
     name: Build Native Linux
@@ -43,8 +78,8 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: gradle
 
       - name: Grant execute permission for gradlew
@@ -53,26 +88,19 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '21'
-          distribution: 'graalvm'
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.GRAALVM_DISTRIBUTION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
 
       - name: Build Native Image
         run: |
-          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.native.builder-image.build=false
-          # Ensure build output data is available for GraalVM reporting
-          mkdir -p $HOME/.native-image
-          if [ -d "build/native-image-reports" ]; then
-            cp -r build/native-image-reports/* $HOME/.native-image/
-          fi
-
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }} -Dquarkus.native.enable-reports=true
       - name: Upload Linux Native Executable
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-mcp-server-linux
-          path: build/keycloak-mcp-server-0.1
-          retention-days: 7
+          name: ${{ env.APP_NAME }}-linux
+          path: build/${{ env.APP_NAME }}-${{ env.APP_VERSION }}
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
   native-macos:
     name: Build Native macOS (Apple Silicon)
@@ -83,8 +111,8 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: gradle
 
       - name: Grant execute permission for gradlew
@@ -93,26 +121,20 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '21'
-          distribution: 'graalvm'
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.GRAALVM_DISTRIBUTION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
 
       - name: Build Native Image
         run: |
-          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.native.builder-image.build=false
-          # Ensure build output data is available for GraalVM reporting
-          mkdir -p $HOME/.native-image
-          if [ -d "build/native-image-reports" ]; then
-            cp -r build/native-image-reports/* $HOME/.native-image/
-          fi
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }} -Dquarkus.native.enable-reports=true
 
       - name: Upload macOS Native Executable
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-mcp-server-macos
-          path: build/keycloak-mcp-server-0.1
-          retention-days: 7
+          name: ${{ env.APP_NAME }}-macos
+          path: build/${{ env.APP_NAME }}-${{ env.APP_VERSION }}
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
   native-windows:
     name: Build Native Windows
@@ -123,17 +145,16 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: gradle
 
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '21'
-          distribution: 'graalvm'
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.GRAALVM_DISTRIBUTION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
 
       - name: Set up Visual Studio Developer Command Prompt
         uses: microsoft/setup-msbuild@v1.1
@@ -165,80 +186,69 @@ jobs:
 
       - name: Build Native Image
         run: |
-          ./gradlew build --system-prop quarkus.package.type=native --system-prop quarkus.native.container-build=false --system-prop quarkus.native.builder-image.build=false
-          # Ensure build output data is available for GraalVM reporting
-          $nativeImageDir = Join-Path $HOME ".native-image"
-          New-Item -Path $nativeImageDir -ItemType Directory -Force
-          if (Test-Path -Path "build/native-image-reports") {
-            Get-ChildItem -Path "build/native-image-reports" | Copy-Item -Destination $nativeImageDir -Recurse -Force
-          }
+          ./gradlew build --system-prop quarkus.package.type=native --system-prop quarkus.native.container-build=false --system-prop quarkus.package.output-name=${{ env.APP_NAME }} --system-prop quarkus.package.runner-suffix=-${{ env.APP_VERSION }}
 
       - name: Upload Windows Native Executable
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-mcp-server-windows
-          path: build/keycloak-mcp-server-0.1.exe
-          retention-days: 7
+          name: ${{ env.APP_NAME }}-windows
+          path: build/${{ env.APP_NAME }}-${{ env.APP_VERSION }}.exe
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
-  release:
-    name: Create GitHub Release
-    needs: [build-uber-jar, native-linux, native-macos, native-windows]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write # To create release tags and releases
-      issues: write # To comment on issues and PRs
-      pull-requests: write # To comment on issues and PRs
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          # We need to fetch all history and tags for semantic-release to work
-          fetch-depth: 0
+release:
+  name: Create GitHub Release
+  needs: [build-uber-jar, native-linux, native-macos, native-windows]
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write
 
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Prepare release assets directory
-        run: mkdir -p release-assets
+    - name: Download all build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts/
 
-      - name: Semantic Release
-        id: semantic_release
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          extra_plugins: |
-            @semantic-release/git
-            @semantic-release/github
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Set up Node.js for semantic-release
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
 
-      - name: Get version from semantic-release
-        id: get_version
-        run: |
-          if [ "${{ steps.semantic_release.outputs.new_release_published }}" = "true" ]; then
-            echo "VERSION=${{ steps.semantic_release.outputs.new_release_version }}" >> $GITHUB_ENV
-            echo "New version: ${{ steps.semantic_release.outputs.new_release_version }}"
-          else
-            echo "No new version published"
-            exit 0
-          fi
+    - name: Semantic Release
+      id: semantic
+      uses: cycjimmy/semantic-release-action@v4
+      with:
+        extra_plugins: |
+          @semantic-release/git
+          @semantic-release/github
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Prepare release assets with version
-        if: steps.semantic_release.outputs.new_release_published == 'true'
-        run: |
-          cp keycloak-mcp-server-uber-jar/* release-assets/keycloak-mcp-server-${VERSION}-uber.jar
-          cp native-linux/* release-assets/keycloak-mcp-server-${VERSION}-linux
-          cp native-macos/* release-assets/keycloak-mcp-server-${VERSION}-macos
-          cp native-windows/* release-assets/keycloak-mcp-server-${VERSION}-windows.exe
+    - name: Prepare and rename release assets
+      if: steps.semantic.outputs.new_release_published == 'true'
+      id: prepare_assets
+      run: |
+        VERSION=${{ steps.semantic.outputs.new_release_version }}
+        echo "Preparing assets for new version: $VERSION"
+        
+        # Create a directory for the final assets
+        mkdir release-assets
 
-      - name: Upload release assets
-        if: steps.semantic_release.outputs.new_release_published == 'true'
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ env.VERSION }}
-          name: Release v${{ env.VERSION }}
-          draft: false
-          files: |
-            release-assets/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Find and rename artifacts (paths reflect download-artifact@v4 structure)
+        mv artifacts/${{ env.APP_NAME }}-uber-jar/* release-assets/${{ env.APP_NAME }}-${VERSION}-uber.jar
+        mv artifacts/${{ env.APP_NAME }}-linux/* release-assets/${{ env.APP_NAME }}-${VERSION}-linux
+        mv artifacts/${{ env.APP_NAME }}-macos/* release-assets/${{ env.APP_NAME }}-${VERSION}-macos
+        mv artifacts/${{ env.APP_NAME }}-windows/* release-assets/${{ env.APP_NAME }}-${VERSION}-windows.exe
+
+    - name: Upload release assets to GitHub Release
+      if: steps.semantic.outputs.new_release_published == 'true'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.semantic.outputs.new_release_tag }}
+        name: Release ${{ steps.semantic.outputs.new_release_version }}
+        body: ${{ steps.semantic.outputs.new_release_notes }}
+        files: release-assets/*
