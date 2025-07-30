@@ -3,14 +3,18 @@
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
-    ["@semantic-release/github", {
-      "assets": [
-        {"path": "release-assets/*", "label": "Keycloak MCP Server Binaries"}
-      ]
-    }],
-    ["@semantic-release/git", {
-      "assets": ["build.gradle.kts", "README.md"],
-      "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-    }]
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["build.gradle.kts", "README.md"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": "release-assets/*"
+      }
+    ]
   ]
 }
