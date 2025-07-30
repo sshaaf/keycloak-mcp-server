@@ -1,4 +1,11 @@
-name: Build and Release
+name: Build and Test
+env:
+  JAVA_BUILD_VERSION: '21'
+  JAVA_DISTRIBUTION: 'temurin'
+  GRAALVM_DISTRIBUTION: 'graalvm'
+  APP_NAME: 'keycloak-mcp-server'
+  APP_VERSION: '0.1'
+  ARTIFACT_RETENTION_DAYS: 7
 
 on:
   push:
@@ -35,8 +42,8 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: gradle
 
       - name: Grant execute permission for gradlew
@@ -51,31 +58,158 @@ jobs:
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-mcp-server-jar
+          name: ${{ env.APP_NAME }}-jar
           path: build/libs/*.jar
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
 
   build-uber-jar:
     name: Build Uber JAR
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
       - name: Set up JDK 21
         uses: actions/setup-java@v3
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
           cache: gradle
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build Uber JAR
-        run: ./gradlew quarkusBuild -Dquarkus.package.type=uber-jar
+        run: ./gradlew quarkusBuild -Dquarkus.package.jar.type=uber-jar -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }}
 
       - name: Upload Uber JAR
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-mcp-server-uber-jar
-          path: build/keycloak-mcp-server-0.1.jar
+          name: ${{ env.APP_NAME }}-uber-jar
+          path: build/${{ env.APP_NAME }}-${{ env.APP_VERSION }}.jar
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+  native-linux:
+    name: Build Native Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.GRAALVM_DISTRIBUTION }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Native Image
+        run: |
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }} -Dquarkus.native.enable-reports=true
+      - name: Upload Linux Native Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-linux
+          path: build/${{ env.APP_NAME }}-${{ env.APP_VERSION }}
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+  native-macos:
+    name: Build Native macOS (Apple Silicon)
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.GRAALVM_DISTRIBUTION }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Native Image
+        run: |
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }} -Dquarkus.native.enable-reports=true
+
+      - name: Upload macOS Native Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-macos
+          path: build/${{ env.APP_NAME }}-${{ env.APP_VERSION }}
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+  native-windows:
+    name: Build Native Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          cache: gradle
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
+          distribution: ${{ env.GRAALVM_DISTRIBUTION }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Visual Studio Developer Command Prompt
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Set up Visual C++ Build Tools
+        shell: powershell
+        run: |
+          # Add Visual C++ build tools to PATH
+          $vsPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
+          $vcvarsallPath = Join-Path $vsPath "VC\Auxiliary\Build\vcvarsall.bat"
+          
+          # Create a batch file to set up the environment
+          Set-Content -Path setup-env.bat -Value "@call `"$vcvarsallPath`" x64"
+          
+          # Execute the batch file and export the environment variables
+          cmd /c "setup-env.bat && set > env-vars.txt"
+          
+          # Read the environment variables and set them for the current process
+          Get-Content env-vars.txt | ForEach-Object {
+            if ($_ -match "^([^=]+)=(.*)$") {
+              $name = $matches[1]
+              $value = $matches[2]
+              # Set environment variable for the current process
+              [System.Environment]::SetEnvironmentVariable($name, $value)
+              # Also set it for GitHub Actions
+              echo "$name=$value" >> $env:GITHUB_ENV
+            }
+          }
+
+      - name: Build Native Image
+        run: |
+          ./gradlew build --system-prop quarkus.package.type=native --system-prop quarkus.native.container-build=false --system-prop quarkus.package.output-name=${{ env.APP_NAME }} --system-prop quarkus.package.runner-suffix=-${{ env.APP_VERSION }}
+
+      - name: Upload Windows Native Executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-windows
+          path: build/${{ env.APP_NAME }}-${{ env.APP_VERSION }}.exe
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
