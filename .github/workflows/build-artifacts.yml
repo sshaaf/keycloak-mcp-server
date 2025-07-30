@@ -108,20 +108,15 @@ jobs:
           ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.native.builder-image.build=false
           # Ensure build output data is available for GraalVM reporting
           mkdir -p $HOME/.native-image
-          # Copy from the native-image-source-jar directory
-          if [ -f "build/keycloak-mcp-server-native-image-source-jar/build-artifacts.json" ]; then
-            cp build/keycloak-mcp-server-native-image-source-jar/build-artifacts.json $HOME/.native-image/
-          fi
-          # Also try the native-image-reports directory as fallback
           if [ -d "build/native-image-reports" ]; then
-            cp -r build/native-image-reports/* $HOME/.native-image/ || true
+            cp -r build/native-image-reports/* $HOME/.native-image/
           fi
 
       - name: Upload Linux Native Executable
         uses: actions/upload-artifact@v4
         with:
           name: keycloak-mcp-server-linux
-          path: build/keycloak-mcp-server-native-image-source-jar/keycloak-mcp-server-0.1
+          path: build/keycloak-mcp-server-0.1
           retention-days: 7
 
   native-macos:
@@ -153,20 +148,15 @@ jobs:
           ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.native.builder-image.build=false
           # Ensure build output data is available for GraalVM reporting
           mkdir -p $HOME/.native-image
-          # Copy from the native-image-source-jar directory
-          if [ -f "build/keycloak-mcp-server-native-image-source-jar/build-artifacts.json" ]; then
-            cp build/keycloak-mcp-server-native-image-source-jar/build-artifacts.json $HOME/.native-image/
-          fi
-          # Also try the native-image-reports directory as fallback
           if [ -d "build/native-image-reports" ]; then
-            cp -r build/native-image-reports/* $HOME/.native-image/ || true
+            cp -r build/native-image-reports/* $HOME/.native-image/
           fi
 
       - name: Upload macOS Native Executable
         uses: actions/upload-artifact@v4
         with:
           name: keycloak-mcp-server-macos
-          path: build/keycloak-mcp-server-native-image-source-jar/keycloak-mcp-server-0.1
+          path: build/keycloak-mcp-server-0.1
           retention-days: 7
 
   native-windows:
@@ -224,25 +214,13 @@ jobs:
           # Ensure build output data is available for GraalVM reporting
           $nativeImageDir = Join-Path $HOME ".native-image"
           New-Item -Path $nativeImageDir -ItemType Directory -Force
-          
-          # Copy from the native-image-source-jar directory
-          $buildArtifactsJson = "build/keycloak-mcp-server-native-image-source-jar/build-artifacts.json"
-          if (Test-Path -Path $buildArtifactsJson) {
-            Copy-Item -Path $buildArtifactsJson -Destination $nativeImageDir -Force -ErrorAction SilentlyContinue
-          }
-          
-          # Also try the native-image-reports directory as fallback
           if (Test-Path -Path "build/native-image-reports") {
-            try {
-              Get-ChildItem -Path "build/native-image-reports" | Copy-Item -Destination $nativeImageDir -Recurse -Force -ErrorAction SilentlyContinue
-            } catch {
-              Write-Host "Warning: Could not copy all files from build/native-image-reports: $_"
-            }
+            Get-ChildItem -Path "build/native-image-reports" | Copy-Item -Destination $nativeImageDir -Recurse -Force
           }
 
       - name: Upload Windows Native Executable
         uses: actions/upload-artifact@v4
         with:
           name: keycloak-mcp-server-windows
-          path: build/keycloak-mcp-server-native-image-source-jar/keycloak-mcp-server-0.1.exe
+          path: build/keycloak-mcp-server-0.1.exe
           retention-days: 7
