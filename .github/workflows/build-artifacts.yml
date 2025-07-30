@@ -113,8 +113,7 @@ jobs:
 
       - name: Build Native Image
         run: |
-          ./gradlew build -Dquarkus.native.enabled=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }}
-
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }} -Dquarkus.native.enable-reports=true
       - name: Upload Linux Native Executable
         uses: actions/upload-artifact@v4
         with:
@@ -147,7 +146,7 @@ jobs:
 
       - name: Build Native Image
         run: |
-          ./gradlew build -Dquarkus.native.enabled=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }}
+          ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }} -Dquarkus.native.enable-reports=true
 
       - name: Upload macOS Native Executable
         uses: actions/upload-artifact@v4
