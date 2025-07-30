@@ -8,7 +8,6 @@ import io.quarkiverse.mcp.server.ToolCallException;
 import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import org.keycloak.representations.idm.ClientRepresentation;
-import org.keycloak.representations.idm.ProtocolMapperRepresentation;
 
 import java.util.Optional;
 

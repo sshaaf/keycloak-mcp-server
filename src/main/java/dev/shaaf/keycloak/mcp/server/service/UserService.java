@@ -80,7 +80,7 @@ public class UserService {
                 return "failed to delete: "+user.getId();
         }
         else
-            return "User not found: "+user.getId();
+            return "User not found "+username;
     }
 
 

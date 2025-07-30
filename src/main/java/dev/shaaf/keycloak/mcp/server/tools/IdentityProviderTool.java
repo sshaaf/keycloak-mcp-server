@@ -7,8 +7,6 @@ import io.quarkiverse.mcp.server.ToolArg;
 import io.quarkiverse.mcp.server.ToolCallException;
 import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
-import org.keycloak.representations.idm.IdentityProviderMapperRepresentation;
-import org.keycloak.representations.idm.IdentityProviderRepresentation;
 
 public class IdentityProviderTool {
 

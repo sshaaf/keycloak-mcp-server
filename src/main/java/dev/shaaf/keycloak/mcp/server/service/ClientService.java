@@ -18,7 +18,6 @@ import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -45,7 +44,7 @@ public class ClientService {
     public Optional<ClientRepresentation> findClientByClientId(String realm, String clientId) {
         List<ClientRepresentation> clients = keycloak.realm(realm).clients().findByClientId(clientId);
         if (clients != null && !clients.isEmpty()) {
-            return Optional.of(clients.get(0));
+            return Optional.of(clients.getFirst());
         }
         return Optional.empty();
     }
