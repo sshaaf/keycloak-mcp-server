@@ -194,58 +194,49 @@ jobs:
 
   release:
     name: Create GitHub Release
+    # Run this job only after all build jobs have successfully completed
     needs: [build-uber-jar, native-linux, native-macos, native-windows]
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write # To create releases and tags
+      issues: write # To comment on issues/PRs
+      pull-requests: write # To comment on issues/PRs
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          # Fetch all history for semantic-release to analyze
           fetch-depth: 0
 
       - name: Download all build artifacts
         uses: actions/download-artifact@v4
         with:
+          # Download all artifacts into a single directory
           path: artifacts/
 
-      - name: Set up Node.js for semantic-release
+      - name: Prepare release assets
+        id: prepare_assets
+        run: |
+          # Create a directory for the final assets that will be uploaded
+          mkdir release-assets
+          
+          # Move and rename artifacts for the release
+          # The paths reflect the structure created by actions/download-artifact@v4
+          mv artifacts/${{ env.APP_NAME }}-uber-jar/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-uber.jar
+          mv artifacts/${{ env.APP_NAME }}-linux/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-linux
+          mv artifacts/${{ env.APP_NAME }}-macos/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-macos
+          mv artifacts/${{ env.APP_NAME }}-windows/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-windows.exe
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Semantic Release
-        id: semantic
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          extra_plugins: |
-            @semantic-release/git
-            @semantic-release/github
+      - name: Install semantic-release and plugins
+        run: npm install semantic-release @semantic-release/git @semantic-release/github @semantic-release/commit-analyzer @semantic-release/release-notes-generator
+
+      - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Prepare and rename release assets
-        if: steps.semantic.outputs.new_release_published == 'true'
-        id: prepare_assets
-        run: |
-          VERSION=${{ steps.semantic.outputs.new_release_version }}
-          echo "Preparing assets for new version: $VERSION"
-          
-          # Create a directory for the final assets
-          mkdir release-assets
-          
-          # Find and rename artifacts (paths reflect download-artifact@v4 structure)
-          mv artifacts/${{ env.APP_NAME }}-uber-jar/* release-assets/${{ env.APP_NAME }}-${VERSION}-uber.jar
-          mv artifacts/${{ env.APP_NAME }}-linux/* release-assets/${{ env.APP_NAME }}-${VERSION}-linux
-          mv artifacts/${{ env.APP_NAME }}-macos/* release-assets/${{ env.APP_NAME }}-${VERSION}-macos
-          mv artifacts/${{ env.APP_NAME }}-windows/* release-assets/${{ env.APP_NAME }}-${VERSION}-windows.exe
-
-      - name: Upload release assets to GitHub Release
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.semantic.outputs.new_release_tag }}
-          name: Release ${{ steps.semantic.outputs.new_release_version }}
-          body: ${{ steps.semantic.outputs.new_release_notes }}
-          files: release-assets/*
+        run: npx semantic-release
