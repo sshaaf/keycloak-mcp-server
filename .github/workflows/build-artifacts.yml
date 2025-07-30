@@ -110,16 +110,10 @@ jobs:
           java-version: ${{ env.JAVA_BUILD_VERSION }}
           distribution: ${{ env.GRAALVM_DISTRIBUTION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
 
       - name: Build Native Image
         run: |
-          ./gradlew build -Dquarkus.native.enabled=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }} -Dquarkus.native.enable-reports=true
-          # Ensure build output data is available for GraalVM reporting
-          mkdir -p $HOME/.native-image
-          if [ -d "build/native-image-reports" ]; then
-            cp -r build/native-image-reports/* $HOME/.native-image/
-          fi
+          ./gradlew build -Dquarkus.native.enabled=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }}
 
       - name: Upload Linux Native Executable
         uses: actions/upload-artifact@v4
@@ -150,16 +144,10 @@ jobs:
           java-version: ${{ env.JAVA_BUILD_VERSION }}
           distribution: ${{ env.GRAALVM_DISTRIBUTION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
 
       - name: Build Native Image
         run: |
-          ./gradlew build -Dquarkus.native.enabled=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }} -Dquarkus.native.enable-reports=true
-          # Ensure build output data is available for GraalVM reporting
-          mkdir -p $HOME/.native-image
-          if [ -d "build/native-image-reports" ]; then
-            cp -r build/native-image-reports/* $HOME/.native-image/
-          fi
+          ./gradlew build -Dquarkus.native.enabled=native -Dquarkus.native.container-build=false -Dquarkus.package.output-name=${{ env.APP_NAME }} -Dquarkus.package.runner-suffix=-${{ env.APP_VERSION }}
 
       - name: Upload macOS Native Executable
         uses: actions/upload-artifact@v4
@@ -187,7 +175,6 @@ jobs:
           java-version: ${{ env.JAVA_BUILD_VERSION }}
           distribution: ${{ env.GRAALVM_DISTRIBUTION }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          native-image-job-reports: 'true'
 
       - name: Set up Visual Studio Developer Command Prompt
         uses: microsoft/setup-msbuild@v1.1
@@ -220,12 +207,6 @@ jobs:
       - name: Build Native Image
         run: |
           ./gradlew build --system-prop quarkus.native.enabled=native --system-prop quarkus.native.container-build=false --system-prop quarkus.package.output-name=${{ env.APP_NAME }} --system-prop quarkus.package.runner-suffix=-${{ env.APP_VERSION }}
-          # Ensure build output data is available for GraalVM reporting
-          $nativeImageDir = Join-Path $HOME ".native-image"
-          New-Item -Path $nativeImageDir -ItemType Directory -Force
-          if (Test-Path -Path "build/native-image-reports") {
-            Get-ChildItem -Path "build/native-image-reports" | Copy-Item -Destination $nativeImageDir -Recurse -Force
-          }
 
       - name: Upload Windows Native Executable
         uses: actions/upload-artifact@v4
