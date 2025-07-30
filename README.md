@@ -117,7 +117,7 @@ export KC_URL=http://localhost:8081
 Now you can run `goose session` and the extension should be loaded.
 
 ### Uber Jar
-The examples below are for native binaries. however you can also use the uber-jar
+The examples above are for native binaries. however you can also use the uber-jar
 If using the uber jar change the `cmd` and `args` as follows
 ```yaml
     cmd|command: "java"
