@@ -205,7 +205,7 @@ jobs:
 
       - name: Build Native Image
         run: |
-          ./gradlew build --system-prop quarkus.native.enabled=native --system-prop quarkus.native.container-build=false --system-prop quarkus.package.output-name=${{ env.APP_NAME }} --system-prop quarkus.package.runner-suffix=-${{ env.APP_VERSION }}
+          ./gradlew build --system-prop quarkus.package.type=native --system-prop quarkus.native.container-build=false --system-prop quarkus.package.output-name=${{ env.APP_NAME }} --system-prop quarkus.package.runner-suffix=-${{ env.APP_VERSION }}
 
       - name: Upload Windows Native Executable
         uses: actions/upload-artifact@v4
