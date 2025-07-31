@@ -26,17 +26,6 @@ public class GroupTool {
         }
     }
 
-    @Tool(description = "Get a specific group from a keycloak realm")
-    String getGroup(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                   @ToolArg(description = "A String denoting the ID of the group") String groupId) {
-        try {
-            return mapper.writeValueAsString(groupService.getGroup(realm, groupId));
-        } catch (Exception e) {
-            Log.error("Failed to get group: " + groupId, e);
-            throw new ToolCallException("Failed to get group: " + groupId);
-        }
-    }
-
     @Tool(description = "Get group members from a keycloak realm")
     String getGroupMembers(@ToolArg(description = "A String denoting the name of the realm") String realm,
                           @ToolArg(description = "A String denoting the ID of the group") String groupId) {
@@ -45,17 +34,6 @@ public class GroupTool {
         } catch (Exception e) {
             Log.error("Failed to get group members: " + groupId, e);
             throw new ToolCallException("Failed to get group members: " + groupId);
-        }
-    }
-
-    @Tool(description = "Get group roles from a keycloak realm")
-    String getGroupRoles(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                        @ToolArg(description = "A String denoting the ID of the group") String groupId) {
-        try {
-            return mapper.writeValueAsString(groupService.getGroupRoles(realm, groupId));
-        } catch (Exception e) {
-            Log.error("Failed to get group roles: " + groupId, e);
-            throw new ToolCallException("Failed to get group roles: " + groupId);
         }
     }
 }

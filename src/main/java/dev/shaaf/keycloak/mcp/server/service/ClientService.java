@@ -73,7 +73,7 @@ public class ClientService {
      * @param clientName The name of the client
      * @return Success or error message
      */
-    public String createClient(String realm, String clientName) {
+    public String createClient(String realm, String clientName, String redirectUri) {
         ClientsResource clientsResource = keycloak.realm(realm).clients();
         ClientRepresentation clientRepresentation = new ClientRepresentation();
         clientRepresentation.setClientId(clientName);
@@ -85,7 +85,7 @@ public class ClientService {
         clientRepresentation.setDirectAccessGrantsEnabled(false);
         clientRepresentation.setServiceAccountsEnabled(false);
         clientRepresentation.setEnabled(true);
-        clientRepresentation.setRedirectUris(Collections.singletonList("http://localhost:8080/redirect/*"));
+        clientRepresentation.setRedirectUris(Collections.singletonList(redirectUri+"/*"));
 
 
         Response response = clientsResource.create(clientRepresentation);
