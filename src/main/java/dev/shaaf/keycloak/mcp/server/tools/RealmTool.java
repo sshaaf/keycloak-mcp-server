@@ -34,14 +34,4 @@ public class RealmTool {
             throw new ToolCallException("Failed to get realm: " + realmName);
         }
     }
-
-    @Tool(description = "Get realm events configuration from a keycloak realm")
-    String getRealmEventsConfig(@ToolArg(description = "A String denoting the name of the realm") String realmName) {
-        try {
-            return mapper.writeValueAsString(realmsService.getRealmEventsConfig(realmName));
-        } catch (Exception e) {
-            Log.error("Failed to get realm events config: " + realmName, e);
-            throw new ToolCallException("Failed to get realm events config: " + realmName);
-        }
-    }
 }

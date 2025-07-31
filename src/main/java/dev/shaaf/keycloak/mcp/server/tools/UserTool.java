@@ -44,55 +44,6 @@ public class UserTool {
             throw new ToolCallException("Failed to get user by username: " + username);
         }
     }
-
-    @Tool(description = "Find a user by its ID in a keycloak realm")
-    String getUserById(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
-                      @ToolArg(description = "A String denoting the ID of the user to retrieve") String userId) {
-        try {
-            return mapper.writeValueAsString(userService.getUserById(realm, userId));
-        } catch (Exception e) {
-            throw new ToolCallException("Failed to get user by ID: " + userId);
-        }
-    }
-    
-    @Tool(description = "Update a user's information in a keycloak realm")
-    String updateUser(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
-                     @ToolArg(description = "A String denoting the ID of the user to update") String userId,
-                     @ToolArg(description = "A String denoting the new username (optional)") String username,
-                     @ToolArg(description = "A String denoting the new first name (optional)") String firstName,
-                     @ToolArg(description = "A String denoting the new last name (optional)") String lastName,
-                     @ToolArg(description = "A String denoting the new email (optional)") String email,
-                     @ToolArg(description = "A boolean indicating whether the user should be enabled (optional)") Boolean enabled) {
-        try {
-            // First get the current user representation
-            UserRepresentation user = userService.getUserById(realm, userId);
-            if (user == null) {
-                return "User not found: " + userId;
-            }
-            
-            // Update only the fields that are provided
-            if (username != null) user.setUsername(username);
-            if (firstName != null) user.setFirstName(firstName);
-            if (lastName != null) user.setLastName(lastName);
-            if (email != null) user.setEmail(email);
-            if (enabled != null) user.setEnabled(enabled);
-            
-            // Call the service to update the user
-            return userService.updateUser(realm, userId, user);
-        } catch (Exception e) {
-            throw new ToolCallException("Failed to update user: " + userId + " - " + e.getMessage());
-        }
-    }
-    
-    @Tool(description = "Find groups a user belongs to in a keycloak realm")
-    String getUserGroups(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
-                        @ToolArg(description = "A String denoting the ID of the user") String userId) {
-        try {
-            return mapper.writeValueAsString(userService.getUserGroups(realm, userId));
-        } catch (Exception e) {
-            throw new ToolCallException("Failed to get user groups: " + userId);
-        }
-    }
     
     @Tool(description = "Add user to a group in a keycloak realm")
     String addUserToGroup(@ToolArg(description = "A String denoting the name of the realm where the user and group reside") String realm,
@@ -131,27 +82,4 @@ public class UserTool {
                              @ToolArg(description = "A String denoting the name of the role") String roleName) {
         return userService.removeRoleFromUser(realm, userId, roleName);
     }
-    
-    @Tool(description = "Reset user's password in a keycloak realm")
-    String resetPassword(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
-                        @ToolArg(description = "A String denoting the ID of the user") String userId,
-                        @ToolArg(description = "A String denoting the new password") String newPassword,
-                        @ToolArg(description = "A boolean indicating whether the password is temporary") boolean temporary) {
-        return userService.resetPassword(realm, userId, newPassword, temporary);
-    }
-    
-    @Tool(description = "Send verification email to a user in a keycloak realm")
-    String sendVerificationEmail(@ToolArg(description = "A String denoting the name of the realm where the user resides") String realm,
-                                @ToolArg(description = "A String denoting the ID of the user") String userId) {
-        return userService.sendVerificationEmail(realm, userId);
-    }
-    
-    @Tool(description = "Count users in a keycloak realm")
-    String countUsers(@ToolArg(description = "A String denoting the name of the realm to count users in") String realm) {
-        int count = userService.countUsers(realm);
-        return count >= 0 ? String.valueOf(count) : "Failed to count users in realm: " + realm;
-    }
-
-
-
 }

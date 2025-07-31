@@ -37,14 +37,4 @@ public class RoleTool {
         }
     }
 
-    @Tool(description = "Get role composites from a keycloak realm")
-    String getRoleComposites(@ToolArg(description = "A String denoting the name of the realm") String realm,
-                            @ToolArg(description = "A String denoting the name of the role") String roleName) {
-        try {
-            return mapper.writeValueAsString(roleService.getRoleComposites(realm, roleName));
-        } catch (Exception e) {
-            Log.error("Failed to get role composites: " + roleName, e);
-            throw new ToolCallException("Failed to get role composites: " + roleName);
-        }
-    }
 }

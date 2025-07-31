@@ -90,9 +90,6 @@ The project includes the following main components:
   - `ClientTool`: Exposes client-related operations
   - `RoleTool`: Exposes role-related operations
   - `GroupTool`: Exposes group-related operations
-  - `IdentityProviderTool`: Exposes identity provider-related operations
-  - `AuthenticationTool`: Exposes authentication flow-related operations
-
 
 ### Class Diagram
 
@@ -110,8 +107,6 @@ graph TD
         ClientTool["ClientTool"]
         RoleTool["RoleTool"]
         GroupTool["GroupTool"]
-        IdentityProviderTool["IdentityProviderTool"]
-        AuthenticationTool["AuthenticationTool"]
     end
 
     subgraph "Service Layer"
@@ -120,8 +115,6 @@ graph TD
         ClientService["ClientService"]
         RoleService["RoleService"]
         GroupService["GroupService"]
-        IdentityProviderService["IdentityProviderService"]
-        AuthenticationService["AuthenticationService"]
     end
 
     subgraph "External Services"
@@ -134,24 +127,18 @@ graph TD
     GooseCLI --> ClientTool
     GooseCLI --> RoleTool
     GooseCLI --> GroupTool
-    GooseCLI --> IdentityProviderTool
-    GooseCLI --> AuthenticationTool
 
     UserTool --> UserService
     RealmTool --> RealmService
     ClientTool --> ClientService
     RoleTool --> RoleService
     GroupTool --> GroupService
-    IdentityProviderTool --> IdentityProviderService
-    AuthenticationTool --> AuthenticationService
 
     UserService --> Keycloak
     RealmService --> Keycloak
     ClientService --> Keycloak
     RoleService --> Keycloak
     GroupService --> Keycloak
-    IdentityProviderService --> Keycloak
-    AuthenticationService --> Keycloak
 
     %% Styling
     style GooseCLI fill:#d4edda,stroke:#c3e6cb
@@ -176,9 +163,6 @@ The tools package contains classes that expose Keycloak functionality through th
 
 5. **GroupTool**: Manages Keycloak groups, including creation, deletion, updating group settings, managing group members, and group roles.
 
-6. **IdentityProviderTool**: Manages Keycloak identity providers, including creation, deletion, updating identity provider settings, and managing identity provider mappers.
-
-7. **AuthenticationTool**: Manages Keycloak authentication flows, including creation, deletion, and managing flow executions.
 
 Each tool class follows a similar pattern:
 - Injects a corresponding service class that handles the actual operations with Keycloak
