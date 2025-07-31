@@ -31,8 +31,6 @@ graph LR
         C[Clients]
         R[Roles]
         G[Groups]
-        IdP[Identity Providers]
-        Auth[Authentication Flows]
     end
 
 ```
