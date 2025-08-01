@@ -201,6 +201,8 @@ Here are the users in the "quarkus" realm:
 - **Delete client role from a Keycloak realm:** Remove a client role.
 - **Get client roles in a Keycloak realm:** List roles specific to a client.
 
+### Search Keycloak Community Discourse for Similar Issues**
+- **Description**: Searches the Keycloak community discourse for discussions related to a given query to help resolve issues by referencing similar community discussions.
 
 ## References
 
