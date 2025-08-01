@@ -32,13 +32,6 @@ dependencies {
     implementation("io.quarkiverse.mcp:quarkus-mcp-server-stdio:1.4.0")
     implementation("io.quarkus:quarkus-rest-jackson:3.23.0")
 
-    //implementation("io.quarkiverse.langchain4j:quarkus-langchain4j-easy-rag:1.1.0")
-    implementation("dev.langchain4j:langchain4j:1.0.0")
-    implementation("dev.langchain4j:langchain4j-embeddings:1.0.0-beta5")
-    implementation("dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2:1.0.0-beta5")
-
-    implementation("org.jsoup:jsoup:1.21.1")
-
     implementation("io.quarkus:quarkus-keycloak-admin-rest-client")
 
     testImplementation("io.quarkus:quarkus-junit5")

@@ -12,10 +12,15 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sshaaf/keycloak-mcp-server)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-This project is designed to work with Keycloak for identity and access management, providing a robust and scalable solution for managing Keycloak resources through a command-line interface.
+This project provides tools for developers using Keycloak. It includes utilities for interacting with a Keycloak server, a search client for the official Keycloak Discourse community, and built-in Retrieval-Augmented Generation (RAG) capabilities.
+
+The project is under active development. You can contribute by reporting issues, suggesting new features, or submitting pull requests.
+
+For more details on how to contribute, please see
+- [Developers guide](DEVELOPERS.md)
+- [Contributors guide](CONTRIBUTORS.md)
 
 ## Features
-
 - **MCP Standard**: Implements the Model-Context Protocol for efficient standard input/output server operations.
 - **Keycloak Integration**: Seamlessly integrates with Keycloak for authentication and authorization.
 - **Discourse Search**: Users can now ask about related issues in Keycloak discourse.
