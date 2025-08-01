@@ -21,7 +21,6 @@ For more details on how to contribute, please see
 - [Contributors guide](CONTRIBUTORS.md)
 
 ## Features
-
 - **MCP Standard**: Implements the Model-Context Protocol for efficient standard input/output server operations.
 - **Keycloak Integration**: Seamlessly integrates with Keycloak for authentication and authorization.
 - **Discourse Search**: Users can now ask about related issues in Keycloak discourse.
