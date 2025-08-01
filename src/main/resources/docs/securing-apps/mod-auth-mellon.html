@@ -1,0 +1,592 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Configuring the mod_auth_mellon Apache Module - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Configuring the mod_auth_mellon Apache Module">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Configure the mod_auth_mellon Apache module with Keycloak.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/mod-auth-mellon">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/mod-auth-mellon">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Configuring the mod_auth_mellon Apache Module</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Configuring the mod_auth_mellon Apache Module</h1>
+                    <span class="text-muted">Configure the mod_auth_mellon Apache module with Keycloak.</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="https://github.com/latchset/mod_auth_mellon">mod_auth_mellon</a> is an authentication module for Apache. If your language/environment supports using Apache HTTPD as a proxy, then you can use mod_auth_mellon to secure your web application with SAML. For more details on this module see the <em>mod_auth_mellon</em> GitHub repo.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Keycloak does not provide any official support to mod_auth_mellon. The instructions below are best-effort and may not be up-to-date.
+The guide assumes that the server is a RHEL system. Although similar steps would be needed for other linux systems.
+We recommend that you stick to official mod_auth_mellon documentation for more details.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To configure <code>mod_auth_mellon</code> you need the following files:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An Identity Provider (IdP) entity descriptor XML file, which describes the connection to Keycloak or another SAML IdP</p>
+</li>
+<li>
+<p>An SP entity descriptor XML file, which describes the SAML connections and configuration for the application you are securing.</p>
+</li>
+<li>
+<p>A private key PEM file, which is a text file in the PEM format that defines the private key the application uses to sign documents.</p>
+</li>
+<li>
+<p>A certificate PEM file, which is a text file that defines the certificate for your application.</p>
+</li>
+<li>
+<p>mod_auth_mellon-specific Apache HTTPD module configuration.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you have already defined and registered the client application within a realm on the Keycloak application server, Keycloak can generate all the files you need except the Apache HTTPD module configuration.</p>
+</div>
+<div class="paragraph">
+<p>Perform the following procedure to generate the Apache HTTPD module configuration.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Go to the Installation page of your SAML client.</p>
+</li>
+<li>
+<p>Select the <strong>Mod Auth Mellon</strong> files option.</p>
+<div class="imageblock">
+<div class="content">
+<img src="https://www.keycloak.org/resources/images/guides/nightly/mod-auth-mellon-config-download.png" alt="Download auth-melon configuration">
+</div>
+<div class="title">Figure 1. mod_auth_mellon config download</div>
+</div>
+</li>
+<li>
+<p>Click <strong>Download</strong> to download a ZIP file that contains the XML descriptor and PEM files you need.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_mod_auth_mellon_with_keycloak"><a class="anchor" href="#_configuring_mod_auth_mellon_with_keycloak"></a>Configuring mod_auth_mellon with Keycloak</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are two hosts involved:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The host on which Keycloak is running, which will be referred to as $idp_host because Keycloak is a SAML identity provider (IdP).</p>
+</li>
+<li>
+<p>The host on which the web application is running, which will be referred to as $sp_host. In SAML an application using an IdP is called a service provider (SP).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All of the following steps need to performed on $sp_host with root privileges.</p>
+</div>
+<div class="sect2">
+<h3 id="_installing_the_packages"><a class="anchor" href="#_installing_the_packages"></a>Installing the packages</h3>
+<div class="paragraph">
+<p>To install the necessary packages, you will need:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Apache Web Server (httpd)</p>
+</li>
+<li>
+<p>Mellon SAML SP add-on module for Apache</p>
+</li>
+<li>
+<p>Tools to create X509 certificates</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To install the necessary packages, run this command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>yum install httpd mod_auth_mellon mod_ssl openssl</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_configuration_directory_for_apache_saml"><a class="anchor" href="#_creating_a_configuration_directory_for_apache_saml"></a>Creating a configuration directory for Apache SAML</h3>
+<div class="paragraph">
+<p>It is advisable to keep configuration files related to Apache&#8217;s use of SAML in one location.</p>
+</div>
+<div class="paragraph">
+<p>Create a new directory named saml2 located under the Apache configuration root <code>/etc/httpd</code>:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mkdir /etc/httpd/saml2</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configuring_the_mellon_service_provider"><a class="anchor" href="#_configuring_the_mellon_service_provider"></a>Configuring the Mellon Service Provider</h3>
+<div class="paragraph">
+<p>Configuration files for Apache add-on modules are located in the <code>/etc/httpd/conf.d</code> directory and have a file name extension of <code>.conf</code>. You need to create the <code>/etc/httpd/conf.d/mellon.conf</code> file and place Mellon&#8217;s configuration directives in it.</p>
+</div>
+<div class="paragraph">
+<p>Mellon&#8217;s configuration directives can roughly be broken down into two classes of information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Which URLs to protect with SAML authentication</p>
+</li>
+<li>
+<p>What SAML parameters will be used when a protected URL is referenced.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Apache configuration directives typically follow a hierarchical tree structure in the URL space, which are known as locations. You need to specify one or more URL locations for Mellon to protect. You have flexibility in how you add the configuration parameters that apply to each location. You can either add all the necessary parameters to the location block or you can add Mellon parameters to a common location high up in the URL location hierarchy that specific protected locations inherit (or some combination of the two). Since it is common for an SP to operate in the same way no matter which location triggers SAML actions, the example configuration used here places common Mellon configuration directives in the root of the hierarchy and then specific locations to be protected by Mellon can be defined with minimal directives. This strategy avoids duplicating the same parameters for each protected location.</p>
+</div>
+<div class="paragraph">
+<p>This example has just one protected location: https://$sp_host/private.</p>
+</div>
+<div class="paragraph">
+<p>To configure the Mellon service provider, perform the following procedure.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Create the file <code>/etc/httpd/conf.d/mellon.conf</code> with this content:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml"> &lt;Location / &gt;
+    MellonEnable info
+    MellonEndpointPath /mellon/
+    MellonSPMetadataFile /etc/httpd/saml2/mellon_metadata.xml
+    MellonSPPrivateKeyFile /etc/httpd/saml2/mellon.key
+    MellonSPCertFile /etc/httpd/saml2/mellon.crt
+    MellonIdPMetadataFile /etc/httpd/saml2/idp_metadata.xml
+ &lt;/Location&gt;
+ &lt;Location /private &gt;
+    AuthType Mellon
+    MellonEnable auth
+    Require valid-user
+ &lt;/Location&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Some of the files referenced in the code above are created in later steps.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_setting_the_samesite_value_for_the_cookie_used_by_mod_auth_mellon"><a class="anchor" href="#_setting_the_samesite_value_for_the_cookie_used_by_mod_auth_mellon"></a>Setting the SameSite value for the cookie used by mod_auth_mellon</h3>
+<div class="paragraph">
+<p>Browsers are planning to set the default value for the <code>SameSite</code> attribute for cookies to <code>Lax</code>. This setting means
+that cookies will be sent to applications only if the request originates in the same domain. This behavior can affect
+the SAML POST binding which may become non-functional. To preserve full functionality of the <em>mod_auth_mellon</em> module,
+we recommend setting the <code>SameSite</code> value to <code>None</code> for the cookie created by <em>mod_auth_mellon</em>. Not doing so may result
+in an inability to login using Keycloak.</p>
+</div>
+<div class="paragraph">
+<p>To set the <code>SameSite</code> value to <code>None</code>, add the following configuration to <code>&lt;Location / &gt;</code> tag within your <code>mellon.conf</code>
+file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">MellonSecureCookie On
+MellonCookieSameSite none</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The support for this configuration is available in the <em>mod_auth_mellon</em> module from version 0.16.0.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_the_service_provider_metadata"><a class="anchor" href="#_creating_the_service_provider_metadata"></a>Creating the Service Provider metadata</h3>
+<div class="paragraph">
+<p>In SAML IdPs and SPs exchange SAML metadata, which is in XML format. The schema for the metadata is a standard, thus assuring participating SAML entities can consume each other&#8217;s metadata. You need:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Metadata for the IdP that the SP utilizes</p>
+</li>
+<li>
+<p>Metadata describing the SP provided to the IdP</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>One of the components of SAML metadata is X509 certificates. These certificates are used for two purposes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Sign SAML messages so the receiving end can prove the message originated from the expected party.</p>
+</li>
+<li>
+<p>Encrypt the message during transport (seldom used because SAML messages typically occur on TLS-protected transports)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can use your own certificates if you already have a Certificate Authority (CA) or you can generate a self-signed certificate. For simplicity in this example a self-signed certificate is used.</p>
+</div>
+<div class="paragraph">
+<p>Because Mellon&#8217;s SP metadata must reflect the capabilities of the installed version of mod_auth_mellon, must be valid SP metadata XML, and must contain an X509 certificate (whose creation can be obtuse unless you are familiar with X509 certificate generation) the most expedient way to produce the SP metadata is to use a tool included in the mod_auth_mellon package (<code>mellon_create_metadata.sh</code>). The generated metadata can always be edited later because it is a text file. The tool also creates your X509 key and certificate.</p>
+</div>
+<div class="paragraph">
+<p>SAML IdPs and SPs identify themselves using a unique name known as an EntityID. To use the Mellon metadata creation tool you need:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The EntityID, which is typically the URL of the SP, and often the URL of the SP where the SP metadata can be retrieved</p>
+</li>
+<li>
+<p>The URL where SAML messages for the SP will be consumed, which Mellon calls the MellonEndPointPath.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To create the SP metadata, perform the following procedure.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Create a few helper shell variables:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>fqdn=`hostname`
+mellon_endpoint_url="https://${fqdn}/mellon"
+mellon_entity_id="${mellon_endpoint_url}/metadata"
+file_prefix="$(echo "$mellon_entity_id" | sed 's/[^A-Za-z.]/_/g' | sed 's/__*/_/g')"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Invoke the Mellon metadata creation tool by running this command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>/usr/libexec/mod_auth_mellon/mellon_create_metadata.sh $mellon_entity_id $mellon_endpoint_url</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Move the generated files to their destination (referenced in the <code>/etc/httpd/conf.d/mellon.conf</code> file created above):</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mv ${file_prefix}.cert /etc/httpd/saml2/mellon.crt
+mv ${file_prefix}.key /etc/httpd/saml2/mellon.key
+mv ${file_prefix}.xml /etc/httpd/saml2/mellon_metadata.xml</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_adding_the_mellon_service_provider_to_the_keycloak_identity_provider"><a class="anchor" href="#_adding_the_mellon_service_provider_to_the_keycloak_identity_provider"></a>Adding the Mellon Service Provider to the Keycloak Identity Provider</h3>
+<div class="paragraph">
+<p>Assumption: The Keycloak IdP has already been installed on the $idp_host.</p>
+</div>
+<div class="paragraph">
+<p>Keycloak supports multiple tenancy where all users, clients, and so on are grouped in what is called a realm. Each realm is independent of other realms. You can use an existing realm in your Keycloak, but this example shows how to create a new realm called test_realm and use that realm.</p>
+</div>
+<div class="paragraph">
+<p>All these operations are performed using the Keycloak Admin Console. You must have the admin username and password for $idp_host to perform the following procedure.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Open the Admin Console and log on by entering the admin username and password.</p>
+<div class="paragraph">
+<p>After logging into the Admin Console, there will be an existing realm. When Keycloak is first set up a root realm, master, is created by default. Any previously created realms are listed in the upper left corner of the Admin Console in a drop-down list.</p>
+</div>
+</li>
+<li>
+<p>From the realm drop-down list select <strong>Add realm</strong>.</p>
+</li>
+<li>
+<p>In the Name field type <code>test_realm</code> and click <strong>Create</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_adding_the_mellon_service_provider_as_a_client_of_the_realm"><a class="anchor" href="#_adding_the_mellon_service_provider_as_a_client_of_the_realm"></a>Adding the Mellon Service Provider as a client of the realm</h4>
+<div class="paragraph">
+<p>In Keycloak SAML SPs are known as clients. To add the SP we must be in the Clients section of the realm.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Click the Clients menu item on the left and click the <strong>Import client</strong> button.</p>
+</li>
+<li>
+<p>In the <strong>Resource file</strong> field, provide the Mellon SP metadata file created above (<code>/etc/httpd/saml2/mellon_metadata.xml</code>).</p>
+<div class="paragraph">
+<p>Depending on where your browser is running you might have to copy the SP metadata from $sp_host to the machine on which your browser is running so the browser can find the file.</p>
+</div>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_editing_the_mellon_sp_client"><a class="anchor" href="#_editing_the_mellon_sp_client"></a>Editing the Mellon SP client</h4>
+<div class="paragraph">
+<p>Use this procedure to set important client configuration parameters.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Ensure <strong>Force POST Binding</strong> is On.</p>
+</li>
+<li>
+<p>Add paosResponse to the <strong>Valid Redirect URIs</strong> list:</p>
+</li>
+<li>
+<p>Copy the postResponse URL in <strong>Valid Redirect URIs</strong> and paste it into the empty add text fields just below the "+".</p>
+</li>
+<li>
+<p>Change <code>postResponse</code> to  paosResponse`. (The paosResponse URL is needed for SAML ECP.)</p>
+</li>
+<li>
+<p>Click <strong>Save</strong> at the bottom.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Many SAML SPs determine authorization based on a user&#8217;s membership in a group. The Keycloak IdP can manage user group information but it does not supply the user&#8217;s groups unless the IdP is configured to supply it as a SAML attribute.</p>
+</div>
+<div class="paragraph">
+<p>Perform the following procedure to configure the IdP to supply the user&#8217;s groups as a SAML attribute.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Click the <strong>Client scopes</strong> tab of the client.</p>
+</li>
+<li>
+<p>Click the dedicated scope placed in the first row.</p>
+</li>
+<li>
+<p>In the Mappers page, click the <strong>Add mapper</strong> button and select <strong>By configuration</strong>.</p>
+</li>
+<li>
+<p>From the Mapper Type list select <strong>Group list</strong>.</p>
+</li>
+<li>
+<p>Set Name to <code>group list</code>.</p>
+</li>
+<li>
+<p>Set the SAML attribute name to <code>groups</code>.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The remaining steps are performed on $sp_host.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_retrieving_the_identity_provider_metadata"><a class="anchor" href="#_retrieving_the_identity_provider_metadata"></a>Retrieving the Identity Provider metadata</h4>
+<div class="paragraph">
+<p>Now that you have created the realm on the IdP you need to retrieve the IdP metadata associated with it so the Mellon SP recognizes it. In the <code>/etc/httpd/conf.d/mellon.conf</code> file created previously, the <code>MellonIdPMetadataFile</code> is specified as <code>/etc/httpd/saml2/idp_metadata.xml</code> but until now that file has not existed on $sp_host.</p>
+</div>
+<div class="paragraph">
+<p>Use this procedure to retrieve that file from the IdP.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Use this command, substituting with the correct value for $idp_host:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>curl -k -o /etc/httpd/saml2/idp_metadata.xml \
+https://$idp_host/realms/test_realm/protocol/saml/descriptor</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mellon is now fully configured.</p>
+</div>
+</li>
+<li>
+<p>To run a syntax check for Apache configuration files, use this command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>apachectl configtest</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Configtest is equivalent to the -t argument to apachectl. If the configuration test shows any errors, correct them before proceeding.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Restart the Apache server:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>systemctl restart httpd.service</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You have now set up both Keycloak as a SAML IdP in the test_realm and mod_auth_mellon as SAML SP protecting the URL $sp_host/protected (and everything beneath it) by authenticating against the <code>$idp_host</code> IdP.</p>
+</div>
+</div>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak/tree/main/docs/guides/securing-apps/mod-auth-mellon.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

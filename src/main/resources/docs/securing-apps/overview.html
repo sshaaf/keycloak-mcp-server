@@ -1,0 +1,335 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Planning for securing applications and services - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Planning for securing applications and services">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Understand basic concepts for securing applications.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/overview">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/overview">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Planning for securing applications and services</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Planning for securing applications and services</h1>
+                    <span class="text-muted">Understand basic concepts for securing applications.</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>As an OAuth2, OpenID Connect and SAML compliant server, Keycloak can secure any application and service as long
+as the technology stack they are using supports any of these protocols. For more details about the security protocols
+supported by Keycloak, consider looking at <a href="https://www.keycloak.org/docs/latest/server_admin/#sso-protocols">Server Administration Guide</a>.</p>
+</div>
+<div class="paragraph">
+<p>Most of the support for some of these protocols is already available from the programming language, framework,
+or reverse proxy they are using. Leveraging the support already available from the application ecosystem is a key aspect to make your
+application fully compliant with security standards and best practices, so that you avoid vendor lock-in.</p>
+</div>
+<div class="paragraph">
+<p>For some programming languages, Keycloak provides libraries that try to fill the gap for the lack of support of
+a particular security protocol or to provide a more rich and tightly coupled integration with the server. These libraries
+are known by <strong>Keycloak Client Adapters</strong>, and they should be used as a last resort if you cannot rely on what is available
+from the application ecosystem.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_basic_steps_to_secure_applications_and_services"><a class="anchor" href="#_basic_steps_to_secure_applications_and_services"></a>Basic steps to secure applications and services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>These are the basic steps for securing an application or a service in Keycloak.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Register a client to a realm using one of these options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The Keycloak Admin Console</p>
+</li>
+<li>
+<p>The client registration service</p>
+</li>
+<li>
+<p>The CLI</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Enable OpenID Connect or SAML protocols in your application using one these options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Leveraging existing OpenID Connect and SAML support from the application ecosystem</p>
+</li>
+<li>
+<p>Using a Keycloak Adapter</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This guide provides the detailed instructions for these steps. You can find more details
+in the <a href="https://www.keycloak.org/docs/latest/server_admin/">Server Administration Guide</a> about how to register a client to Keycloak through the
+administration console.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_getting_started"><a class="anchor" href="#_getting_started"></a>Getting Started</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="https://github.com/keycloak/keycloak-quickstarts">Keycloak Quickstarts Repository</a> provides examples about how to secure applications and services
+using different programming languages and frameworks. By going through their documentation and codebase, you will
+understand the bare minimum changes required in your application and service in order to secure it with Keycloak.</p>
+</div>
+<div class="paragraph">
+<p>Also, see the following sections for recommendations for trusted and well-known client-side implementations for both OpenID
+Connect and SAML protocols.</p>
+</div>
+<div class="sect2">
+<h3 id="_openid_connect"><a class="anchor" href="#_openid_connect"></a>OpenID Connect</h3>
+<div class="sect3">
+<h4 id="_java"><a class="anchor" href="#_java"></a>Java</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/keycloak/keycloak-quickstarts/tree/main/jakarta/servlet-authz-client">Wildfly Elytron OIDC</a></p>
+</li>
+<li>
+<p><a href="https://github.com/keycloak/keycloak-quickstarts/tree/main/spring/rest-authz-resource-server">Spring Boot</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_javascript_client_side"><a class="anchor" href="#_javascript_client_side"></a>JavaScript (client-side)</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.keycloak.org/securing-apps/javascript-adapter">Keycloak JS adapter</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_node_js_server_side"><a class="anchor" href="#_node_js_server_side"></a>Node.js (server-side)</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.keycloak.org/securing-apps/nodejs-adapter">Keycloak Node.js adapter</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_c"><a class="anchor" href="#_c"></a>C#</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/dylanplecki/KeycloakOwinAuthentication">OWIN</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_python"><a class="anchor" href="#_python"></a>Python</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://pypi.org/project/oic/">oidc</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_android"><a class="anchor" href="#_android"></a>Android</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/openid/AppAuth-Android">AppAuth</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ios"><a class="anchor" href="#_ios"></a>iOS</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/openid/AppAuth-iOS">AppAuth</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_apache_http_server"><a class="anchor" href="#_apache_http_server"></a>Apache HTTP Server</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/OpenIDC/mod_auth_openidc">mod_auth_openidc</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_saml"><a class="anchor" href="#_saml"></a>SAML</h3>
+<div class="sect3">
+<h4 id="_java_2"><a class="anchor" href="#_java_2"></a>Java</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.keycloak.org/nightly/securing-apps/saml-galleon-layers">Keycloak SAML Galleon feature pack for WildFly and EAP</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_apache_http_server_2"><a class="anchor" href="#_apache_http_server_2"></a>Apache HTTP Server</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.keycloak.org/nightly/securing-apps/mod-auth-mellon">Configuring the mod_auth_mellon Apache Module</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_terminology"><a class="anchor" href="#_terminology"></a>Terminology</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>These terms are used in this guide:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Clients</code> are entities that interact with Keycloak to authenticate users and obtain tokens. Most often, clients are applications and services acting on behalf of users that provide a single sign-on experience to their users and access other services using the tokens issued by the server. Clients can also be entities only interested in obtaining tokens and acting on their own behalf for accessing other services.</p>
+</li>
+<li>
+<p><code>Applications</code> include a wide range of applications that work for specific platforms for each protocol</p>
+</li>
+<li>
+<p><code>Client adapters</code> are libraries that make it easy to secure applications and services with Keycloak. They provide a tight integration to the underlying platform and framework.</p>
+</li>
+<li>
+<p><code>Creating a client</code> and <code>registering a client</code> are the same action. <code>Creating a Client</code> is the term used to create a client by using the Admin Console. <code>Registering a client</code> is the term used to register a client by using the Keycloak Client Registration Service.</p>
+</li>
+<li>
+<p><code>A service account</code> is a type of client that is able to obtain tokens on its own behalf.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak/tree/main/docs/guides/securing-apps/overview.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

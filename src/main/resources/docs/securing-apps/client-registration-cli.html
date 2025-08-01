@@ -1,0 +1,792 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Automating client registration with the CLI - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Automating client registration with the CLI">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Use the CLI to automate client registration.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/client-registration-cli">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/client-registration-cli">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Automating client registration with the CLI</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Automating client registration with the CLI</h1>
+                    <span class="text-muted">Use the CLI to automate client registration.</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Client Registration CLI is a command-line interface (CLI) tool for application developers to configure new clients in a self-service manner when integrating with Keycloak. It is specifically designed to interact with Keycloak Client Registration REST endpoints.</p>
+</div>
+<div class="paragraph">
+<p>It is necessary to create or obtain a client configuration for any application to be able to use Keycloak. You usually configure a new client for each new application hosted on a unique host name. When an application interacts with Keycloak, the application identifies itself with a client ID so Keycloak can provide a login page, single sign-on (SSO) session management, and other services.</p>
+</div>
+<div class="paragraph">
+<p>You can configure application clients from a command line with the Client Registration CLI, and you can use it in shell scripts.</p>
+</div>
+<div class="paragraph">
+<p>To allow a particular user to use <code>Client Registration CLI</code>, the Keycloak administrator typically uses the Admin Console to configure a new user with proper roles or to configure a new client and client secret to grant access to the Client Registration REST API.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_a_user_for_client_registration_cli"><a class="anchor" href="#_configuring_a_user_for_client_registration_cli"></a>Configuring a new regular user for use with Client Registration CLI</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Log in to the Admin Console (for example, <a href="http://localhost:8080" class="bare">http://localhost:8080</a>) as <code class="command">admin</code>.</p>
+</li>
+<li>
+<p>Select a realm to administer.</p>
+</li>
+<li>
+<p>If you want to use an existing user, select that user to edit; otherwise, create a new user.</p>
+</li>
+<li>
+<p>Select <strong>Role Mapping</strong>, <strong>Assign role</strong>. From the option list, click <strong>Filter by clients</strong>. In the search bar, type <code>manage-clients</code>. Select the role, or if you are in the master realm, select the one with <strong>NAME-realm</strong>, where <code>NAME</code> is the name of the target realm. You can grant access to any other realm to users in the master realm.</p>
+</li>
+<li>
+<p>Click <strong>Assign</strong> to grant a full set of client management permissions. Another option is to choose <strong>view-clients</strong> for read-only or <strong>create-client</strong> to create new clients.</p>
+</li>
+<li>
+<p>Select <strong>Available Roles</strong>, <strong>manage-client</strong> to grant a full set of client management permissions. Another option is to choose <strong>view-clients</strong> for read-only or <strong>create-client</strong> to create new clients.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>These permissions grant the user the capability to perform operations without the use of Initial Access Token or Registration Access Token (see <a href="https://www.keycloak.org/nightly/securing-apps/client-registration#_authentication">Using the client registration service</a> for more information).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>It is possible to not assign any <code class="command">realm-management</code> roles to a user. In that case, a user can still log in with the Client Registration CLI but cannot use it without an Initial Access Token. Trying to perform any operations without a token results in a <strong>403 Forbidden</strong> error.</p>
+</div>
+<div class="paragraph">
+<p>The administrator can issue Initial Access Tokens from the Admin Console in the Clients area on the <strong>Initial Access Token</strong> tab.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_a_client_for_use_with_client_registration_cli"><a class="anchor" href="#_configuring_a_client_for_use_with_client_registration_cli"></a>Configuring a client for use with the Client Registration CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, the server recognizes the Client Registration CLI as the <code class="filename">admin-cli</code> client, which is configured automatically for every new realm. No additional client configuration is necessary when logging in with a user name.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Create a client (for example, <code class="filename">reg-cli</code>) if you want to use a separate client configuration for the Client Registration CLI.</p>
+</li>
+<li>
+<p>Uncheck <strong>Standard Flow Enabled</strong>.</p>
+</li>
+<li>
+<p>Strengthen the security by toggling <strong>Client authentication</strong> to <strong>On</strong>.</p>
+</li>
+<li>
+<p>Choose the type of account that you want to use.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>If you want to use a service account associated with the client, check <strong>Service accounts roles</strong>.</p>
+</li>
+<li>
+<p>If you prefer to use a regular user account, check <strong>Direct access grants</strong>.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Click <strong>Next</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+<li>
+<p>Click the <strong>Credentials</strong> tab.</p>
+<div class="paragraph">
+<p>Configure either <code class="filename">Client Id and Secret</code> or <code class="filename">Signed JWT</code>.</p>
+</div>
+</li>
+<li>
+<p>If you are using service account roles, click the <strong>Service Account Roles</strong> tab.</p>
+<div class="paragraph">
+<p>Select the roles to configure the access for the service account. For the details on what roles to select, see <a href="#_configuring_a_user_for_client_registration_cli">Configuring a new regular user for use with Client Registration CLI</a>.</p>
+</div>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>When you run the <code class="command">kcreg config credentials</code>, use the <code class="command">--secret</code> option to supply the configured secret.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Specify which <code class="filename">clientId</code> to use (for example, <code class="command">--client reg-cli</code>) when running <code class="command">kcreg config credentials</code>.</p>
+</li>
+<li>
+<p>With the service account enabled, you can omit specifying the user when running <code class="command">kcreg config credentials</code> and only provide the client secret or keystore information.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installing_client_registration_cli"><a class="anchor" href="#_installing_client_registration_cli"></a>Installing the Client Registration CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Client Registration CLI is packaged inside the Keycloak Server distribution. You can find execution scripts inside the <code class="filename">bin</code> directory. The Linux script is called <code class="filename">kcreg.sh</code>, and the Windows script is called <code class="filename">kcreg.bat</code>.</p>
+</div>
+<div class="paragraph">
+<p>Add the Keycloak server directory to your <code class="filename">PATH</code> when setting up the client for use from any location on the file system.</p>
+</div>
+<div class="paragraph">
+<p>For example, on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ export PATH=$PATH:$KEYCLOAK_HOME/bin
+$ kcreg.sh</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>c:\&gt; set PATH=%PATH%;%KEYCLOAK_HOME%\bin
+c:\&gt; kcreg</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code class="filename">KEYCLOAK_HOME</code> refers to a directory where the Keycloak Server distribution was unpacked.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_client_registration_cli"><a class="anchor" href="#_using_client_registration_cli"></a>Using the Client Registration CLI</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Start an authenticated session by logging in with your credentials.</p>
+</li>
+<li>
+<p>Run commands on the <code class="filename">Client Registration REST</code> endpoint.</p>
+<div class="paragraph">
+<p>For example, on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh config credentials --server http://localhost:8080 --realm demo --user user --client reg-cli
+$ kcreg.sh create -s clientId=my_client -s 'redirectUris=["http://localhost:8980/myapp/*"]'
+$ kcreg.sh get my_client</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Windows:</p>
+<div class="listingblock">
+<div class="content">
+<pre>c:\&gt; kcreg config credentials --server http://localhost:8080 --realm demo --user user --client reg-cli
+c:\&gt; kcreg create -s clientId=my_client -s "redirectUris=[\"http://localhost:8980/myapp/*\"]"
+c:\&gt; kcreg get my_client</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In a production environment, Keycloak has to be accessed with <code class="filename">https:</code> to avoid exposing tokens to network sniffers.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If a server&#8217;s certificate is not issued by one of the trusted certificate authorities (CAs) that are included in Java&#8217;s default certificate truststore, prepare a <code class="filename">truststore.jks</code> file and instruct the Client Registration CLI to use it.</p>
+<div class="paragraph">
+<p>For example, on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh config truststore --trustpass $PASSWORD ~/.keycloak/truststore.jks</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Windows:</p>
+<div class="listingblock">
+<div class="content">
+<pre>c:\&gt; kcreg config truststore --trustpass %PASSWORD% %HOMEPATH%\.keycloak\truststore.jks</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="_logging_in"><a class="anchor" href="#_logging_in"></a>Logging in</h3>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Specify a server endpoint URL and a realm when you log in with the Client Registration CLI.</p>
+</li>
+<li>
+<p>Specify a user name or a client id, which results in a special service account being used. When using a user name, you must use a password for the specified user. When using a client ID, you use a client secret or a <code class="filename">Signed JWT</code> instead of a password.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Regardless of the login method, the account that logs in needs proper permissions to be able to perform client registration operations. Keep in mind that any account in a non-master realm can only have permissions to manage clients within the same realm. If you need to manage different realms, you can either configure multiple users in different realms, or you can create a single user in the <code class="filename">master</code> realm and add roles for managing clients in different realms.</p>
+</div>
+<div class="paragraph">
+<p>You cannot configure users with the Client Registration CLI. Use the Admin Console web interface or the Admin Client CLI to configure users. See <a href="https://www.keycloak.org/docs/latest/server_admin/">Server Administration Guide</a> for more details.</p>
+</div>
+<div class="paragraph">
+<p>When <code class="filename">kcreg</code> successfully logs in, it receives authorization tokens and saves them in a private configuration file so the tokens can be used for subsequent invocations. See <a href="#_working_with_alternative_configurations">Working with alternative configurations</a> for more information on configuration files.</p>
+</div>
+<div class="paragraph">
+<p>See the built-in help for more information on using the Client Registration CLI.</p>
+</div>
+<div class="paragraph">
+<p>For example, on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh help</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>c:\&gt; kcreg help</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See <code class="filename">kcreg config credentials --help</code> for more information about starting an authenticated session.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_working_with_alternative_configurations"><a class="anchor" href="#_working_with_alternative_configurations"></a>Working with alternative configurations</h3>
+<div class="paragraph">
+<p>By default, the Client Registration CLI automatically maintains a configuration file at a default location, <code class="filename">./.keycloak/kcreg.config</code>, under the user&#8217;s home directory. You can use the <code class="command">--config</code> option to point to a different file or location to maintain multiple authenticated sessions in parallel. It is the safest way to perform operations tied to a single configuration file from a single thread.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Do not make the configuration file visible to other users on the system. The configuration file contains access tokens and secrets that should be kept private.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You might want to avoid storing secrets inside a configuration file by using the <code class="command">--no-config</code> option with all of your commands, even though it is less convenient and requires more token requests to do so. Specify all authentication information with each <code class="command">kcreg</code> invocation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_initial_access_and_registration_access_tokens"><a class="anchor" href="#_initial_access_and_registration_access_tokens"></a>Initial Access and Registration Access Tokens</h3>
+<div class="paragraph">
+<p>Developers who do not have an account configured at the Keycloak server they want to use can use the Client Registration CLI. This is possible only when the realm administrator issues a developer an Initial Access Token. It is up to the realm administrator to decide how and when to issue and distribute these tokens. The realm administrator can limit the maximum age of the Initial Access Token and the total number of clients that can be created with it.</p>
+</div>
+<div class="paragraph">
+<p>Once a developer has an Initial Access Token, the developer can use it to create new clients without authenticating with <code class="command">kcreg config credentials</code>. The Initial Access Token can be stored in the configuration file or specified as part of the <code class="command">kcreg create</code> command.</p>
+</div>
+<div class="paragraph">
+<p>For example, on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh config initial-token $TOKEN
+$ kcreg.sh create -s clientId=myclient</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">$ kcreg.sh create -s clientId=myclient -t $TOKEN</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>c:\&gt; kcreg config initial-token %TOKEN%
+c:\&gt; kcreg create -s clientId=myclient</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">c:\&gt; kcreg create -s clientId=myclient -t %TOKEN%</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using an Initial Access Token, the server response includes a newly issued Registration Access Token. Any subsequent operation for that client needs to be performed by authenticating with that token, which is only valid for that client.</p>
+</div>
+<div class="paragraph">
+<p>The Client Registration CLI automatically uses its private configuration file to save and use this token with its associated client. As long as the same configuration file is used for all client operations, the developer does not need to authenticate to read, update, or delete a client that was created this way.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="https://www.keycloak.org/nightly/securing-apps/client-registration#_authentication">Using the client registration service</a> for more information about Initial Access and Registration Access Tokens.</p>
+</div>
+<div class="paragraph">
+<p>Run the <code class="command">kcreg config initial-token --help</code> and <code class="command">kcreg config registration-token --help</code> commands for more information on how to configure tokens with the Client Registration CLI.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_performing_crud_operations"><a class="anchor" href="#_performing_crud_operations"></a>Creating a client configuration</h3>
+<div class="paragraph">
+<p>The first task after authenticating with credentials or configuring an Initial Access Token is usually to create a new client. Often you might want to use a prepared JSON file as a template and set or override some of the attributes.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows how to read a JSON file, override any client id it may contain, set any other attributes, and print the configuration to a standard output after successful creation.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh create -f client-template.json -s clientId=myclient -s baseUrl=/myclient -s 'redirectUris=["/myclient/*"]' -o</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; kcreg create -f client-template.json -s clientId=myclient -s baseUrl=/myclient -s "redirectUris=[\"/myclient/*\"]" -o</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run the <code class="command">kcreg create --help</code> for more information about the <code class="command">kcreg create</code> command.</p>
+</div>
+<div class="paragraph">
+<p>You can use <code class="command">kcreg attrs</code> to list available attributes. Keep in mind that many configuration attributes are not checked for validity or consistency. It is up to you to specify proper values. Remember that you should not have any id fields in your
+template and should not specify them as arguments to the <code class="command">kcreg create</code> command.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_retrieving_a_client_configuration"><a class="anchor" href="#_retrieving_a_client_configuration"></a>Retrieving a client configuration</h3>
+<div class="paragraph">
+<p>You can retrieve an existing client by using the <code class="command">kcreg get</code> command.</p>
+</div>
+<div class="paragraph">
+<p>For example, on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh get myclient</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; kcreg get myclient</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also retrieve the client configuration as an adapter configuration file, which you can package with your web application.</p>
+</div>
+<div class="paragraph">
+<p>For example, on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh get myclient -e install &gt; keycloak.json</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; kcreg get myclient -e install &gt; keycloak.json</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run the <code class="command">kcreg get --help</code> command for more information about the <code class="command">kcreg get</code> command.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_modifying_a_client_configuration"><a class="anchor" href="#_modifying_a_client_configuration"></a>Modifying a client configuration</h3>
+<div class="paragraph">
+<p>There are two methods for updating a client configuration.</p>
+</div>
+<div class="paragraph">
+<p>One method is to submit a complete new state to the server after getting the current configuration, saving it to a file, editing it, and posting it back to the server.</p>
+</div>
+<div class="paragraph">
+<p>For example, on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh get myclient &gt; myclient.json
+$ vi myclient.json
+$ kcreg.sh update myclient -f myclient.json</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; kcreg get myclient &gt; myclient.json
+C:\&gt; notepad myclient.json
+C:\&gt; kcreg update myclient -f myclient.json</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The second method fetches the current client, sets or deletes fields on it, and posts it back in one step.</p>
+</div>
+<div class="paragraph">
+<p>For example, on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh update myclient -s enabled=false -d redirectUris</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; kcreg update myclient -s enabled=false -d redirectUris</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also use a file that contains only changes to be applied so you do not have to specify too many values as arguments. In this case, specify <code class="command">--merge</code> to tell the Client Registration CLI that rather than treating the JSON file as a full, new configuration, it should treat it as a set of attributes to be applied over the existing configuration.</p>
+</div>
+<div class="paragraph">
+<p>For example, on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh update myclient --merge -d redirectUris -f mychanges.json</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; kcreg update myclient --merge -d redirectUris -f mychanges.json</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run the <code class="command">kcreg update --help</code> command for more information about the <code class="command">kcreg update</code> command.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deleting_a_client_configuration"><a class="anchor" href="#_deleting_a_client_configuration"></a>Deleting a client configuration</h3>
+<div class="paragraph">
+<p>Use the following example to delete a client.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Linux:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ kcreg.sh delete myclient</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\&gt; kcreg delete myclient</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run the <code class="command">kcreg delete --help</code> command for more information about the <code class="command">kcreg delete</code> command.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_refreshing_invalid_registration_access_tokens"><a class="anchor" href="#_refreshing_invalid_registration_access_tokens"></a>Refreshing invalid Registration Access Tokens</h3>
+<div class="paragraph">
+<p>When performing a create, read, update, and delete (CRUD) operation using the <code class="command">--no-config</code> mode, the Client Registration CLI cannot handle Registration Access Tokens for you. In that case, it is possible to lose track of the most recently issued Registration Access Token for a client, which makes it impossible to perform any further CRUD operations on that client without authenticating with an account that has <strong>manage-clients</strong> permissions.</p>
+</div>
+<div class="paragraph">
+<p>If you have permissions, you can issue a new Registration Access Token for the client and have it printed to a standard output or saved to a configuration file of your choice. Otherwise, you have to ask the realm administrator to issue a new Registration Access Token for your client and send it to you. You can then pass it to any CRUD command via the <code class="command">--token</code> option. You can also use the <code class="command">kcreg config registration-token</code> command to save the new token in a configuration file and have the Client Registration CLI automatically handle it for you from that point on.</p>
+</div>
+<div class="paragraph">
+<p>Run the <code class="command">kcreg update-token --help</code> command for more information about the <code class="command">kcreg update-token</code> command.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshooting_2"><a class="anchor" href="#_troubleshooting_2"></a>Troubleshooting</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Q: When logging in, I get an error: <strong>Parameter client_assertion_type is missing [invalid_client]</strong>.</p>
+<div class="paragraph">
+<p>A: This error means your client is configured with <code class="filename">Signed JWT</code> token credentials, which means you have to use the <code class="command">--keystore</code> parameter when logging in.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak/tree/main/docs/guides/securing-apps/client-registration-cli.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

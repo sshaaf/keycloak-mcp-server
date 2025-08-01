@@ -1,0 +1,454 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Using the client registration service - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Using the client registration service">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Use the client registration service.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/client-registration">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/client-registration">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Using the client registration service</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Using the client registration service</h1>
+                    <span class="text-muted">Use the client registration service.</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order for an application or service to utilize Keycloak it has to register a client in Keycloak.
+An admin can do this through the admin console (or admin REST endpoints), but clients can also register themselves through the Keycloak client registration service.</p>
+</div>
+<div class="paragraph">
+<p>The Client Registration Service provides built-in support for Keycloak Client Representations, OpenID Connect Client Meta Data and SAML Entity Descriptors.
+The Client Registration Service endpoint is <code>/realms/&lt;realm&gt;/clients-registrations/&lt;provider&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p>The built-in supported <code>providers</code> are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>default - Keycloak Client Representation (JSON)</p>
+</li>
+<li>
+<p>install - Keycloak Adapter Configuration (JSON)</p>
+</li>
+<li>
+<p>openid-connect - OpenID Connect Client Metadata Description (JSON)</p>
+</li>
+<li>
+<p>saml2-entity-descriptor - SAML Entity Descriptor (XML)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following sections will describe how to use the different providers.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_authentication"><a class="anchor" href="#_authentication"></a>Authentication</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To invoke the Client Registration Services you usually need a token. The token can be a bearer token, an initial access token or a registration access token.
+There is an alternative to register new client without any token as well, but then you need to configure Client Registration Policies (see below).</p>
+</div>
+<div class="sect2">
+<h3 id="_bearer_token"><a class="anchor" href="#_bearer_token"></a>Bearer token</h3>
+<div class="paragraph">
+<p>The bearer token can be issued on behalf of a user or a Service Account. The following permissions are required to invoke the endpoints (see <a href="https://www.keycloak.org/docs/latest/server_admin/">Server Administration Guide</a> for more details):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create-client or manage-client - To create clients</p>
+</li>
+<li>
+<p>view-client or manage-client - To view clients</p>
+</li>
+<li>
+<p>manage-client - To update or delete client</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you are using a bearer token to create clients it&#8217;s recommend to use a token from a Service Account with only the <code>create-client</code> role (see <a href="https://www.keycloak.org/docs/latest/server_admin/">Server Administration Guide</a> for more details).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_initial_access_token"><a class="anchor" href="#_initial_access_token"></a>Initial Access Token</h3>
+<div class="paragraph">
+<p>The recommended approach to registering new clients is by using initial access tokens.
+An initial access token can only be used to create clients and has a configurable expiration as well as a configurable limit on how many clients can be created.</p>
+</div>
+<div class="paragraph">
+<p>An initial access token can be created through the admin console.
+To create a new initial access token first select the realm in the admin console, then click on <code>Client</code> in the menu on the left, followed by
+<code>Initial access token</code> in the tabs displayed in the page.</p>
+</div>
+<div class="paragraph">
+<p>You will now be able to see any existing initial access tokens. If you have access you can delete tokens that are no longer required. You can only retrieve the
+value of the token when you are creating it. To create a new token click on <code>Create</code>. You can now optionally add how long the token should be valid, also how
+many clients can be created using the token. After you click on <code>Save</code> the token value is displayed.</p>
+</div>
+<div class="paragraph">
+<p>It is important that you copy/paste this token now as you won&#8217;t be able to retrieve it later. If you forget to copy/paste it, then delete the token and create another one.</p>
+</div>
+<div class="paragraph">
+<p>The token value is used as a standard bearer token when invoking the Client Registration Services, by adding it to the Authorization header in the request.
+For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Authorization: bearer eyJhbGciOiJSUz...</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_registration_access_token"><a class="anchor" href="#_registration_access_token"></a>Registration Access Token</h3>
+<div class="paragraph">
+<p>When you create a client through the Client Registration Service the response will include a registration access token.
+The registration access token provides access to retrieve the client configuration later, but also to update or delete the client.
+The registration access token is included with the request in the same way as a bearer token or initial access token.</p>
+</div>
+<div class="paragraph">
+<p>By default, registration access token rotation is enabled. This means a registration access token is only valid once. When the token is used, the response will include a new token. Note that registration access token rotation can be disabled by using <a href="https://www.keycloak.org/docs/latest/server_admin/#_client_policies">Client Policies</a>.</p>
+</div>
+<div class="paragraph">
+<p>If a client was created outside of the Client Registration Service it won&#8217;t have a registration access token associated with it.
+You can create one through the admin console. This can also be useful if you lose the token for a particular client.
+To create a new token find the client in the admin console and click on <code>Credentials</code>. Then click on <code>Generate registration access token</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_keycloak_representations"><a class="anchor" href="#_keycloak_representations"></a>Keycloak Representations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>default</code> client registration provider can be used to create, retrieve, update and delete a client.
+It uses Keycloak Client Representation format which provides support for configuring clients exactly as they can be configured through the admin
+console, including for example configuring protocol mappers.</p>
+</div>
+<div class="paragraph">
+<p>To create a client create a Client Representation (JSON) then perform an HTTP POST request to <code>/realms/&lt;realm&gt;/clients-registrations/default</code>.</p>
+</div>
+<div class="paragraph">
+<p>It will return a Client Representation that also includes the registration access token.
+You should save the registration access token somewhere if you want to retrieve the config, update or delete the client later.</p>
+</div>
+<div class="paragraph">
+<p>To retrieve the Client Representation perform an HTTP GET request to <code>/realms/&lt;realm&gt;/clients-registrations/default/&lt;client id&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p>It will also return a new registration access token.</p>
+</div>
+<div class="paragraph">
+<p>To update the Client Representation perform an HTTP PUT request with the updated Client Representation to:
+<code>/realms/&lt;realm&gt;/clients-registrations/default/&lt;client id&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p>It will also return a new registration access token.</p>
+</div>
+<div class="paragraph">
+<p>To delete the Client Representation perform an HTTP DELETE request to:
+<code>/realms/&lt;realm&gt;/clients-registrations/default/&lt;client id&gt;</code></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_keycloak_adapter_configuration"><a class="anchor" href="#_keycloak_adapter_configuration"></a>Keycloak adapter configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>installation</code> client registration provider can be used to retrieve the adapter configuration for a client.
+In addition to token authentication you can also authenticate with client credentials using HTTP basic authentication.
+To do this include the following header in the request:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Authorization: basic BASE64(client-id + ':' + client-secret)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To retrieve the Adapter Configuration then perform an HTTP GET request to <code>/realms/&lt;realm&gt;/clients-registrations/install/&lt;client id&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p>No authentication is required for public clients.
+This means that for the JavaScript adapter you can load the client configuration directly from Keycloak using the above URL.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_openid_connect_dynamic_client_registration"><a class="anchor" href="#_openid_connect_dynamic_client_registration"></a>OpenID Connect Dynamic Client Registration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keycloak implements <a href="https://openid.net/specs/openid-connect-registration-1_0.html">OpenID Connect Dynamic Client Registration</a>, which extends <a href="https://datatracker.ietf.org/doc/html/rfc7591">OAuth 2.0 Dynamic Client Registration Protocol</a> and <a href="https://datatracker.ietf.org/doc/html/rfc7592">OAuth 2.0 Dynamic Client Registration Management Protocol</a>.</p>
+</div>
+<div class="paragraph">
+<p>The endpoint to use these specifications to register clients in Keycloak is <code>/realms/&lt;realm&gt;/clients-registrations/openid-connect[/&lt;client id&gt;]</code>.</p>
+</div>
+<div class="paragraph">
+<p>This endpoint can also be found in the OpenID Connect Discovery endpoint for the realm, <code>/realms/&lt;realm&gt;/.well-known/openid-configuration</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_saml_entity_descriptors"><a class="anchor" href="#_saml_entity_descriptors"></a>SAML Entity Descriptors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SAML Entity Descriptor endpoint only supports using SAML v2 Entity Descriptors to create clients.
+It doesn&#8217;t support retrieving, updating or deleting clients.
+For those operations the Keycloak representation endpoints should be used.
+When creating a client a Keycloak Client Representation is returned with details about the created client, including a registration access token.</p>
+</div>
+<div class="paragraph">
+<p>To create a client perform an HTTP POST request with the SAML Entity Descriptor to <code>/realms/&lt;realm&gt;/clients-registrations/saml2-entity-descriptor</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example_using_curl"><a class="anchor" href="#_example_using_curl"></a>Example using CURL</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following example creates a client with the clientId <code>myclient</code> using CURL. You need to replace <code>eyJhbGciOiJSUz&#8230;&#8203;</code> with a proper initial access token or
+bearer token.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">curl -X POST \
+    -d '{ "clientId": "myclient" }' \
+    -H "Content-Type:application/json" \
+    -H "Authorization: bearer eyJhbGciOiJSUz..." \
+    http://localhost:8080/realms/master/clients-registrations/default</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_example_using_java_client_registration_api"><a class="anchor" href="#_example_using_java_client_registration_api"></a>Example using Java Client Registration API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Client Registration Java API makes it easy to use the Client Registration Service using Java.
+To use include the dependency <code>org.keycloak:keycloak-client-registration-api:&gt;VERSION&lt;</code> from Maven.</p>
+</div>
+<div class="paragraph">
+<p>For full instructions on using the Client Registration refer to the JavaDocs.
+Below is an example of creating a client. You need to replace <code>eyJhbGciOiJSUz&#8230;&#8203;</code> with a proper initial access token or bearer token.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">String token = "eyJhbGciOiJSUz...";
+
+ClientRepresentation client = new ClientRepresentation();
+client.setClientId(CLIENT_ID);
+
+ClientRegistration reg = ClientRegistration.create()
+    .url("http://localhost:8080", "myrealm")
+    .build();
+
+reg.auth(Auth.token(token));
+
+client = reg.create(client);
+
+String registrationAccessToken = client.getRegistrationAccessToken();</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_client_registration_policies"><a class="anchor" href="#_client_registration_policies"></a>Client Registration Policies</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The current plans are for the Client Registration Policies to be removed in favor of the Client Policies described in the <a href="https://www.keycloak.org/docs/latest/server_admin/#_client_policies">Server Administration Guide</a>.
+Client Policies are more flexible and support more use cases.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Keycloak currently supports two ways how new clients can be registered through Client Registration Service.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Authenticated requests - Request to register new client must contain either <code>Initial Access Token</code> or <code>Bearer Token</code> as mentioned above.</p>
+</li>
+<li>
+<p>Anonymous requests - Request to register new client doesn&#8217;t need to contain any token at all</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Anonymous client registration requests are very interesting and powerful feature, however you usually don&#8217;t want that anyone is able to register new
+client without any limitations. Hence we have <code>Client Registration Policy SPI</code>, which provide a way to limit who can register new clients and under which conditions.</p>
+</div>
+<div class="paragraph">
+<p>In Keycloak admin console, you can click to <code>Client Registration</code> tab and then <code>Client Registration Policies</code> sub-tab. Here you will see what policies
+are configured by default for anonymous requests and what policies are configured for authenticated requests.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The anonymous requests (requests without any token) are allowed just for creating (registration) of new clients. So when you register
+new client through anonymous request, the response will contain Registration Access Token, which must be used for Read, Update or Delete request of particular client.
+However using this Registration Access Token from anonymous registration will be then subject to Anonymous Policy too! This means that for example request for update
+client also needs to come from Trusted Host if you have <code>Trusted Hosts</code> policy. Also for example it won&#8217;t be allowed to disable <code>Consent Required</code> when updating client and
+when <code>Consent Required</code> policy is present etc.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Currently we have these policy implementations:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Trusted Hosts Policy - You can configure list of trusted hosts and trusted domains. Request to Client Registration Service can be sent just from those hosts or domains.
+Request sent from some untrusted IP will be rejected. URLs of newly registered client must also use just those trusted hosts or domains. For example it won&#8217;t be allowed
+to set <code>Redirect URI</code> of client pointing to some untrusted host. By default, there is not any whitelisted host, so anonymous client registration is de-facto disabled.</p>
+</li>
+<li>
+<p>Consent Required Policy - Newly registered clients will have <code>Consent Allowed</code> switch enabled. So after successful authentication, user will always
+see consent screen when he needs to approve permissions (client scopes). It means that client won&#8217;t have access to any personal
+info or permission of user unless user approves it.</p>
+</li>
+<li>
+<p>Protocol Mappers Policy - Allows to configure list of whitelisted protocol mapper implementations. New client can&#8217;t be registered
+or updated if it contains some non-whitelisted protocol mapper. Note that this policy is used for authenticated requests as well, so
+even for authenticated request there are some limitations which protocol mappers can be used.</p>
+</li>
+<li>
+<p>Client Scope Policy - Allow to whitelist <code>Client Scopes</code>, which can be used with newly registered or updated clients.
+There are no whitelisted scopes by default; only the client scopes, which are defined as <code>Realm Default Client Scopes</code> are whitelisted by default.</p>
+</li>
+<li>
+<p>Full Scope Policy - Newly registered clients will have <code>Full Scope Allowed</code> switch disabled. This means they won&#8217;t have any scoped
+realm roles or client roles of other clients.</p>
+</li>
+<li>
+<p>Max Clients Policy - Rejects registration if current number of clients in the realm is same or bigger than specified limit. It&#8217;s 200 by default for anonymous registrations.</p>
+</li>
+<li>
+<p>Client Disabled Policy - Newly registered client will be disabled. This means that admin needs to manually approve and enable all newly registered clients.
+This policy is not used by default even for anonymous registration.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak/tree/main/docs/guides/securing-apps/client-registration.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

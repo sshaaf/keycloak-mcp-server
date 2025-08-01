@@ -1,0 +1,718 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Securing applications and services with OpenID Connect - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Securing applications and services with OpenID Connect">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Use OpenID Connect with Keycloak to secure applications and services.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/oidc-layers">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/oidc-layers">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Securing applications and services with OpenID Connect</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Securing applications and services with OpenID Connect</h1>
+                    <span class="text-muted">Use OpenID Connect with Keycloak to secure applications and services.</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div class="sect1">
+<h2 id="_oidc_available_endpoints"><a class="anchor" href="#_oidc_available_endpoints"></a>Available Endpoints</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As a fully-compliant OpenID Connect Provider implementation, Keycloak exposes a set of endpoints that applications
+and services can use to authenticate and authorize their users.</p>
+</div>
+<div class="paragraph">
+<p>This section describes some of the key endpoints that your application and service should use when
+interacting with Keycloak.</p>
+</div>
+<div class="sect2">
+<h3 id="_endpoints"><a class="anchor" href="#_endpoints"></a>Endpoints</h3>
+<div class="paragraph">
+<p>The most important endpoint to understand is the <code>well-known</code> configuration endpoint. It lists endpoints and other configuration options relevant to the OpenID Connect implementation in Keycloak. The endpoint is:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/.well-known/openid-configuration</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To obtain the full URL, add the base URL for Keycloak and replace <code>{realm-name}</code> with the name of your realm. For example:</p>
+</div>
+<div class="paragraph">
+<p>http://localhost:8080/realms/master/.well-known/openid-configuration</p>
+</div>
+<div class="paragraph">
+<p>Some RP libraries retrieve all required endpoints from this endpoint, but for others you might need to list the endpoints individually.</p>
+</div>
+<div class="sect3">
+<h4 id="_authorization_endpoint"><a class="anchor" href="#_authorization_endpoint"></a>Authorization endpoint</h4>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/protocol/openid-connect/auth</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The authorization endpoint performs authentication of the end-user. This authentication is done by redirecting the user agent to this endpoint.</p>
+</div>
+<div class="paragraph">
+<p>For more details see the <a href="https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint">Authorization Endpoint</a> section in the OpenID Connect specification.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_token_endpoint"><a class="anchor" href="#_token_endpoint"></a>Token endpoint</h4>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/protocol/openid-connect/token</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The token endpoint is used to obtain tokens. Tokens can either be obtained by exchanging an authorization code or by supplying credentials directly depending on what flow is used.
+The token endpoint is also used to obtain new access tokens when they expire.</p>
+</div>
+<div class="paragraph">
+<p>For more details, see the <a href="https://openid.net/specs/openid-connect-core-1_0.html#TokenEndpoint">Token Endpoint</a> section in the OpenID Connect specification.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_userinfo_endpoint"><a class="anchor" href="#_userinfo_endpoint"></a>Userinfo endpoint</h4>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/protocol/openid-connect/userinfo</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The userinfo endpoint returns standard claims about the authenticated user; this endpoint is protected by a bearer token.</p>
+</div>
+<div class="paragraph">
+<p>For more details, see the <a href="https://openid.net/specs/openid-connect-core-1_0.html#UserInfo">Userinfo Endpoint</a> section in the OpenID Connect specification.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_logout_endpoint"><a class="anchor" href="#_logout_endpoint"></a>Logout endpoint</h4>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/protocol/openid-connect/logout</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The logout endpoint logs out the authenticated user.</p>
+</div>
+<div class="paragraph">
+<p>The user agent can be redirected to the endpoint, which causes the active user session to be logged out. The user agent is then redirected back to the application.</p>
+</div>
+<div class="paragraph">
+<p>The endpoint can also be invoked directly by the application. To invoke this endpoint directly, the refresh token needs to be included as well as the credentials required to authenticate the client.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_certificate_endpoint"><a class="anchor" href="#_certificate_endpoint"></a>Certificate endpoint</h4>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/protocol/openid-connect/certs</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The certificate endpoint returns the public keys enabled by the realm, encoded as a JSON Web Key (JWK). Depending on the realm settings, one or more keys can be enabled for verifying tokens. For more information, see the <a href="https://www.keycloak.org/docs/latest/server_admin/">Server Administration Guide</a> and the <a href="https://datatracker.ietf.org/doc/html/rfc7517">JSON Web Key specification</a>.</p>
+</div>
+<div class="paragraph">
+<p>For more details, see the <a href="https://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect Discovery</a> specification.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_token_introspection_endpoint"><a class="anchor" href="#_token_introspection_endpoint"></a>Introspection endpoint</h4>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/protocol/openid-connect/token/introspect</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The introspection endpoint is used to retrieve the active state of a token. In other words, you can use it to validate an access or refresh token.
+This endpoint can only be invoked by confidential clients.</p>
+</div>
+<div class="paragraph">
+<p>For more details on how to invoke on this endpoint, see <a href="https://datatracker.ietf.org/doc/html/rfc7662">OAuth 2.0 Token Introspection specification</a>.</p>
+</div>
+<div class="sect4">
+<h5 id="_introspection_endpoint_triggered_with_applicationjwt_header"><a class="anchor" href="#_introspection_endpoint_triggered_with_applicationjwt_header"></a>Introspection endpoint triggered with application/jwt header</h5>
+<div class="paragraph">
+<p>You can invoke an introspection endpoint with the HTTP header <code>Accept: application/jwt</code> instead of <code>Accept: application/json</code>. In case of <code>application/jwt</code>, the response
+may contain the additional claim <code>jwt</code> with the full JWT access token, which can be useful especially if the token to be introspected was a <a href="https://www.keycloak.org/docs/latest/server_admin/#_using_lightweight_access_token">lightweight access token</a>. This requires that you enable <code>Support JWT claim in Introspection Response</code>
+on the client advanced settings, which triggers the token introspection.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_dynamic_client_registration_endpoint"><a class="anchor" href="#_dynamic_client_registration_endpoint"></a>Dynamic Client Registration endpoint</h4>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/clients-registrations/openid-connect</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The dynamic client registration endpoint is used to dynamically register clients.</p>
+</div>
+<div class="paragraph">
+<p>For more details, see the <a href="https://www.keycloak.org/nightly/securing-apps/client-registration">Using the client registration service</a> guide and the
+<a href="https://openid.net/specs/openid-connect-registration-1_0.html">OpenID Connect Dynamic Client Registration specification</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_token_revocation_endpoint"><a class="anchor" href="#_token_revocation_endpoint"></a>Token Revocation endpoint</h4>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/protocol/openid-connect/revoke</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The token revocation endpoint is used to revoke tokens. Both refresh tokens and access tokens are supported by this endpoint. When revoking a refresh token, the user consent for the corresponding client is also revoked.</p>
+</div>
+<div class="paragraph">
+<p>For more details on how to invoke on this endpoint, see <a href="https://datatracker.ietf.org/doc/html/rfc7009">OAuth 2.0 Token Revocation specification</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_device_authorization_endpoint"><a class="anchor" href="#_device_authorization_endpoint"></a>Device Authorization endpoint</h4>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/protocol/openid-connect/auth/device</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The device authorization endpoint is used to obtain a device code and a user code. It can be invoked by confidential or public clients.</p>
+</div>
+<div class="paragraph">
+<p>For more details on how to invoke on this endpoint, see <a href="https://datatracker.ietf.org/doc/html/rfc8628">OAuth 2.0 Device Authorization Grant specification</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_backchannel_authentication_endpoint"><a class="anchor" href="#_backchannel_authentication_endpoint"></a>Backchannel Authentication endpoint</h4>
+<div class="literalblock">
+<div class="content">
+<pre>/realms/{realm-name}/protocol/openid-connect/ext/ciba/auth</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The backchannel authentication endpoint is used to obtain an auth_req_id that identifies the authentication request made by the client. It can only be invoked by confidential clients.</p>
+</div>
+<div class="paragraph">
+<p>For more details on how to invoke on this endpoint, see <a href="https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html">OpenID Connect Client Initiated Backchannel Authentication Flow specification</a>.</p>
+</div>
+<div class="paragraph">
+<p>Also refer to other places of Keycloak documentation like <a href="#_client_initiated_backchannel_authentication_grant">Client Initiated Backchannel Authentication Grant section of this guide</a> and <a href="https://www.keycloak.org/docs/latest/server_admin/#_client_initiated_backchannel_authentication_grant">Client Initiated Backchannel Authentication Grant section</a> of Server Administration Guide.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_supported_grant_types"><a class="anchor" href="#_supported_grant_types"></a>Supported Grant Types</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section describes the different grant types available to relaying parties.</p>
+</div>
+<div class="sect2">
+<h3 id="_authorization_code"><a class="anchor" href="#_authorization_code"></a>Authorization code</h3>
+<div class="paragraph">
+<p>The Authorization Code flow redirects the user agent to Keycloak. Once the user has successfully authenticated with Keycloak, an
+Authorization Code is created and the user agent is redirected back to the application. The application then uses the authorization code along with its
+credentials to obtain an Access Token, Refresh Token and ID Token from Keycloak.</p>
+</div>
+<div class="paragraph">
+<p>The flow is targeted towards web applications, but is also recommended for native applications, including mobile applications, where it is possible to embed
+a user agent.</p>
+</div>
+<div class="paragraph">
+<p>For more details refer to the <a href="https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth">Authorization Code Flow</a> in the OpenID Connect specification.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_implicit"><a class="anchor" href="#_implicit"></a>Implicit</h3>
+<div class="paragraph">
+<p>The Implicit flow works similarly to the Authorization Code flow, but instead of returning an Authorization Code, the Access Token and ID Token is
+returned. This approach reduces the need for the extra invocation to exchange the Authorization Code for an Access Token. However, it does not include a Refresh
+Token. This results in the need to permit Access Tokens with a long expiration; however, that approach is not practical because it is very hard to invalidate these tokens. Alternatively, you can
+require a new redirect to obtain a new Access Token once the initial Access Token has expired. The Implicit flow is useful if the application only wants to
+authenticate the user and deals with logout itself.</p>
+</div>
+<div class="paragraph">
+<p>You can instead use a Hybrid flow where both the Access Token and an Authorization Code are returned.</p>
+</div>
+<div class="paragraph">
+<p>One thing to note is that both the Implicit flow and Hybrid flow have potential security risks as the Access Token may be leaked through web server logs and
+browser history. You can somewhat mitigate this problem by using short expiration for Access Tokens.</p>
+</div>
+<div class="paragraph">
+<p>For more details, see the <a href="https://openid.net/specs/openid-connect-core-1_0.html#ImplicitFlowAuth">Implicit Flow</a> in the OpenID Connect specification.</p>
+</div>
+<div class="paragraph">
+<p>Per current <a href="https://datatracker.ietf.org/doc/html/rfc9700#name-implicit-grant">Best Current Practice for OAuth 2.0 Security (RFC 9700)</a>, this flow SHOULD NOT be used.
+This flow is removed from the future <a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13">OAuth 2.1 specification</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_resource_owner_password_credentials_flow"><a class="anchor" href="#_resource_owner_password_credentials_flow"></a>Resource Owner Password Credentials</h3>
+<div class="paragraph">
+<p>Resource Owner Password Credentials, referred to as Direct Grant in Keycloak, allows exchanging user credentials for tokens.
+Per current <a href="https://datatracker.ietf.org/doc/html/rfc9700#name-resource-owner-password-cre">Best Current Practice for OAuth 2.0 Security (RFC 9700)</a>,
+this flow MUST NOT be used, preferring alternative methods such as <a href="#_device_authorization_grant">Device Authorization Grant</a> or <a href="#_authorization_code">Authorization code</a>.</p>
+</div>
+<div class="paragraph">
+<p>The limitations of using this flow include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>User credentials are exposed to the application</p>
+</li>
+<li>
+<p>Applications need login pages</p>
+</li>
+<li>
+<p>Application needs to be aware of the authentication scheme</p>
+</li>
+<li>
+<p>Changes to authentication flow requires changes to application</p>
+</li>
+<li>
+<p>No support for identity brokering or social login</p>
+</li>
+<li>
+<p>Flows are not supported (user self-registration, required actions, and so on.)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Security concerns with this flow include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Involving more than Keycloak in handling of credentials</p>
+</li>
+<li>
+<p>Increased vulnerable surface area where credential leaks can happen</p>
+</li>
+<li>
+<p>Creating an ecosystem where users trust another application for entering their credentials and not Keycloak</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For a client to be permitted to use the Resource Owner Password Credentials grant, the client has to have the <code>Direct Access Grants Enabled</code> option enabled.</p>
+</div>
+<div class="paragraph">
+<p>This flow is not included in OpenID Connect, but is a part of the OAuth 2.0 specification.
+It is removed from the future <a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13">OAuth 2.1 specification</a>.</p>
+</div>
+<div class="paragraph">
+<p>For more details, see the <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.3">Resource Owner Password Credentials Grant</a> chapter in the OAuth 2.0 specification.</p>
+</div>
+<div class="sect3">
+<h4 id="_example_using_curl"><a class="anchor" href="#_example_using_curl"></a>Example using CURL</h4>
+<div class="paragraph">
+<p>The following example shows how to obtain an access token for a user in the realm <code>master</code> with username <code>user</code> and password <code>password</code>. The example is using
+the confidential client <code>myclient</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">curl \
+  -d "client_id=myclient" \
+  -d "client_secret=40cc097b-2a57-4c17-b36a-8fdf3fc2d578" \
+  -d "username=user" \
+  -d "password=password" \
+  -d "grant_type=password" \
+  "http://localhost:8080/realms/master/protocol/openid-connect/token"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_credentials"><a class="anchor" href="#_client_credentials"></a>Client credentials</h3>
+<div class="paragraph">
+<p>Client Credentials are used when clients (applications and services) want to obtain access on behalf of themselves rather than on behalf of a user. For example, these credentials can
+ be useful for background services that apply changes to the system in general rather than for a specific user.</p>
+</div>
+<div class="paragraph">
+<p>Keycloak provides support for clients to authenticate either with a secret or with public/private keys.</p>
+</div>
+<div class="paragraph">
+<p>This flow is not included in OpenID Connect, but is a part of the OAuth 2.0 specification.</p>
+</div>
+<div class="paragraph">
+<p>For more details, see the <a href="https://datatracker.ietf.org/doc/html/rfc6749#section-4.4">Client Credentials Grant</a> chapter in the OAuth 2.0 specification.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_device_authorization_grant"><a class="anchor" href="#_device_authorization_grant"></a>Device Authorization Grant</h3>
+<div class="paragraph">
+<p>Device Authorization Grant is used by clients running on internet-connected devices that have limited input capabilities or lack a suitable browser.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The application requests  that Keycloak provide a device code and a user code.</p>
+</li>
+<li>
+<p>Keycloak creates a device code and a user code.</p>
+</li>
+<li>
+<p>Keycloak returns a response including the device code and the user code to the application.</p>
+</li>
+<li>
+<p>The application provides the user with the user code and the verification URI. The user accesses a verification URI to be authenticated by using another browser.</p>
+</li>
+<li>
+<p>The application repeatedly polls Keycloak until Keycloak completes the user authorization.</p>
+</li>
+<li>
+<p>If user authentication is complete, the application obtains the device code.</p>
+</li>
+<li>
+<p>The application uses the device code along with its credentials to obtain an Access Token, Refresh Token and ID Token from Keycloak.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>For more details, see  the <a href="https://datatracker.ietf.org/doc/html/rfc8628">OAuth 2.0 Device Authorization Grant specification</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_initiated_backchannel_authentication_grant"><a class="anchor" href="#_client_initiated_backchannel_authentication_grant"></a>Client Initiated Backchannel Authentication Grant</h3>
+<div class="paragraph">
+<p>Client Initiated Backchannel Authentication Grant is used by clients who want to initiate the authentication flow by communicating with the OpenID Provider directly without redirect through the user&#8217;s browser like OAuth 2.0&#8217;s authorization code grant.</p>
+</div>
+<div class="paragraph">
+<p>The client requests from Keycloak an auth_req_id that identifies the authentication request made by the client. Keycloak creates the auth_req_id.</p>
+</div>
+<div class="paragraph">
+<p>After receiving this auth_req_id, this client repeatedly needs to poll Keycloak to obtain an Access Token, Refresh Token, and ID Token from Keycloak in return for the auth_req_id until the user is authenticated.</p>
+</div>
+<div class="paragraph">
+<p>In case that client uses <code>ping</code> mode, it does not need to repeatedly poll the token endpoint, but it can wait for the notification sent by Keycloak to the specified Client Notification Endpoint.
+The Client Notification Endpoint can be configured in the Keycloak Admin Console. The details of the contract for Client Notification Endpoint are described in the CIBA specification.</p>
+</div>
+<div class="paragraph">
+<p>For more details, see <a href="https://openid.net/specs/openid-client-initiated-backchannel-authentication-core-1_0.html">OpenID Connect Client Initiated Backchannel Authentication Flow specification</a>.</p>
+</div>
+<div class="paragraph">
+<p>Also refer to other places of Keycloak documentation such as <a href="#_backchannel_authentication_endpoint">Backchannel Authentication Endpoint of this guide</a> and <a href="https://www.keycloak.org/docs/latest/server_admin/#_client_initiated_backchannel_authentication_grant">Client Initiated Backchannel Authentication Grant section</a> of Server Administration Guide.
+For the details about FAPI CIBA compliance, see the <a href="#_fapi-support">FAPI section of this guide</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_oidc-errors"><a class="anchor" href="#_oidc-errors"></a>Keycloak specific errors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keycloak server can send errors to the client application in the OIDC authentication response with parameters <code>error=temporarily_unavailable</code> and <code>error_description=authentication_expired</code>.
+Keycloak sends this error when a user is authenticated and has an SSO session, but the authentication session expired in the current browser tab and hence the Keycloak server cannot automatically do SSO
+re-authentication of the user and redirect back to client with a successful response. When a client application receives this type of error, it is ideal to retry authentication immediately and send a new
+OIDC authentication request to the Keycloak server, which should typically always authenticate the user due to the SSO session and redirect back. For more details, see
+the <a href="https://www.keycloak.org/docs/latest/server_admin/#_authentication-sessions">Server Administration Guide</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_fapi-support"><a class="anchor" href="#_fapi-support"></a>Financial-grade API (FAPI) Support</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keycloak makes it easier for administrators to make sure that their clients are compliant with these specifications:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://openid.net/specs/openid-financial-api-part-1-1_0.html">Financial-grade API Security Profile 1.0 - Part 1: Baseline</a></p>
+</li>
+<li>
+<p><a href="https://openid.net/specs/openid-financial-api-part-2-1_0.html">Financial-grade API Security Profile 1.0 - Part 2: Advanced</a></p>
+</li>
+<li>
+<p><a href="https://openid.net/specs/openid-financial-api-ciba-ID1.html">Financial-grade API: Client Initiated Backchannel Authentication Profile</a> (FAPI CIBA)</p>
+</li>
+<li>
+<p><a href="https://openid.bitbucket.io/fapi/fapi-2_0-security-profile.html">FAPI 2.0 Security Profile (Draft)</a></p>
+</li>
+<li>
+<p><a href="https://openid.bitbucket.io/fapi/fapi-2_0-message-signing.html">FAPI 2.0 Message Signing (Draft)</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This compliance means that the Keycloak server will verify the requirements
+for the authorization server, which are mentioned in the specifications. Keycloak adapters do not have any specific support for the FAPI, hence the required validations on the client (application)
+side may need to be still done manually or through some other third-party solutions.</p>
+</div>
+<div class="sect2">
+<h3 id="_fapi_client_profiles"><a class="anchor" href="#_fapi_client_profiles"></a>FAPI client profiles</h3>
+<div class="paragraph">
+<p>To make sure that your clients are FAPI compliant, you can configure Client Policies in your realm as described in the <a href="https://www.keycloak.org/docs/latest/server_admin/#_client_policies">Server Administration Guide</a>
+and link them to the global client profiles for FAPI support, which are automatically available in each realm. You can use either <code>fapi-1-baseline</code> or <code>fapi-1-advanced</code> profile based on which FAPI
+profile you need your clients to conform with. You can use also profiles <code>fapi-2-security-profile</code> or <code>fapi-2-message-signing</code> for the compliance with FAPI 2 Draft specifications.</p>
+</div>
+<div class="paragraph">
+<p>In case you want to use <a href="https://www.keycloak.org/docs/latest/server_admin/#_oidc_clients">Pushed Authorization Request (PAR)</a>, it is recommended that your client use
+both the <code>fapi-1-baseline</code> profile and <code>fapi-1-advanced</code> for PAR requests. Specifically, the <code>fapi-1-baseline</code> profile contains <code>pkce-enforcer</code> executor, which makes sure
+that client use PKCE with secured S256 algorithm. This is not required for FAPI Advanced clients unless they use PAR requests.</p>
+</div>
+<div class="paragraph">
+<p>In case you want to use <a href="#_backchannel_authentication_endpoint">CIBA</a> in a FAPI compliant way, make sure that your clients use both <code>fapi-1-advanced</code> and <code>fapi-ciba</code> client profiles.
+There is a need to use the <code>fapi-1-advanced</code> profile, or other client profile containing the requested executors, as the <code>fapi-ciba</code> profile contains just CIBA-specific executors.
+When enforcing the requirements of the FAPI CIBA specification, there is a need for more requirements, such as enforcement of confidential clients or certificate-bound access tokens.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_open_finance_brasil_financial_grade_api_security_profile"><a class="anchor" href="#_open_finance_brasil_financial_grade_api_security_profile"></a>Open Finance Brasil Financial-grade API Security Profile</h3>
+<div class="paragraph">
+<p>Keycloak is compliant with the <a href="https://openfinancebrasil.atlassian.net/wiki/spaces/OF/pages/245760001/EN+Open+Finance+Brasil+Financial-grade+API+Security+Profile+1.0+Implementers+Draft+3">Open Finance Brasil Financial-grade API Security Profile 1.0 Implementers Draft 3</a>.
+This one is stricter in some requirements than the <a href="#_fapi-support">FAPI 1 Advanced</a> specification and hence it may be needed to configure <a href="https://www.keycloak.org/docs/latest/server_admin/#_client_policies">Client Policies</a>
+in the more strict way to enforce some of the requirements. Especially:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If your client does not use PAR, make sure that it uses encrypted OIDC request objects. This can be achieved by using a client profile with the <code>secure-request-object</code> executor configured with <code>Encryption Required</code> enabled.</p>
+</li>
+<li>
+<p>Make sure that for JWS, the client uses the <code>PS256</code> algorithm. For JWE, the client should use the <code>RSA-OAEP</code> with <code>A256GCM</code>. This may need to be set in all the <a href="https://www.keycloak.org/docs/latest/server_admin/#_oidc_clients">Client Settings</a> where these algorithms are applicable.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_australia_consumer_data_right_cdr_security_profile"><a class="anchor" href="#_australia_consumer_data_right_cdr_security_profile"></a>Australia Consumer Data Right (CDR) Security Profile</h3>
+<div class="paragraph">
+<p>Keycloak is compliant with the <a href="https://consumerdatastandardsaustralia.github.io/standards/#security-profile">Australia Consumer Data Right Security Profile</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you want to apply the Australia CDR security profile, you need to use <code>fapi-1-advanced</code> profile because the Australia CDR security profile is based on FAPI 1.0 Advanced security profile. If your client also applies PAR, make sure that client applies RFC 7637 Proof Key for Code Exchange (PKCE) because the Australia CDR security profile requires that you apply PKCE when applying PAR. This can be achieved by using a client profile with the <code>pkce-enforcer</code> executor.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_tls_considerations"><a class="anchor" href="#_tls_considerations"></a>TLS considerations</h3>
+<div class="paragraph">
+<p>As confidential information is being exchanged, all interactions shall be encrypted with TLS (HTTPS). Moreover, there are some requirements in the FAPI specification for
+the cipher suites and TLS protocol versions used. To match these requirements, you can consider configure allowed ciphers. This configuration can be done by setting
+the <code>https-protocols</code> and <code>https-cipher-suites</code> options. Keycloak uses <code>TLSv1.3</code> by default and hence it is possibly not needed to change the default settings. However it
+may be needed to adjust ciphers if you need to fall back to lower TLS version for some reason. For more details, see <a href="https://www.keycloak.org/server/enabletls">Configuring TLS</a> guide.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_oauth21-support"><a class="anchor" href="#_oauth21-support"></a>OAuth 2.1 Support</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keycloak makes it easier for administrators to make sure that their clients are compliant with these specifications:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-13">The OAuth 2.1 Authorization Framework - draft specification</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This compliance means that the Keycloak server will verify the requirements
+for the authorization server, which are mentioned in the specifications. Keycloak adapters do not have any specific support for the OAuth 2.1, hence the required validations on the client (application)
+side may need to be still done manually or through some other third-party solutions.</p>
+</div>
+<div class="sect2">
+<h3 id="_oauth_2_1_client_profiles"><a class="anchor" href="#_oauth_2_1_client_profiles"></a>OAuth 2.1 client profiles</h3>
+<div class="paragraph">
+<p>To make sure that your clients are OAuth 2.1 compliant, you can configure Client Policies in your realm as described in the <a href="https://www.keycloak.org/docs/latest/server_admin/#_client_policies">Server Administration Guide</a>
+and link them to the global client profiles for OAuth 2.1 support, which are automatically available in each realm. You can use either <code>oauth-2-1-for-confidential-client</code> profile for confidential clients or <code>oauth-2-1-for-public-client</code> profile for public clients.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+OAuth 2.1 specification is still a draft and it may change in the future. Hence the Keycloak built-in OAuth 2.1 client profiles can change as well.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When using OAuth 2.1 profile for public clients, it is recommended to use DPoP preview feature as described in the <a href="https://www.keycloak.org/docs/latest/server_admin/#_dpop-bound-tokens">Server Administration Guide</a> because DPoP binds an access token and a refresh token together with the public part of a client&#8217;s key pair. This binding prevents an attacker from using stolen tokens.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_recommendations"><a class="anchor" href="#_recommendations"></a>Recommendations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section describes some recommendations when securing your applications with Keycloak.</p>
+</div>
+<div class="sect2">
+<h3 id="_validating_access_tokens"><a class="anchor" href="#_validating_access_tokens"></a>Validating access tokens</h3>
+<div class="paragraph">
+<p>If you need to manually validate access tokens issued by Keycloak, you can invoke the <a href="#_token_introspection_endpoint">Introspection Endpoint</a>.
+The downside to this approach is that you have to make a network invocation to the Keycloak server.  This can be slow and possibly overload the
+server if you have too many validation requests going on at the same time.  Keycloak issued access tokens are <a href="https://datatracker.ietf.org/doc/html/rfc7519">JSON Web Tokens (JWT)</a> digitally signed and encoded using <a href="https://datatracker.ietf.org/doc/html/rfc7515">JSON Web Signature (JWS)</a>.
+Because they are encoded in this way, you can locally validate access tokens using the public key of the issuing realm.  You can either hard code the
+realm&#8217;s public key in your validation code, or lookup and cache the public key using the <a href="#_certificate_endpoint">certificate endpoint</a> with the Key ID (KID) embedded within the
+JWS.  Depending on what language you code in, many third party libraries exist and they can help you with JWS validation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_redirect_uris"><a class="anchor" href="#_redirect_uris"></a>Redirect URIs</h3>
+<div class="paragraph">
+<p>When using the redirect based flows, be sure to use valid redirect uris for your clients. The redirect uris should be as specific as possible. This
+especially applies to client-side (public clients) applications. Failing to do so could result in:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Open redirects - this can allow attackers to create spoof links that looks like they are coming from your domain</p>
+</li>
+<li>
+<p>Unauthorized entry - when users are already authenticated with Keycloak, an attacker can use a public client where redirect uris have not be configured correctly to gain access by redirecting the user without the users knowledge</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In production for web applications always use <code>https</code> for all redirect URIs. Do not allow redirects to http.</p>
+</div>
+<div class="paragraph">
+<p>A few special redirect URIs also exist:</p>
+</div>
+<div id="_installed_applications_url" class="dlist">
+<dl>
+<dt class="hdlist1"><code>http://127.0.0.1</code></dt>
+<dd>
+<p>This redirect URI is useful for native applications and allows the native application to create a web server on a random port that can be used to obtain the
+authorization code. This redirect uri allows any port. Note that per <a href="https://datatracker.ietf.org/doc/html/rfc8252#section-8.3">OAuth 2.0 for Native Apps</a>, the use of
+<code>localhost</code> is <strong>not</strong> recommended and the IP literal <code>127.0.0.1</code> should be used instead.</p>
+</dd>
+</dl>
+</div>
+<div id="_installed_applications_urn" class="dlist">
+<dl>
+<dt class="hdlist1"><code>urn:ietf:wg:oauth:2.0:oob</code></dt>
+<dd>
+<p>If you cannot start a web server in the client (or a browser is not available), you can use the special <code>urn:ietf:wg:oauth:2.0:oob</code> redirect uri.
+When this redirect uri is used, Keycloak displays a page with the code in the title and in a box on the page.
+The application can either detect that the browser title has changed, or the user can copy and paste the code manually to the application.
+With this redirect uri, a user can use a different device to obtain a code to paste back to the application.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak/tree/main/docs/guides/securing-apps/oidc-layers.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

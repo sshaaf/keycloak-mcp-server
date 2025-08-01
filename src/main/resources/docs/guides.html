@@ -1,0 +1,1263 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Guides / Nightly Release - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Guides / Nightly Release">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Guides for Keycloak's nightly release which contains the very latest developments. Use it for testing only.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/guides">
+<meta property="og:url" content="https://www.keycloak.org/nightly/guides">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<script src="https://www.keycloak.org/resources/js/guides.js" type="text/javascript"></script>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <ul class="nav navbar-nav">
+            <li>
+                <a class="nav-link" href="#getting-started">Getting started</a>
+            </li>
+            <li>
+                <a class="nav-link" href="#server">Server</a>
+            </li>
+            <li>
+                <a class="nav-link" href="#operator">Operator</a>
+            </li>
+            <li>
+                <a class="nav-link" href="#observability">Observability</a>
+            </li>
+            <li>
+                <a class="nav-link" href="#securing-apps">Securing applications</a>
+            </li>
+            <li>
+                <a class="nav-link" href="#high-availability">High availability</a>
+            </li>
+            <li>
+                <a class="nav-link" href="#ui-customization">UI Customization</a>
+            </li>
+            <li>
+                <a class="nav-link" href="#migration">Migration</a>
+            </li>
+        </ul>
+        <div class="float-right">
+            <form>
+                <input id="guide-search" class="form-control" type="text" placeholder="Search" aria-label="Search">
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="jumbotron jumbotron-fluid bg-light kc-bg-triangles kc-bg-fixed pt-4 pb-1">
+
+    <div class="container">
+        <div class="alert alert-warning" role="alert">
+          <h4>Nightly release</h4>
+
+          These guides are for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+        </div>
+
+            <div class="row guide-category mb-4" id="getting-started">
+                <h2>Getting started</h2>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    OpenJDK
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Get started with Keycloak on a physical or virtual server.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/getting-started/getting-started-zip"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Docker
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Get started with Keycloak on Docker.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/getting-started/getting-started-docker"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Podman
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Get started with Keycloak on Podman.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/getting-started/getting-started-podman"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Kubernetes
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Get started with Keycloak on Kubernetes.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/getting-started/getting-started-kube"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    OpenShift
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Get started with Keycloak on OpenShift.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/getting-started/getting-started-openshift"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Scaling
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Scale and tune your Keycloak installation.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/getting-started/getting-started-scaling-and-tuning"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="row guide-category mb-4" id="server">
+                <h2>Server</h2>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring Keycloak
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure and start Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/configuration"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring Keycloak for production
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Prepare Keycloak for use in production.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/configuration-production"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Bootstrapping and recovering an admin account
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Bootstrap Keycloak and recover access by creating a temporary admin account.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/bootstrap-admin-recovery"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Directory Structure
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Understand the purpose of the directories under the installation root.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/directory-structure"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Running Keycloak in a container
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Run Keycloak from a container image.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/containers"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring TLS
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure Keycloak's https certificates for ingoing and outgoing requests.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/enabletls"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring the hostname (v2)
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure the frontend and backchannel endpoints exposed by Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/hostname"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring a reverse proxy
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure Keycloak with a reverse proxy, API gateway, or load balancer.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/reverseproxy"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring the database
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure a relational database for Keycloak to store user, client, and realm data.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/db"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring distributed caches
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure the caching layer to cluster multiple Keycloak instances and to increase performance.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/caching"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring outgoing HTTP requests
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure the client used for outgoing HTTP requests.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/outgoinghttp"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring trusted certificates
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure the Keycloak Truststore to communicate through TLS.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/keycloak-truststore"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring trusted certificates for mTLS
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure Mutual TLS to verify clients that are connecting to Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/mutual-tls"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Enabling and disabling features
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure Keycloak to use optional features.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/features"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring providers
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure providers for Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/configuration-provider"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring logging
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure logging for Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/logging"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    FIPS 140-2 support
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure Keycloak server for FIPS compliance.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/fips"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring the Management Interface
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure Keycloak's management interface for endpoints such as metrics and health checks.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/management-interface"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Importing and exporting realms
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Import and export realms as JSON files.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/importExport"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Using a vault
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure and use a vault in Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/vault"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    All configuration
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Review build options and configuration for Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/all-config"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    All provider configuration
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Review provider configuration options.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/all-provider-config"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Checking if rolling updates are possible
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Execute the update compatibility command to check if Keycloak supports a rolling update for a change in your deployment.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/server/update-compatibility"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="row guide-category mb-4" id="operator">
+                <h2>Operator</h2>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Keycloak Operator Installation
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Install the Keycloak Operator on Kubernetes and OpenShift.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/operator/installation"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Basic Keycloak deployment
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Install Keycloak using the Operator.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/operator/basic-deployment"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Automating a realm import
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Automate a realm import using the operator.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/operator/realm-import"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Advanced configuration
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Tune advanced aspects of the Keycloak CR.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/operator/advanced-configuration"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Avoiding downtime with rolling updates
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Avoid downtime when changing themes, providers, or configurations in optimized images.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/operator/rolling-updates"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Using custom Keycloak images
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Customize and optimize the Keycloak container.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/operator/customizing-keycloak"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="row guide-category mb-4" id="observability">
+                <h2>Observability</h2>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Tracking instance status with health checks
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Check if an instance has finished its start up and is ready to serve requests by calling its health REST endpoints.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/observability/health"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Gaining insights with metrics
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Collect metrics to gain insights about state and activities of a running instance of Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/observability/configuration-metrics"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Monitoring user activities with event metrics
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Event metrics provide an aggregated view of user activities in a Keycloak instance.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/observability/event-metrics"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Monitoring performance with Service Level Indicators
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Track performance and reliability as perceived by users with Service Level Indicators (SLIs) and Service Level Objectives (SLOs).</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/observability/keycloak-service-level-indicators"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Troubleshooting using metrics
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Use metrics for troubleshooting errors and performance issues.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/observability/metrics-for-troubleshooting"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Root cause analysis with tracing
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Record information during the request lifecycle with OpenTelementry tracing to identify root cases for latencies and errors in Keycloak and connected systems.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/observability/tracing"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Visualizing activities in dashboards
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Install the Keycloak Grafana dashboards to visualize the metrics that capture the status and activities of your deployment.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/observability/grafana-dashboards"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Analyzing outliers and errors with exemplars
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Use exemplars to connect a metric to a recorded trace to analyze the root cause of errors or latencies.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/observability/exemplars"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="row guide-category mb-4" id="securing-apps">
+                <h2>Securing applications</h2>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Planning for securing applications and services
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Understand basic concepts for securing applications.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/overview"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Securing applications and services with OpenID Connect
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Use OpenID Connect with Keycloak to secure applications and services.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/oidc-layers"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Keycloak JavaScript adapter
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Client-side JavaScript library that can be used to secure web applications.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/javascript-adapter"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Keycloak Node.js adapter
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Node.js adapter to protect server-side JavaScript apps</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/nodejs-adapter"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring the mod_auth_openidc Apache HTTPD Module
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure the mod_auth_openidc Apache module with Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/mod-auth-openidc"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Keycloak SAML Galleon feature pack for WildFly and EAP
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Using Keycloak SAML Galleon feature pack to secure applications in WildFly and EAP.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/saml-galleon-layers"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring the mod_auth_mellon Apache Module
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure the mod_auth_mellon Apache module with Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/mod-auth-mellon"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring a Docker registry
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure a Docker registry to use Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/docker-registry"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Using the client registration service
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Use the client registration service.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/client-registration"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Automating client registration with the CLI
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Use the CLI to automate client registration.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/client-registration-cli"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Configuring and using token exchange
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Configure and use token exchange for Keycloak.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/token-exchange"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Keycloak admin client
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Using the Keycloak admin client to access the Keycloak Admin REST API</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/admin-client"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Keycloak authorization client
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Using the Keycloak authz client administer and check permissions</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/authz-client"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Keycloak policy enforcer
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Using the Keycloak policy enforcer in Java applications</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/policy-enforcer"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Upgrading the Keycloak Client Libraries
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">How to upgrade the Keycloak Client Libraries</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/securing-apps/upgrading"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="row guide-category mb-4" id="high-availability">
+                <h2>High availability</h2>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Multi-site deployments
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Connect multiple Keycloak deployments in different sites to increase the overall availability.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/high-availability/introduction"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Concepts for multi-site deployments
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Understand multi-site deployment with synchronous replication.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/high-availability/concepts-multi-site"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Building blocks multi-site deployments
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Learn about building blocks and suggested setups for multi-site deployments.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/high-availability/bblocks-multi-site"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Taking a site offline
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Take a site offline so that it no longer processes client requests.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/high-availability/operate-site-offline"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Bringing a site online
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Bring a site online so that it can process client requests.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/high-availability/operate-site-online"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Synchronizing sites
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Synchronize an offline site with an online site.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/high-availability/operate-synchronize"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Health checks for multi-site deployments
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Validate the health of a multi-site deployment.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/high-availability/health-checks-multi-site"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="row guide-category mb-4" id="ui-customization">
+                <h2>UI Customization</h2>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Introduction
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Learn how to customize the user interfaces.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/ui-customization/introduction"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Working with themes
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Understand how to create and configure themes.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/ui-customization/themes"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Customizing with Quick Theme
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Learn how to customize the consoles and login screens with the Quick Theme utility.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/ui-customization/quick-theme"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Localization
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Learn how to localize strings in the UIs.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/ui-customization/localization"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Using Avatars
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Use avatars in the Admin console and Account console.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/ui-customization/avatars"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Customizing the Welcome Theme
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Learn how to customize the welcome theme.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/ui-customization/welcome-theme"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Creating your own Console
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Learn to create your own version of Admin Console or Account Console.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/ui-customization/creating-your-own-console"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Using the npm UI packages
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Learn how to use UI modules in your own application.</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/ui-customization/themes-react"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="row guide-category mb-4" id="migration">
+                <h2>Migration</h2>
+                    <div class="col-sm-4">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    Migrating to Quarkus distribution
+                                    
+                                    
+                                </h5>
+                                <span class="card-text">Migrate to the new Quarkus distribution from the legacy WildFly distribution</span>
+                                <div>
+                                </div>
+                                <a href="https://www.keycloak.org/nightly/migration/migrating-to-quarkus"  class="stretched-link link-dark"></a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+    </div>
+    </div>
+</div>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

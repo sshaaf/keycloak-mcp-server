@@ -1,0 +1,196 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Configuring the mod_auth_openidc Apache HTTPD Module - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Configuring the mod_auth_openidc Apache HTTPD Module">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Configure the mod_auth_openidc Apache module with Keycloak.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/mod-auth-openidc">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/mod-auth-openidc">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Configuring the mod_auth_openidc Apache HTTPD Module</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Configuring the mod_auth_openidc Apache HTTPD Module</h1>
+                    <span class="text-muted">Configure the mod_auth_openidc Apache module with Keycloak.</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Keycloak does not provide any official support to mod_auth_openidc. The instructions below are best-effort and may not be up-to-date.
+We recommend that you stick to official mod_auth_openidc documentation for more details.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <a href="https://github.com/OpenIDC/mod_auth_openidc">mod_auth_openidc</a> is an Apache HTTP plugin for OpenID Connect. If your language/environment supports using Apache HTTPD
+as a proxy, then you can use <em>mod_auth_openidc</em> to secure your web application with OpenID Connect.  Configuration of this module
+is beyond the scope of this document.  Please see the <em>mod_auth_openidc</em> GitHub repo for more details on configuration.</p>
+</div>
+<div class="paragraph">
+<p>To configure <em>mod_auth_openidc</em> you&#8217;ll need</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The client_id.</p>
+</li>
+<li>
+<p>The client_secret.</p>
+</li>
+<li>
+<p>The redirect_uri to your application.</p>
+</li>
+<li>
+<p>The Keycloak openid-configuration url</p>
+</li>
+<li>
+<p><em>mod_auth_openidc</em> specific Apache HTTPD module config.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An example configuration would look like the following.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>LoadModule auth_openidc_module modules/mod_auth_openidc.so
+
+ServerName ${HOSTIP}
+
+&lt;VirtualHost *:80&gt;
+
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+
+    #this is required by mod_auth_openidc
+    OIDCCryptoPassphrase a-random-secret-used-by-apache-oidc-and-balancer
+
+    OIDCProviderMetadataURL ${KC_ADDR}/realms/${KC_REALM}/.well-known/openid-configuration
+
+    OIDCClientID ${CLIENT_ID}
+    OIDCClientSecret ${CLIENT_SECRET}
+    OIDCRedirectURI http://${HOSTIP}/${CLIENT_APP_NAME}/redirect_uri
+
+    # maps the preferred_username claim to the REMOTE_USER environment variable
+    OIDCRemoteUserClaim preferred_username
+
+    &lt;Location /${CLIENT_APP_NAME}/&gt;
+        AuthType openid-connect
+        Require valid-user
+    &lt;/Location&gt;
+&lt;/VirtualHost&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Further information on how to configure mod_auth_openidc can be found on the <a href="https://github.com/OpenIDC/mod_auth_openidc">mod_auth_openidc</a>
+project page.</p>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak/tree/main/docs/guides/securing-apps/mod-auth-openidc.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

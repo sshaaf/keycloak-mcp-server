@@ -1,0 +1,712 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Keycloak policy enforcer - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Keycloak policy enforcer">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Using the Keycloak policy enforcer in Java applications">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/policy-enforcer">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/policy-enforcer">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Keycloak policy enforcer</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Keycloak policy enforcer</h1>
+                    <span class="text-muted">Using the Keycloak policy enforcer in Java applications</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div id="preamble">
+<div class="sectionbody">
+<div id="_enforcer_overview" class="paragraph">
+<p>Policy Enforcement Point (PEP) is a design pattern and as such you can implement it in different ways. Keycloak provides all the necessary means
+to implement PEPs for different platforms, environments, and programming languages. Keycloak Authorization Services presents a RESTful API,
+and leverages OAuth2 authorization capabilities for fine-grained authorization using a centralized authorization server.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://www.keycloak.org/resources/images/guides/nightly/pep-pattern-diagram.png" alt="PEP overview">
+</div>
+</div>
+<div class="paragraph">
+<p>A PEP is responsible for enforcing access decisions from the Keycloak server where these decisions are taken by evaluating the policies
+associated with a protected resource. It acts as a filter or interceptor in your application in order to check whether or not a particular request
+to a protected resource can be fulfilled based on the permissions granted by these decisions.</p>
+</div>
+<div class="paragraph">
+<p>Keycloak provides built-in support for enabling the <strong>Keycloak Policy Enforcer</strong> to Java applications with built-in support to secure JakartaEE-compliant frameworks and web containers.
+If you are using Maven, you should configure the following dependency to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.keycloak&lt;/groupId&gt;
+    &lt;artifactId&gt;keycloak-policy-enforcer&lt;/artifactId&gt;
+    &lt;version&gt;999.0.0-SNAPSHOT&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When you enable the policy enforcer all requests sent to your application are intercepted and access to protected resources will be granted
+depending on the permissions granted by Keycloak to the identity making the request.</p>
+</div>
+<div class="paragraph">
+<p>Policy enforcement is strongly linked to your application&#8217;s paths and the <a href="https://www.keycloak.org/docs/latest/authorization_services/#_resource_overview">resources</a> you created for a resource server using the Keycloak Administration Console. By default,
+when you create a resource server, Keycloak creates a <a href="https://www.keycloak.org/docs/latest/authorization_services/#_resource_server_default_config">default configuration</a> for your resource server so you can enable policy enforcement quickly.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_enforcer_configuration"><a class="anchor" href="#_enforcer_configuration"></a>Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The policy enforcer configuration uses a JSON format and most of the time you don&#8217;t need to set anything if you want to
+automatically resolve the protected paths based on the resources available from your resource server.</p>
+</div>
+<div class="paragraph">
+<p>If you want to manually define the resources being protected, you can use a slightly more verbose format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "enforcement-mode" : "ENFORCING",
+  "paths": [
+    {
+      "path" : "/users/*",
+      "methods" : [
+        {
+          "method": "GET",
+          "scopes" : ["urn:app.com:scopes:view"]
+        },
+        {
+          "method": "POST",
+          "scopes" : ["urn:app.com:scopes:create"]
+        }
+      ]
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following is a description of each configuration option:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>enforcement-mode</strong></p>
+<div class="paragraph">
+<p>Specifies how policies are enforced.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>ENFORCING</strong></p>
+<div class="paragraph">
+<p>(default mode) Requests are denied by default even when no policy is associated with a given resource.</p>
+</div>
+</li>
+<li>
+<p><strong>PERMISSIVE</strong></p>
+<div class="paragraph">
+<p>Requests are allowed even when no policy is associated with a given resource.</p>
+</div>
+</li>
+<li>
+<p><strong>DISABLED</strong></p>
+<div class="paragraph">
+<p>Completely disables the evaluation of policies and allows access to any resource. When <code>enforcement-mode</code> is <code>DISABLED</code>,
+applications are still able to obtain all permissions granted by Keycloak through the <a href="#_enforcer_authorization_context">Authorization Context</a></p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>on-deny-redirect-to</strong></p>
+<div class="paragraph">
+<p>Defines a URL where a client request is redirected when an "access denied" message is obtained from the server. By default, the adapter responds with a 403 HTTP status code.</p>
+</div>
+</li>
+<li>
+<p><strong>path-cache</strong></p>
+<div class="paragraph">
+<p>Defines how the policy enforcer should track associations between paths in your application and resources defined in Keycloak. The cache is needed to avoid
+unnecessary requests to a Keycloak server by caching associations between paths and protected resources.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>lifespan</strong></p>
+<div class="paragraph">
+<p>Defines the time in milliseconds when the entry should be expired. If not provided, default value is <strong>30000</strong>. A value equal to 0 can be set to completely disable the cache. A value equal to -1 can be set to disable the expiry of the cache.</p>
+</div>
+</li>
+<li>
+<p><strong>max-entries</strong></p>
+<div class="paragraph">
+<p>Defines the limit of entries that should be kept in the cache. If not provided, default value is <strong>1000</strong>.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>paths</strong></p>
+<div class="paragraph">
+<p>Specifies the paths to protect. This configuration is optional. If not defined, the policy enforcer  discovers all paths by fetching the resources you defined to your application in Keycloak, where these resources are defined with <code>URIS</code> representing some paths in your application.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>name</strong></p>
+<div class="paragraph">
+<p>The name of a resource on the server that is to be associated with a given path. When used in conjunction with a <strong>path</strong>, the policy enforcer ignores the resource&#8217;s <strong>URIS</strong> property and uses the path you provided instead.</p>
+</div>
+</li>
+<li>
+<p><strong>path</strong></p>
+<div class="paragraph">
+<p>(required) A URI relative to the application&#8217;s context path. If this option is specified, the policy enforcer queries the server for a resource with a <strong>URI</strong> with the same value.
+Currently a very basic logic for path matching is supported. Examples of valid paths are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Wildcards: <code>/*</code></p>
+</li>
+<li>
+<p>Suffix: <code>/*.html</code></p>
+</li>
+<li>
+<p>Sub-paths: <code>/path/*</code></p>
+</li>
+<li>
+<p>Path parameters: /resource/{id}</p>
+</li>
+<li>
+<p>Exact match: /resource</p>
+</li>
+<li>
+<p>Patterns: /{version}/resource, /api/{version}/resource, /api/{version}/resource/*</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>methods</strong></p>
+<div class="paragraph">
+<p>The HTTP methods (for example, GET, POST, PATCH) to protect and how they are associated with the scopes for a given resource in the server.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>method</strong></p>
+<div class="paragraph">
+<p>The name of the HTTP method.</p>
+</div>
+</li>
+<li>
+<p><strong>scopes</strong></p>
+<div class="paragraph">
+<p>An array of strings with the scopes associated with the method. When you associate scopes with a specific method, the client trying to access a protected resource (or path) must provide an RPT that grants permission to all scopes specified in the list. For example, if you define a method <em>POST</em> with a scope <em>create</em>, the RPT must contain a permission granting access to the <em>create</em> scope when performing a POST to the path.</p>
+</div>
+</li>
+<li>
+<p><strong>scopes-enforcement-mode</strong></p>
+<div class="paragraph">
+<p>A string referencing the enforcement mode for the scopes associated with a method. Values can be <strong>ALL</strong> or <strong>ANY</strong>. If <strong>ALL</strong>,
+all defined scopes must be granted in order to access the resource using that method. If <strong>ANY</strong>, at least one scope should be
+granted in order to gain access to the resource using that method. By default, enforcement mode is set to <strong>ALL</strong>.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>enforcement-mode</strong></p>
+<div class="paragraph">
+<p>Specifies how policies are enforced.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>ENFORCING</strong></p>
+<div class="paragraph">
+<p>(default mode) Requests are denied by default even when there is no policy associated with a given resource.</p>
+</div>
+</li>
+<li>
+<p><strong>DISABLED</strong></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>claim-information-point</strong></p>
+<div class="paragraph">
+<p>Defines a set of one or more claims that must be resolved and pushed to the Keycloak server in order to make these claims available to policies. See <a href="#_enforcer_claim_information_point">Claim Information Point</a> for more details.</p>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>lazy-load-paths</strong></p>
+<div class="paragraph">
+<p>Specifies how the adapter should fetch the server for resources associated with paths in your application. If <strong>true</strong>, the policy
+enforcer is going to fetch resources on-demand accordingly with the path being requested. This configuration is specially useful
+when you do not want to fetch all resources from the server during deployment (in case you have provided no <code>paths</code>) or in case
+you have defined only a sub set of <code>paths</code> and want to fetch others on-demand.</p>
+</div>
+</li>
+<li>
+<p><strong>http-method-as-scope</strong></p>
+<div class="paragraph">
+<p>Specifies how scopes should be mapped to HTTP methods. If set to <strong>true</strong>, the policy enforcer will use the HTTP method from the current request to
+check whether or not access should be granted. When enabled, make sure your resources in Keycloak are associated with scopes representing each HTTP method you are protecting.</p>
+</div>
+</li>
+<li>
+<p><strong>claim-information-point</strong></p>
+<div class="paragraph">
+<p>Defines a set of one or more <strong>global</strong> claims that must be resolved and pushed to the Keycloak server in order to make these claims available to policies. See <a href="#_enforcer_claim_information_point">Claim Information Point</a> for more details.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_enforcer_claim_information_point"><a class="anchor" href="#_enforcer_claim_information_point"></a>Claim Information Point</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A Claim Information Point (CIP) is responsible for resolving claims and pushing these claims to the Keycloak server
+in order to provide more information about the access context to policies. They can be defined as a configuration option
+to the policy-enforcer in order to resolve claims from different sources, such as:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>HTTP Request (parameters, headers, body, etc)</p>
+</li>
+<li>
+<p>External HTTP Service</p>
+</li>
+<li>
+<p>Static values defined in configuration</p>
+</li>
+<li>
+<p>Any other source by implementing the Claim Information Provider SPI</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When pushing claims to the Keycloak server, policies can base decisions not only on who a user is but also by taking
+context and contents into account, based on who, what, why, when, where, and which for a given transaction. It is all about
+Contextual-based Authorization and how to use runtime information in order to support fine-grained authorization decisions.</p>
+</div>
+<div class="sect2">
+<h3 id="_obtaining_information_from_the_http_request"><a class="anchor" href="#_obtaining_information_from_the_http_request"></a>Obtaining information from the HTTP request</h3>
+<div class="paragraph">
+<p>Here are several examples showing how you can extract claims from an HTTP request:</p>
+</div>
+<div class="listingblock">
+<div class="title">keycloak.json</div>
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "paths": [
+    {
+      "path": "/protected/resource",
+      "claim-information-point": {
+        "claims": {
+          "claim-from-request-parameter": "{request.parameter['a']}",
+          "claim-from-header": "{request.header['b']}",
+          "claim-from-cookie": "{request.cookie['c']}",
+          "claim-from-remoteAddr": "{request.remoteAddr}",
+          "claim-from-method": "{request.method}",
+          "claim-from-uri": "{request.uri}",
+          "claim-from-relativePath": "{request.relativePath}",
+          "claim-from-secure": "{request.secure}",
+          "claim-from-json-body-object": "{request.body['/a/b/c']}",
+          "claim-from-json-body-array": "{request.body['/d/1']}",
+          "claim-from-body": "{request.body}",
+          "claim-from-static-value": "static value",
+          "claim-from-multiple-static-value": ["static", "value"],
+          "param-replace-multiple-placeholder": "Test {keycloak.access_token['/custom_claim/0']} and {request.parameter['a']}"
+        }
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_obtaining_information_from_an_external_http_service"><a class="anchor" href="#_obtaining_information_from_an_external_http_service"></a>Obtaining information from an external HTTP service</h3>
+<div class="paragraph">
+<p>Here are several examples showing how you can extract claims from an external HTTP Service:</p>
+</div>
+<div class="listingblock">
+<div class="title">keycloak.json</div>
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "paths": [
+    {
+      "path": "/protected/resource",
+      "claim-information-point": {
+        "http": {
+          "claims": {
+            "claim-a": "/a",
+            "claim-d": "/d",
+            "claim-d0": "/d/0",
+            "claim-d-all": [
+              "/d/0",
+              "/d/1"
+            ]
+          },
+          "url": "http://mycompany/claim-provider",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "header-b": [
+              "header-b-value1",
+              "header-b-value2"
+            ],
+            "Authorization": "Bearer {keycloak.access_token}"
+          },
+          "parameters": {
+            "param-a": [
+              "param-a-value1",
+              "param-a-value2"
+            ],
+            "param-subject": "{keycloak.access_token['/sub']}",
+            "param-user-name": "{keycloak.access_token['/preferred_username']}",
+            "param-other-claims": "{keycloak.access_token['/custom_claim']}"
+          }
+        }
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_static_claims"><a class="anchor" href="#_static_claims"></a>Static claims</h3>
+<div class="listingblock">
+<div class="title">keycloak.json</div>
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "paths": [
+    {
+      "path": "/protected/resource",
+      "claim-information-point": {
+        "claims": {
+          "claim-from-static-value": "static value",
+          "claim-from-multiple-static-value": ["static", "value"]
+        }
+      }
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_claim_information_provider_spi"><a class="anchor" href="#_claim_information_provider_spi"></a>Claim information provider SPI</h3>
+<div class="paragraph">
+<p>The Claim Information Provider SPI can be used by developers to support different claim information points in case none of the
+built-ins providers are enough to address their requirements.</p>
+</div>
+<div class="paragraph">
+<p>For example, to implement a new CIP provider you need to implement <code>org.keycloak.adapters.authorization.ClaimInformationPointProviderFactory</code>
+and <code>ClaimInformationPointProvider</code> and also provide the file <code>META-INF/services/org.keycloak.adapters.authorization.ClaimInformationPointProviderFactory</code>
+in your application`s classpath.</p>
+</div>
+<div class="paragraph">
+<p>Example of <code>org.keycloak.adapters.authorization.ClaimInformationPointProviderFactory</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyClaimInformationPointProviderFactory implements ClaimInformationPointProviderFactory&lt;MyClaimInformationPointProvider&gt; {
+
+    @Override
+    public String getName() {
+        return "my-claims";
+    }
+
+    @Override
+    public void init(PolicyEnforcer policyEnforcer) {
+
+    }
+
+    @Override
+    public MyClaimInformationPointProvider create(Map&lt;String, Object&gt; config) {
+        return new MyClaimInformationPointProvider(config);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Every CIP provider must be associated with a name, as defined above in the <code>MyClaimInformationPointProviderFactory.getName</code> method. The name
+will be used to map the configuration from the <code>claim-information-point</code> section in the <code>policy-enforcer</code> configuration to the implementation.</p>
+</div>
+<div class="paragraph">
+<p>When processing requests, the policy enforcer will call the MyClaimInformationPointProviderFactory.create method in order to obtain an
+instance of MyClaimInformationPointProvider. When called, any configuration defined for this particular CIP provider
+(via claim-information-point) is passed as a map.</p>
+</div>
+<div class="paragraph">
+<p>Example of <code>ClaimInformationPointProvider</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class MyClaimInformationPointProvider implements ClaimInformationPointProvider {
+
+    private final Map&lt;String, Object&gt; config;
+
+    public MyClaimInformationPointProvider(Map&lt;String, Object&gt; config) {
+        this.config = config;
+    }
+
+    @Override
+    public Map&lt;String, List&lt;String&gt;&gt; resolve(HttpFacade httpFacade) {
+        Map&lt;String, List&lt;String&gt;&gt; claims = new HashMap&lt;&gt;();
+
+        // put whatever claim you want into the map
+
+        return claims;
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_enforcer_authorization_context"><a class="anchor" href="#_enforcer_authorization_context"></a>Obtaining the authorization context</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When policy enforcement is enabled, the permissions obtained from the server are available through <code>org.keycloak.AuthorizationContext</code>.
+This class provides several methods you can use to obtain permissions and ascertain whether a permission was granted for a particular resource or scope.</p>
+</div>
+<div class="paragraph">
+<p>Obtaining the Authorization Context in a Servlet Container</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">HttpServletRequest request = // obtain javax.servlet.http.HttpServletRequest
+AuthorizationContext authzContext = (AuthorizationContext) request.getAttribute(AuthorizationContext.class.getName());</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The authorization context helps give you more control over the decisions made and returned by the server. For example, you can use it
+to build a dynamic menu where items are hidden or shown depending on the permissions associated with a resource or scope.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">if (authzContext.hasResourcePermission("Project Resource")) {
+    // user can access the Project Resource
+}
+
+if (authzContext.hasResourcePermission("Admin Resource")) {
+    // user can access administration resources
+}
+
+if (authzContext.hasScopePermission("urn:project.com:project:create")) {
+    // user can create new projects
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>AuthorizationContext</code> represents one of the main capabilities of Keycloak Authorization Services. From the examples above, you can see that the protected resource is not directly associated with the policies that govern them.</p>
+</div>
+<div class="paragraph">
+<p>Consider some similar code using role-based access control (RBAC):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">if (User.hasRole('user')) {
+    // user can access the Project Resource
+}
+
+if (User.hasRole('admin')) {
+    // user can access administration resources
+}
+
+if (User.hasRole('project-manager')) {
+    // user can create new projects
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Although both examples address the same requirements, they do so in different ways. In RBAC, roles only <em>implicitly</em> define access for their resources. With Keycloak, you gain the capability to create more manageable code that focuses directly on your resources whether you are using RBAC, attribute-based access control (ABAC), or any other BAC variant. Either you have the permission for a given resource or scope, or you do not have that permission.</p>
+</div>
+<div class="paragraph">
+<p>Now, suppose your security requirements have changed and in addition to project managers, PMOs can also create new projects.</p>
+</div>
+<div class="paragraph">
+<p>Security requirements change, but with Keycloak there is no need to change your application code to address the new requirements. Once your application is based on the resource and scope identifier, you need only change the configuration of the permissions or policies associated with a particular resource in the authorization server. In this case, the permissions and policies associated with the <code>Project Resource</code> and/or the scope <code>urn:project.com:project:create</code> would be changed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_the_authorizationcontext_to_obtain_an_authorization_client_instance"><a class="anchor" href="#_using_the_authorizationcontext_to_obtain_an_authorization_client_instance"></a>Using the AuthorizationContext to obtain an Authorization Client Instance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code><code>AuthorizationContext</code></code> can also be used to obtain a reference to the <a href="https://www.keycloak.org/nightly/securing-apps/authz-client">Keycloak authorization client</a> configured to your application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">ClientAuthorizationContext clientContext = ClientAuthorizationContext.class.cast(authzContext);
+AuthzClient authzClient = clientContext.getClient();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In some cases, resource servers protected by the policy enforcer need to access the APIs provided by the authorization server. With an <code>AuthzClient</code> instance in hands, resource servers can interact with the server in order to create resources or check for specific permissions programmatically.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_enforcer_filter_using_https"><a class="anchor" href="#_enforcer_filter_using_https"></a>Configuring TLS/HTTPS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When the server is using HTTPS, ensure your policy enforcer is configured as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "truststore": "path_to_your_trust_store",
+  "truststore-password": "trust_store_password"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The configuration above enables TLS/HTTPS to the Authorization Client, making possible to access a
+Keycloak Server remotely using the HTTPS scheme.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+It is strongly recommended that you enable TLS/HTTPS when accessing the Keycloak Server endpoints.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak-client/tree/main/docs/guides/securing-apps/policy-enforcer.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

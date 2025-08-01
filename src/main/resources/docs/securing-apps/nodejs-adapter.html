@@ -1,0 +1,631 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Keycloak Node.js adapter - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Keycloak Node.js adapter">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Node.js adapter to protect server-side JavaScript apps">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/nodejs-adapter">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/nodejs-adapter">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Keycloak Node.js adapter</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Keycloak Node.js adapter</h1>
+                    <span class="text-muted">Node.js adapter to protect server-side JavaScript apps</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keycloak provides a Node.js adapter built on top of <a href="https://github.com/senchalabs/connect">Connect</a> to protect server-side JavaScript apps - the goal was to be flexible enough to integrate with frameworks like <a href="https://expressjs.com/">Express.js</a>.
+The adapter uses OpenID Connect protocol under the covers. You can take a look at the <a href="https://www.keycloak.org/nightly/securing-apps/oidc-layers#_oidc_available_endpoints">Securing applications and services with OpenID Connect</a> guide for the more generic information about OpenID Connect endpoints and capabilities.</p>
+</div>
+<div class="paragraph">
+<p>The library can be downloaded directly from <a href="https://www.npmjs.com/package/keycloak-connect"> Keycloak organization</a> and the source is available at
+<a href="https://github.com/keycloak/keycloak-nodejs-connect">GitHub</a>.</p>
+</div>
+<div class="paragraph">
+<p>To use the Node.js adapter, first you must create a client for your application in the Keycloak Admin Console. The adapter supports public, confidential, and bearer-only access type. Which one to choose depends on the use-case scenario.</p>
+</div>
+<div class="paragraph">
+<p>Once the client is created, click <strong>Action</strong> at the top right and choose <strong>Download adapter config</strong>. For <strong>Format</strong>, choose <strong>Keycloak OIDC JSON</strong> and click <strong>Download</strong>. The downloaded <code>keycloak.json</code> file is at the root folder of your project.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_supported_node_js_versions"><a class="anchor" href="#_supported_node_js_versions"></a>Supported Node.js versions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Node.js adapter strives to be compatible with the versions that are <a href="https://github.com/nodejs/release#release-schedule">actively supported</a> by the Node.js project. Support for versions of Node.js that are <a href="https://github.com/nodejs/release?tab=readme-ov-file#end-of-life-releases">considered end-of-life</a> can be dropped in future releases, and will not be considered a breaking change that requires a major version bump.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation"><a class="anchor" href="#_installation"></a>Installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Assuming you have already installed <a href="https://nodejs.org">Node.js</a>, create a folder for your application:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>mkdir myapp &amp;&amp; cd myapp</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use <code>npm init</code> command to create a <code>package.json</code> for your application. Now add the Keycloak connect adapter in the dependencies list:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">    "dependencies": {
+        "keycloak-connect": "999.0.0-SNAPSHOT"
+    }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage"><a class="anchor" href="#_usage"></a>Usage</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Instantiate a Keycloak class</dt>
+<dd>
+<p>The <code>Keycloak</code> class provides a central point for configuration
+and integration with your application.  The simplest creation
+involves no arguments.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>In the root directory of your project create a file called <code>server.js</code> and add the following code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    const session = require('express-session');
+    const Keycloak = require('keycloak-connect');
+
+    const memoryStore = new session.MemoryStore();
+    const keycloak = new Keycloak({ store: memoryStore });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Install the <code>express-session</code> dependency:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    npm install express-session</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To start the <code>server.js</code> script, add the following command in the 'scripts' section of the <code>package.json</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    "scripts": {
+        "test": "echo \"Error: no test specified\" &amp;&amp; exit 1",
+        "start": "node server.js"
+    },</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we have the ability to run our server with following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    npm run start</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, this will locate a file named <code>keycloak.json</code> alongside
+the main executable of your application, in our case on the root folder, to initialize Keycloak specific
+settings such as public key, realm name, various URLs.</p>
+</div>
+<div class="paragraph">
+<p>In that case, a Keycloak deployment is necessary so you can access the Keycloak Admin Console.</p>
+</div>
+<div class="paragraph">
+<p>To deploy a Keycloak Admin Console, see
+<a href="https://www.keycloak.org/getting-started/getting-started-podman">Podman</a> or <a href="https://www.keycloak.org/getting-started/getting-started-docker">Docker</a>.</p>
+</div>
+<div class="paragraph">
+<p>Once the Admin Console is deployed, we are ready to obtain the <code>keycloak.json</code> file by visiting the Keycloak Admin Console &#8594; clients (left sidebar) &#8594; choose your client &#8594; Installation &#8594; Format Option &#8594; Keycloak OIDC JSON &#8594; Download.</p>
+</div>
+<div class="paragraph">
+<p>Paste the downloaded file on the root folder of our project.</p>
+</div>
+<div class="paragraph">
+<p>Instantiation with this method results in all the reasonable defaults
+being used. As alternative, it&#8217;s also possible to provide a configuration
+object, rather than the <code>keycloak.json</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    const kcConfig = {
+        clientId: 'myclient',
+        bearerOnly: true,
+        serverUrl: 'http://localhost:8080{kc_base_path}',
+        realm: 'myrealm',
+        realmPublicKey: 'MIIBIjANB...'
+    };
+
+    const keycloak = new Keycloak({ store: memoryStore }, kcConfig);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Applications can also redirect users to their preferred identity provider by using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    const keycloak = new Keycloak({ store: memoryStore, idpHint: myIdP }, kcConfig);</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Configuring a web session store</dt>
+<dd>
+<p>If you want to use web sessions to manage
+server-side state for authentication, you need to initialize the
+<code>Keycloak(&#8230;&#8203;)</code> with at least a <code>store</code> parameter, passing in the actual
+session store that <code>express-session</code> is using.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    const session = require('express-session');
+    const memoryStore = new session.MemoryStore();
+
+    // Configure session
+    app.use(
+      session({
+        secret: 'mySecret',
+        resave: false,
+        saveUninitialized: true,
+        store: memoryStore,
+      })
+    );
+
+    const keycloak = new Keycloak({ store: memoryStore });</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Passing a custom scope value</dt>
+<dd>
+<p>By default, the scope value <code>openid</code> is passed as a query parameter to Keycloak&#8217;s login URL, but you can add an additional custom value:</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    const keycloak = new Keycloak({ scope: 'offline_access' });</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installing_middleware"><a class="anchor" href="#_installing_middleware"></a>Installing middleware</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once instantiated, install the middleware into your connect-capable app:</p>
+</div>
+<div class="paragraph">
+<p>In order to do so, first we have to install Express:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    npm install express</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then require Express in our project as outlined below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    const express = require('express');
+    const app = express();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and configure Keycloak middleware in Express, by adding at the code below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.use( keycloak.middleware() );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Last but not least, let&#8217;s set up our server to listen for HTTP requests on port 3000 by adding the following code to <code>main.js</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.listen(3000, function () {
+        console.log('App listening on port 3000');
+    });</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_for_proxies"><a class="anchor" href="#_configuration_for_proxies"></a>Configuration for proxies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If the application is running behind a proxy that terminates an SSL connection
+Express must be configured per the <a href="https://expressjs.com/en/guide/behind-proxies.html">express behind proxies</a> guide.
+Using an incorrect proxy configuration can result in invalid redirect URIs
+being generated.</p>
+</div>
+<div class="paragraph">
+<p>Example configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    const app = express();
+
+    app.set( 'trust proxy', true );
+
+    app.use( keycloak.middleware() );</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_protecting_resources"><a class="anchor" href="#_protecting_resources"></a>Protecting resources</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Simple authentication</dt>
+<dd>
+<p>To enforce that a user must be authenticated before accessing a resource,
+simply use a no-argument version of <code>keycloak.protect()</code>:</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.get( '/complain', keycloak.protect(), complaintHandler );</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Role-based authorization</dt>
+<dd>
+<p>To secure a resource with an application role for the current app:</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.get( '/special', keycloak.protect('special'), specialHandler );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To secure a resource with an application role for a <strong>different</strong> app:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.get( '/extra-special', keycloak.protect('other-app:special'), extraSpecialHandler );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To secure a resource with a realm role:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.get( '/admin', keycloak.protect( 'realm:admin' ), adminHandler );</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Resource-Based Authorization</dt>
+<dd>
+<p>Resource-Based Authorization allows you to protect resources, and their specific methods/actions,<strong>*</strong>* based on a set of policies defined in Keycloak, thus externalizing authorization from your application. This is achieved by exposing a <code>keycloak.enforcer</code> method which you can use to protect resources.*</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.get('/apis/me', keycloak.enforcer('user:profile'), userProfileHandler);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>keycloak-enforcer</code> method operates in two modes, depending on the value of the <code>response_mode</code> configuration option.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.get('/apis/me', keycloak.enforcer('user:profile', {response_mode: 'token'}), userProfileHandler);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If <code>response_mode</code> is set to <code>token</code>, permissions are obtained from the server on behalf of the subject represented by the bearer token that was sent to your application. In this case, a new access token is issued by Keycloak with the permissions granted by the server. If the server did not respond with a token with the expected permissions, the request is denied. When using this mode, you should be able to obtain the token from the request as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.get('/apis/me', keycloak.enforcer('user:profile', {response_mode: 'token'}), function (req, res) {
+        const token = req.kauth.grant.access_token.content;
+        const permissions = token.authorization ? token.authorization.permissions : undefined;
+
+        // show user profile
+    });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Prefer this mode when your application is using sessions and you want to cache previous decisions from the server, as well automatically handle refresh tokens. This mode is especially useful for applications acting as a client and resource server.</p>
+</div>
+<div class="paragraph">
+<p>If <code>response_mode</code> is set to <code>permissions</code> (default mode), the server only returns the list of granted permissions, without issuing a new access token. In addition to not issuing a new token, this method exposes the permissions granted by the server through the <code>request</code> as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.get('/apis/me', keycloak.enforcer('user:profile', {response_mode: 'permissions'}), function (req, res) {
+        const permissions = req.permissions;
+
+        // show user profile
+    });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Regardless of the <code>response_mode</code> in use, the <code>keycloak.enforcer</code> method will first try to check the permissions within the bearer token that was sent to your application. If the bearer token already carries the expected permissions, there is no need
+to interact with the server to obtain a decision. This is specially useful when your clients are capable of obtaining access tokens from the server with the expected permissions before accessing a protected resource, so they can use some capabilities provided by Keycloak Authorization Services such as incremental authorization and avoid additional requests to the server when <code>keycloak.enforcer</code> is enforcing access to the resource.</p>
+</div>
+<div class="paragraph">
+<p>By default, the policy enforcer will use the <code>client_id</code> defined to the application (for instance, via <code>keycloak.json</code>) to
+ reference a client in Keycloak that supports Keycloak Authorization Services. In this case, the client can not be public given
+ that it is actually a resource server.</p>
+</div>
+<div class="paragraph">
+<p>If your application is acting as both a public client(frontend) and resource server(backend), you can use the following configuration to reference a different
+client in Keycloak with the policies that you want to enforce:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">      keycloak.enforcer('user:profile', {resource_server_id: 'my-apiserver'})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is recommended to use distinct clients in Keycloak to represent your frontend and backend.</p>
+</div>
+<div class="paragraph">
+<p>If the application you are protecting is enabled with Keycloak authorization services and you have defined client credentials
+ in <code>keycloak.json</code>, you can push additional claims to the server and make them available to your policies in order to make decisions.
+For that, you can define a <code>claims</code> configuration option which expects a <code>function</code> that returns a JSON with the claims you want to push:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">      app.get('/protected/resource', keycloak.enforcer(['resource:view', 'resource:write'], {
+          claims: function(request) {
+            return {
+              "http.uri": ["/protected/resource"],
+              "user.agent": // get user agent  from request
+            }
+          }
+        }), function (req, res) {
+          // access granted</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For more details about how to configure Keycloak to protected your application resources, please take a look at the <a href="https://www.keycloak.org/docs/latest/authorization_services/">Authorization Services Guide</a>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Advanced authorization</dt>
+<dd>
+<p>To secure resources based on parts of the URL itself, assuming a role exists
+for each section:</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    function protectBySection(token, request) {
+      return token.hasRole( request.params.section );
+    }
+
+    app.get( '/:section/:page', keycloak.protect( protectBySection ), sectionHandler );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Advanced Login Configuration:</p>
+</div>
+<div class="paragraph">
+<p>By default, all unauthorized requests will be redirected to the Keycloak login page unless your client is bearer-only.
+However, a confidential or public client may host both browsable and API endpoints. To prevent redirects on unauthenticated
+API requests and instead return an HTTP 401, you can override the redirectToLogin function.</p>
+</div>
+<div class="paragraph">
+<p>For example, this override checks if the URL contains /api/ and disables login redirects:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    Keycloak.prototype.redirectToLogin = function(req) {
+    const apiReqMatcher = /\/api\//i;
+    return !apiReqMatcher.test(req.originalUrl || req.url);
+    };</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_additional_urls"><a class="anchor" href="#_additional_urls"></a>Additional URLs</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Explicit user-triggered logout</dt>
+<dd>
+<p>By default, the middleware catches calls to <code>/logout</code> to send the user through a
+Keycloak-centric logout workflow. This can be changed by specifying a <code>logout</code>
+configuration parameter to the <code>middleware()</code> call:</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.use( keycloak.middleware( { logout: '/logoff' } ));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the user-triggered logout is invoked a query parameter <code>redirect_url</code> can be passed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>https://example.com/logoff?redirect_url=https%3A%2F%2Fexample.com%3A3000%2Flogged%2Fout</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This parameter is then used as the redirect url of the OIDC logout endpoint and the user will be redirected to
+<code>https://example.com/logged/out</code>.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Keycloak Admin Callbacks</dt>
+<dd>
+<p>Also, the middleware supports callbacks from the Keycloak console to log out a single
+session or all sessions.  By default, these type of admin callbacks occur relative
+to the root URL of <code>/</code> but can be changed by providing an <code>admin</code> parameter
+to the <code>middleware()</code> call:</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">    app.use( keycloak.middleware( { admin: '/callbacks' } );</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_complete_example"><a class="anchor" href="#_complete_example"></a>Complete example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A complete example using the Node.js adapter usage can be found in <a href="https://github.com/keycloak/keycloak-quickstarts/tree/main/nodejs/resource-server">Keycloak quickstarts for Node.js</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_upgrade_nodejs_adapter"><a class="anchor" href="#_upgrade_nodejs_adapter"></a>Upgrading the <code>Node.js</code> adapter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To upgrade a <code>Node.js</code> adapter that has been copied to your web application, perform the following procedure.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Procedure</div>
+<ol class="arabic">
+<li>
+<p>Download the new adapter archive.</p>
+</li>
+<li>
+<p>Remove the existing <code>Node.js</code> adapter directory</p>
+</li>
+<li>
+<p>Unzip the updated file into its place</p>
+</li>
+<li>
+<p>Change the dependency for keycloak-connect in the <code>package.json</code> of your application</p>
+</li>
+</ol>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak-nodejs-connect/tree/main/guides/securing-apps/nodejs-adapter.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

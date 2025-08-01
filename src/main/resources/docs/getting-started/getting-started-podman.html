@@ -1,0 +1,405 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Podman - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Podman">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Get started with Keycloak on Podman.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/getting-started/getting-started-podman">
+<meta property="og:url" content="https://www.keycloak.org/nightly/getting-started/getting-started-podman">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#getting-started">Getting started</a></li>
+                    <li class="breadcrumb-item active">Podman</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Podman</h1>
+                    <span class="text-muted">Get started with Keycloak on Podman.</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div class="sect1">
+<h2 id="_before_you_start"><a class="anchor" href="#_before_you_start"></a>Before you start</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Make sure your machine or container platform can provide sufficient memory and CPU for your desired usage of Keycloak.
+See <a href="https://www.keycloak.org/nightly/high-availability/concepts-memory-and-cpu-sizing">Concepts for sizing CPU and memory resources</a> for more on how to get started with production sizing.</p>
+</div>
+<div class="paragraph">
+<p>Make sure you have Podman installed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_start_keycloak"><a class="anchor" href="#_start_keycloak"></a>Start Keycloak</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>From a terminal, enter the following command to start Keycloak:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">podman run -p 127.0.0.1:8080:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:26.3.2 start-dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command starts Keycloak exposed on the local port 8080 and creates an initial admin user with the username <code>admin</code>
+and password <code>admin</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log_in_to_the_admin_console"><a class="anchor" href="#_log_in_to_the_admin_console"></a>Log in to the Admin Console</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Go to the <a href="http://localhost:8080/admin">Keycloak Admin Console</a>.</p>
+</li>
+<li>
+<p>Log in with the username and password you created earlier.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_a_realm"><a class="anchor" href="#_create_a_realm"></a>Create a realm</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A realm in Keycloak is equivalent to a tenant. Each realm allows an administrator to create isolated groups of applications and users. Initially, Keycloak
+includes a single realm, called <code>master</code>. Use this realm only for managing Keycloak and not for managing any applications.</p>
+</div>
+<div class="paragraph">
+<p>Use these steps to create the first realm.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the <a href="http://localhost:8080/admin">Keycloak Admin Console</a>.</p>
+</li>
+<li>
+<p>Click <strong>Create Realm</strong> next to <strong>Current realm</strong>.</p>
+</li>
+<li>
+<p>Enter <code>myrealm</code> in the <strong>Realm name</strong> field.</p>
+</li>
+<li>
+<p>Click <strong>Create</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://www.keycloak.org/resources/images/guides/nightly/add-realm.png" alt="Add realm">
+</div>
+<div class="title">Figure 1. Add realm</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_a_user"><a class="anchor" href="#_create_a_user"></a>Create a user</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Initially, the realm has no users. Use these steps to create a user:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Verify that you are still in the <strong>myrealm</strong> realm, which is next to <strong>Current realm</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Users</strong> in the left-hand menu.</p>
+</li>
+<li>
+<p>Click <strong>Create new user</strong>.</p>
+</li>
+<li>
+<p>Fill in the form with the following values:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Username</strong>: <code>myuser</code></p>
+</li>
+<li>
+<p><strong>First name</strong>: any first name</p>
+</li>
+<li>
+<p><strong>Last name</strong>: any last name</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <strong>Create</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://www.keycloak.org/resources/images/guides/nightly/add-user.png" alt="Create user">
+</div>
+<div class="title">Figure 2. Create user</div>
+</div>
+<div class="paragraph">
+<p>This user needs a password to log in. To set the initial password:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Click <strong>Credentials</strong> at the top of the page.</p>
+</li>
+<li>
+<p>Fill in the <strong>Set password</strong> form with a password.</p>
+</li>
+<li>
+<p>Toggle <strong>Temporary</strong> to <strong>Off</strong> so that the user does not need to update this password at the first login.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://www.keycloak.org/resources/images/guides/nightly/set-password.png" alt="Set password">
+</div>
+<div class="title">Figure 3. Set password</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_log_in_to_the_account_console"><a class="anchor" href="#_log_in_to_the_account_console"></a>Log in to the Account Console</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can now log in to the Account Console to verify this user is configured correctly.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the <a href="http://localhost:8080/realms/myrealm/account">Keycloak Account Console</a>.</p>
+</li>
+<li>
+<p>Log in with <code>myuser</code> and the password you created earlier.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>As a user in the Account Console, you can manage your account including modifying your profile, adding two-factor authentication, and including identity provider accounts.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://www.keycloak.org/resources/images/guides/nightly/account-console.png" alt="Keycloak Account Console">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_secure_the_first_application"><a class="anchor" href="#_secure_the_first_application"></a>Secure the first application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To secure the first application, you start by registering the application with your Keycloak instance:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the <a href="http://localhost:8080/admin">Keycloak Admin Console</a>.</p>
+</li>
+<li>
+<p>Click <strong>myrealm</strong> next to <strong>Current realm</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Clients</strong>.</p>
+</li>
+<li>
+<p>Click <strong>Create client</strong></p>
+</li>
+<li>
+<p>Fill in the form with the following values:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Client type</strong>: <code>OpenID Connect</code></p>
+</li>
+<li>
+<p><strong>Client ID</strong>: <code>myclient</code></p>
+<div class="imageblock">
+<div class="content">
+<img src="https://www.keycloak.org/resources/images/guides/nightly/add-client-1.png" alt="Add client">
+</div>
+<div class="title">Figure 4. Add client</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <strong>Next</strong></p>
+</li>
+<li>
+<p>Confirm that <strong>Standard flow</strong> is enabled.</p>
+</li>
+<li>
+<p>Click <strong>Next</strong>.</p>
+</li>
+<li>
+<p>Make these changes under <strong>Login settings</strong>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Set <strong>Valid redirect URIs</strong> to <code>https://www.keycloak.org/app/*</code></p>
+</li>
+<li>
+<p>Set <strong>Web origins</strong> to <code>https://www.keycloak.org</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Click <strong>Save</strong>.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://www.keycloak.org/resources/images/guides/nightly/add-client-2.png" alt="Update client">
+</div>
+<div class="title">Figure 5. Update client</div>
+</div>
+<div class="paragraph">
+<p>To confirm the client was created successfully, you can use the SPA testing application on the <a href="https://www.keycloak.org/app/">Keycloak website</a>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open <a href="https://www.keycloak.org/app/" class="bare">https://www.keycloak.org/app/</a>.</p>
+</li>
+<li>
+<p>Click <strong>Save</strong> to use the default configuration.</p>
+</li>
+<li>
+<p>Click <strong>Sign in</strong> to authenticate to this application using the Keycloak server you started earlier.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_taking_the_next_step"><a class="anchor" href="#_taking_the_next_step"></a>Taking the next step</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before you run Keycloak in production, consider the following actions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Switch to a production ready database such as PostgreSQL.</p>
+</li>
+<li>
+<p>Configure SSL with your own certificates.</p>
+</li>
+<li>
+<p>Switch the admin password to a more secure password.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For more information, see the <a href="https://www.keycloak.org/guides#server">server guides</a>.</p>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak/tree/main/docs/guides/getting-started/getting-started-podman.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

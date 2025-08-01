@@ -1,0 +1,873 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Keycloak SAML Galleon feature pack for WildFly and EAP - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Keycloak SAML Galleon feature pack for WildFly and EAP">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Using Keycloak SAML Galleon feature pack to secure applications in WildFly and EAP.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/saml-galleon-layers">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/saml-galleon-layers">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Keycloak SAML Galleon feature pack for WildFly and EAP</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Keycloak SAML Galleon feature pack for WildFly and EAP</h1>
+                    <span class="text-muted">Using Keycloak SAML Galleon feature pack to secure applications in WildFly and EAP.</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SAML adapter is distributed as a Galleon feature pack for wildfly 29 or newer. More details about the subject
+in the <a href="https://docs.wildfly.org/32/WildFly_Elytron_Security.html#Keycloak_SAML_Integration">WildFly documentation</a>.
+The same option is provided for <a href="https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/8.0/html-single/using_single_sign-on_with_jboss_eap/index#securing-applications-with-saml_securing-applications-deployed-on-server-with-single-sign-on">JBoss EAP 8 GA</a>.</p>
+</div>
+<div class="paragraph">
+<p>For an example about how to integrate Keycloak with JakartaEE applications running on latest Wildfly/EAP, take a look at the <code>servlet-saml-service-provider</code> Jakarta folder in the <a href="https://github.com/keycloak/keycloak-quickstarts">Keycloak Quickstart GitHub Repository</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation"><a class="anchor" href="#_installation"></a>Installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The provision of the feature pack is done using the <a href="https://docs.wildfly.org/wildfly-maven-plugin">wildfly-maven-plugin</a>, <a href="https://docs.wildfly.org/bootablejar/">wildfly-jar-maven-plugin</a> or <a href="https://docs.redhat.com/en/documentation/red_hat_jboss_enterprise_application_platform/8.0/html/using_jboss_eap_on_openshift_container_platform/assembly_provisioning-a-jboss-eap-server-using-the-maven-plugin_default">eap-maven-plugin</a> respectively.</p>
+</div>
+<div class="sect2">
+<h3 id="_example_of_provision_using_wildfly_maven_plugin"><a class="anchor" href="#_example_of_provision_using_wildfly_maven_plugin"></a>Example of provision using wildfly maven plugin</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.wildfly.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;wildfly-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;5.0.0.Final&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;feature-packs&gt;
+            &lt;feature-pack&gt;
+                &lt;location&gt;wildfly@maven(org.jboss.universe:community-universe)#32.0.1.Final&lt;/location&gt;
+            &lt;/feature-pack&gt;
+            &lt;feature-pack&gt;
+                &lt;groupId&gt;org.keycloak&lt;/groupId&gt;
+                &lt;artifactId&gt;keycloak-saml-adapter-galleon-pack&lt;/artifactId&gt;
+                &lt;version&gt;26.3.2&lt;/version&gt;
+            &lt;/feature-pack&gt;
+        &lt;/feature-packs&gt;
+        &lt;layers&gt;
+            &lt;layer&gt;core-server&lt;/layer&gt;
+            &lt;layer&gt;web-server&lt;/layer&gt;
+            &lt;layer&gt;jaxrs-server&lt;/layer&gt;
+            &lt;layer&gt;datasources-web-server&lt;/layer&gt;
+            &lt;layer&gt;webservices&lt;/layer&gt;
+            &lt;layer&gt;keycloak-saml&lt;/layer&gt;
+            &lt;layer&gt;keycloak-client-saml&lt;/layer&gt;
+            &lt;layer&gt;keycloak-client-saml-ejb&lt;/layer&gt;
+        &lt;/layers&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;package&lt;/goal&gt;
+            &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_of_provision_using_wildfly_jar_maven_plugin"><a class="anchor" href="#_example_of_provision_using_wildfly_jar_maven_plugin"></a>Example of provision using wildfly jar maven plugin</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.wildfly.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;wildfly-jar-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;11.0.2.Final&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;feature-packs&gt;
+            &lt;feature-pack&gt;
+                &lt;location&gt;wildfly@maven(org.jboss.universe:community-universe)#32.0.1.Final&lt;/location&gt;
+            &lt;/feature-pack&gt;
+            &lt;feature-pack&gt;
+                &lt;groupId&gt;org.keycloak&lt;/groupId&gt;
+                &lt;artifactId&gt;keycloak-saml-adapter-galleon-pack&lt;/artifactId&gt;
+                &lt;version&gt;26.3.2&lt;/version&gt;
+            &lt;/feature-pack&gt;
+        &lt;/feature-packs&gt;
+        &lt;layers&gt;
+            &lt;layer&gt;core-server&lt;/layer&gt;
+            &lt;layer&gt;web-server&lt;/layer&gt;
+            &lt;layer&gt;jaxrs-server&lt;/layer&gt;
+            &lt;layer&gt;datasources-web-server&lt;/layer&gt;
+            &lt;layer&gt;webservices&lt;/layer&gt;
+            &lt;layer&gt;keycloak-saml&lt;/layer&gt;
+            &lt;layer&gt;keycloak-client-saml&lt;/layer&gt;
+            &lt;layer&gt;keycloak-client-saml-ejb&lt;/layer&gt;
+        &lt;/layers&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;package&lt;/goal&gt;
+            &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example_of_provision_using_eap_maven_plugin"><a class="anchor" href="#_example_of_provision_using_eap_maven_plugin"></a>Example of provision using EAP maven plugin</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.jboss.eap.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;eap-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0.Final-redhat-00014&lt;/version&gt;
+    &lt;configuration&gt;
+        &lt;channels&gt;
+            &lt;channel&gt;
+                &lt;manifest&gt;
+                    &lt;groupId&gt;org.jboss.eap.channels&lt;/groupId&gt;
+                    &lt;artifactId&gt;eap-8.0&lt;/artifactId&gt;
+                &lt;/manifest&gt;
+            &lt;/channel&gt;
+        &lt;/channels&gt;
+        &lt;feature-packs&gt;
+            &lt;feature-pack&gt;
+                &lt;location&gt;org.keycloak:keycloak-saml-adapter-galleon-pack&lt;/location&gt;
+            &lt;/feature-pack&gt;
+        &lt;/feature-packs&gt;
+        &lt;layers&gt;
+            &lt;layer&gt;core-server&lt;/layer&gt;
+            &lt;layer&gt;web-server&lt;/layer&gt;
+            &lt;layer&gt;jaxrs-server&lt;/layer&gt;
+            &lt;layer&gt;datasources-web-server&lt;/layer&gt;
+            &lt;layer&gt;webservices&lt;/layer&gt;
+            &lt;layer&gt;keycloak-saml&lt;/layer&gt;
+            &lt;layer&gt;keycloak-client-saml&lt;/layer&gt;
+            &lt;layer&gt;keycloak-client-saml-ejb&lt;/layer&gt;
+        &lt;/layers&gt;
+    &lt;/configuration&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;package&lt;/goal&gt;
+            &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_saml-general-config"><a class="anchor" href="#_saml-general-config"></a>Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The SAML client adapter is configured by a XML file <code>/WEB-INF/keycloak-saml.xml</code> placed inside the WAR deployment. The configuration might look like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;keycloak-saml-adapter xmlns="urn:keycloak:saml:adapter"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                       xsi:schemaLocation="urn:keycloak:saml:adapter {saml_adapter_xsd_urn}"&gt;
+    &lt;SP entityID="http://localhost:8081/sales-post-sig/"
+        sslPolicy="EXTERNAL"
+        nameIDPolicyFormat="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+        logoutPage="/logout.jsp"
+        forceAuthentication="false"
+        isPassive="false"
+        turnOffChangeSessionIdOnLogin="false"
+        autodetectBearerOnly="false"&gt;
+        &lt;Keys&gt;
+            &lt;Key signing="true" &gt;
+                &lt;KeyStore resource="/WEB-INF/keystore.jks" password="store123"&gt;
+                    &lt;PrivateKey alias="http://localhost:8080/sales-post-sig/" password="test123"/&gt;
+                    &lt;Certificate alias="http://localhost:8080/sales-post-sig/"/&gt;
+                &lt;/KeyStore&gt;
+            &lt;/Key&gt;
+        &lt;/Keys&gt;
+        &lt;PrincipalNameMapping policy="FROM_NAME_ID"/&gt;
+        &lt;RoleIdentifiers&gt;
+            &lt;Attribute name="Role"/&gt;
+        &lt;/RoleIdentifiers&gt;
+        &lt;RoleMappingsProvider id="properties-based-role-mapper"&gt;
+            &lt;Property name="properties.resource.location" value="/WEB-INF/role-mappings.properties"/&gt;
+        &lt;/RoleMappingsProvider&gt;
+        &lt;IDP entityID="idp"
+             signaturesRequired="true"&gt;
+        &lt;SingleSignOnService requestBinding="POST"
+                             bindingUrl="http://localhost:8081/realms/demo/protocol/saml"
+                    /&gt;
+
+            &lt;SingleLogoutService
+                    requestBinding="POST"
+                    responseBinding="POST"
+                    postBindingUrl="http://localhost:8081/realms/demo/protocol/saml"
+                    redirectBindingUrl="http://localhost:8081/realms/demo/protocol/saml"
+                    /&gt;
+            &lt;Keys&gt;
+                &lt;Key signing="true"&gt;
+                    &lt;KeyStore resource="/WEB-INF/keystore.jks" password="store123"&gt;
+                        &lt;Certificate alias="demo"/&gt;
+                    &lt;/KeyStore&gt;
+                &lt;/Key&gt;
+            &lt;/Keys&gt;
+        &lt;/IDP&gt;
+     &lt;/SP&gt;
+&lt;/keycloak-saml-adapter&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can use <code>${&#8230;&#8203;}</code> enclosure as System property replacement. For example <code>${jboss.server.config.dir}</code>.
+To get detailed information of the different elements in the XML configuration file see <a href="https://www.keycloak.org/nightly/securing-apps/saml-galleon-layers-detailed-config">Keycloak SAML Galleon feature pack detailed configuration</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_securing_a_war"><a class="anchor" href="#_securing_a_war"></a>Securing a WAR</h3>
+<div class="paragraph">
+<p>This section describes how to secure a WAR directly by adding config and editing files within your WAR package.</p>
+</div>
+<div class="paragraph">
+<p>Once <code>keycloak-saml.xml</code> is created and in the <code>WEB-INF</code> directory of your WAR, you must set the <code>auth-method</code> to <code>KEYCLOAK-SAML</code> in <code>web.xml</code>.
+You also have to use standard servlet security to specify role-base constraints on your URLs.
+Here&#8217;s an example <em>web.xml</em> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0"&gt;
+
+	&lt;module-name&gt;customer-portal&lt;/module-name&gt;
+
+    &lt;security-constraint&gt;
+        &lt;web-resource-collection&gt;
+            &lt;web-resource-name&gt;Admins&lt;/web-resource-name&gt;
+            &lt;url-pattern&gt;/admin/*&lt;/url-pattern&gt;
+        &lt;/web-resource-collection&gt;
+        &lt;auth-constraint&gt;
+            &lt;role-name&gt;admin&lt;/role-name&gt;
+        &lt;/auth-constraint&gt;
+        &lt;user-data-constraint&gt;
+            &lt;transport-guarantee&gt;CONFIDENTIAL&lt;/transport-guarantee&gt;
+        &lt;/user-data-constraint&gt;
+    &lt;/security-constraint&gt;
+    &lt;security-constraint&gt;
+        &lt;web-resource-collection&gt;
+            &lt;web-resource-name&gt;Customers&lt;/web-resource-name&gt;
+            &lt;url-pattern&gt;/customers/*&lt;/url-pattern&gt;
+        &lt;/web-resource-collection&gt;
+        &lt;auth-constraint&gt;
+            &lt;role-name&gt;user&lt;/role-name&gt;
+        &lt;/auth-constraint&gt;
+        &lt;user-data-constraint&gt;
+            &lt;transport-guarantee&gt;CONFIDENTIAL&lt;/transport-guarantee&gt;
+        &lt;/user-data-constraint&gt;
+    &lt;/security-constraint&gt;
+
+    &lt;login-config&gt;
+        &lt;auth-method&gt;KEYCLOAK-SAML&lt;/auth-method&gt;
+        &lt;realm-name&gt;this is ignored currently&lt;/realm-name&gt;
+    &lt;/login-config&gt;
+
+    &lt;security-role&gt;
+        &lt;role-name&gt;admin&lt;/role-name&gt;
+    &lt;/security-role&gt;
+    &lt;security-role&gt;
+        &lt;role-name&gt;user&lt;/role-name&gt;
+    &lt;/security-role&gt;
+&lt;/web-app&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All standard servlet settings except the <code>auth-method</code> setting.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_securing_wars_using_the_keycloak_saml_subsystem"><a class="anchor" href="#_securing_wars_using_the_keycloak_saml_subsystem"></a>Securing WARs using the Keycloak SAML Subsystem</h3>
+<div class="paragraph">
+<p>You do not have to open a WAR to secure it with Keycloak.
+Alternatively, you can externally secure it via the Keycloak SAML Adapter Subsystem.
+While you don&#8217;t have to specify KEYCLOAK-SAML as an <code>auth-method</code>, you still have to define the <code>security-constraints</code> in <code>web.xml</code>.
+You do not, however, have to create a <code>WEB-INF/keycloak-saml.xml</code> file.
+This metadata is instead defined within the XML in your server&#8217;s <code>domain.xml</code> or <code>standalone.xml</code> subsystem configuration section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;extensions&gt;
+  &lt;extension module="org.keycloak.keycloak-saml-adapter-subsystem"/&gt;
+&lt;/extensions&gt;
+
+&lt;profile&gt;
+  &lt;subsystem xmlns="urn:jboss:domain:keycloak-saml:1.1"&gt;
+    &lt;secure-deployment name="WAR MODULE NAME.war"&gt;
+      &lt;SP entityID="APPLICATION URL"&gt;
+        ...
+      &lt;/SP&gt;
+    &lt;/secure-deployment&gt;
+  &lt;/subsystem&gt;
+&lt;/profile&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>secure-deployment</code> <code>name</code> attribute identifies the WAR you want to secure.
+Its value is the <code>module-name</code> defined in <code>web.xml</code> with <code>.war</code> appended.
+The rest of the configuration uses the same XML syntax as <code>keycloak-saml.xml</code> configuration defined in <a href="#_saml-general-config">General Adapter Config</a>.</p>
+</div>
+<div class="paragraph">
+<p>An example configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;subsystem xmlns="urn:jboss:domain:keycloak-saml:1.1"&gt;
+  &lt;secure-deployment name="saml-post-encryption.war"&gt;
+    &lt;SP entityID="http://localhost:8080/sales-post-enc/"
+        sslPolicy="EXTERNAL"
+        nameIDPolicyFormat="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified"
+        logoutPage="/logout.jsp"
+        forceAuthentication="false"&gt;
+      &lt;Keys&gt;
+        &lt;Key signing="true" encryption="true"&gt;
+          &lt;KeyStore resource="/WEB-INF/keystore.jks" password="store123"&gt;
+            &lt;PrivateKey alias="http://localhost:8080/sales-post-enc/" password="test123"/&gt;
+            &lt;Certificate alias="http://localhost:8080/sales-post-enc/"/&gt;
+          &lt;/KeyStore&gt;
+        &lt;/Key&gt;
+      &lt;/Keys&gt;
+      &lt;PrincipalNameMapping policy="FROM_NAME_ID"/&gt;
+      &lt;RoleIdentifiers&gt;
+        &lt;Attribute name="Role"/&gt;
+      &lt;/RoleIdentifiers&gt;
+      &lt;IDP entityID="idp"&gt;
+        &lt;SingleSignOnService signRequest="true"
+            validateResponseSignature="true"
+            requestBinding="POST"
+            bindingUrl="http://localhost:8080/realms/saml-demo/protocol/saml"/&gt;
+
+        &lt;SingleLogoutService
+            validateRequestSignature="true"
+            validateResponseSignature="true"
+            signRequest="true"
+            signResponse="true"
+            requestBinding="POST"
+            responseBinding="POST"
+            postBindingUrl="http://localhost:8080/realms/saml-demo/protocol/saml"
+            redirectBindingUrl="http://localhost:8080/realms/saml-demo/protocol/saml"/&gt;
+        &lt;Keys&gt;
+          &lt;Key signing="true" &gt;
+            &lt;KeyStore resource="/WEB-INF/keystore.jks" password="store123"&gt;
+              &lt;Certificate alias="saml-demo"/&gt;
+            &lt;/KeyStore&gt;
+          &lt;/Key&gt;
+        &lt;/Keys&gt;
+      &lt;/IDP&gt;
+    &lt;/SP&gt;
+   &lt;/secure-deployment&gt;
+&lt;/subsystem&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_saml-jboss-adapter-samesite-setting"><a class="anchor" href="#_saml-jboss-adapter-samesite-setting"></a>Setting SameSite value for JSESSIONID cookie</h3>
+<div class="paragraph">
+<p>Browsers are planning to set the default value for the <code>SameSite</code> attribute for cookies to <code>Lax</code>. This setting means
+that cookies will be sent to applications only if the request originates in the same domain. This behavior can affect
+the SAML POST binding which may become non-functional. To preserve full functionality of the SAML adapter, we recommend
+setting the <code>SameSite</code> value to <code>None</code> for the <code>JSESSIONID</code> cookie created by your container. Not doing so may result in
+resetting the container&#8217;s session with each request to Keycloak.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+To avoid setting the <code>SameSite</code> attribute to <code>None</code>, consider switching to the REDIRECT binding
+if it is acceptable, or to OIDC protocol where this workaround is not necessary.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To set the <code>SameSite</code> value to <code>None</code> for the <code>JSESSIONID</code> cookie in Wildfly/EAP, add a file <code>undertow-handlers.conf</code>
+with the following content to the <code>WEB-INF</code> directory of your application.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>samesite-cookie(mode=None, cookie-pattern=JSESSIONID)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The support for this configuration is available in Wildfly from version 19.1.0.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_registering_with_an_identity_provider"><a class="anchor" href="#_registering_with_an_identity_provider"></a>Registering with an Identity Provider</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For each servlet-based adapter, the endpoint you register for the assert consumer service URL and single logout service
+must be the base URL of your servlet application with <code>/saml</code> appended to it, that is, <code>https://example.com/contextPath/saml</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_logout"><a class="anchor" href="#_logout"></a>Logout</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are multiple ways you can log out from a web application.
+For Jakarta EE servlet containers, you can call <code>HttpServletRequest.logout()</code>. For any other browser application, you can point
+the browser at any url of your web application that has a security constraint and pass in a query parameter GLO, i.e. <code>http://myapp?GLO=true</code>.
+This will log you out if you have an SSO session with your browser.</p>
+</div>
+<div class="sect2">
+<h3 id="_saml_logout_in_cluster"><a class="anchor" href="#_saml_logout_in_cluster"></a>Logout in clustered environment</h3>
+<div class="paragraph">
+<p>Internally, the SAML adapter stores a mapping between the SAML session index, principal name (when known), and HTTP session ID.
+This mapping can be maintained in JBoss application server family (WildFly 10/11, EAP 6/7) across cluster for distributable
+applications. As a precondition, the HTTP sessions need to be distributed across cluster (i.e. application is marked with
+<code>&lt;distributable/&gt;</code> tag in application&#8217;s <code>web.xml</code>).</p>
+</div>
+<div class="paragraph">
+<p>To enable the functionality, add the following section to your <code>/WEB_INF/web.xml</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;context-param&gt;
+    &lt;param-name&gt;keycloak.sessionIdMapperUpdater.classes&lt;/param-name&gt;
+    &lt;param-value&gt;org.keycloak.adapters.saml.wildfly.infinispan.InfinispanSessionCacheIdMapperUpdater&lt;/param-value&gt;
+&lt;/context-param&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the session cache of the deployment is named <code><em>deployment-cache</em></code>, the cache used for SAML mapping will be named
+as <code><em>deployment-cache</em>.ssoCache</code>. The name of the cache can be overridden by a context parameter
+<code>keycloak.sessionIdMapperUpdater.infinispan.cacheName</code>. The cache container containing the cache will be the same as
+the one containing the deployment session cache, but can be overridden by a context parameter
+<code>keycloak.sessionIdMapperUpdater.infinispan.containerName</code>.</p>
+</div>
+<div class="paragraph">
+<p>By default, the configuration of the SAML mapping cache will be derived from session cache. The configuration can
+be manually overridden in cache configuration section of the server just the same as other caches.</p>
+</div>
+<div class="paragraph">
+<p>Currently, to provide reliable service, it is recommended to use replicated cache for the SAML session cache.
+Using distributed cache may lead to results where the SAML logout request would land to a node with no access
+to SAML session index to HTTP session mapping which would lead to unsuccessful logout.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_saml_logout_in_cross_dc"><a class="anchor" href="#_saml_logout_in_cross_dc"></a>Logout in cross-site scenario</h3>
+<div class="paragraph">
+<p>Special handling is needed for handling sessions that span multiple data centers. Imagine the following scenario:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Login requests are handled within cluster in data center 1.</p>
+</li>
+<li>
+<p>Admin issues logout request for a particular SAML session, the request lands in data center 2.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The data center 2 has to log out all sessions that are present in data center 1 (and all other data centers that
+share HTTP sessions).</p>
+</div>
+<div class="paragraph">
+<p>To cover this case, the SAML session cache described <a href="#_saml_logout_in_cluster">above</a> needs to be replicated
+not only within individual clusters but across all the data centers for example
+<a href="https://docs.redhat.com/en/documentation/red_hat_data_grid/6.6/html/administration_and_configuration_guide/chap-externalize_sessions#Externalize_HTTP_Session_from_JBoss_EAP_6.x_to_JBoss_Data_Grid">via standalone Infinispan/JDG server</a>:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A cache has to be added to the standalone Infinispan/JDG server.</p>
+</li>
+<li>
+<p>The cache from previous item has to be added as a remote store for the respective SAML session cache.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Once remote store is found to be present on SAML session cache during deployment, it is watched for changes
+and the local SAML session cache is updated accordingly.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_obtaining_assertion_attributes"><a class="anchor" href="#_obtaining_assertion_attributes"></a>Obtaining assertion attributes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After a successful SAML login, your application code may want to obtain attribute values passed with the SAML assertion.
+<code>HttpServletRequest.getUserPrincipal()</code> returns a <code>Principal</code> object that you can typecast into a Keycloak specific class
+called <code>org.keycloak.adapters.saml.SamlPrincipal</code>.
+This object allows you to look at the raw assertion and also has convenience functions to look up attribute values.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package org.keycloak.adapters.saml;
+
+public class SamlPrincipal implements Serializable, Principal {
+    /**
+     * Get full saml assertion
+     *
+     * @return
+     */
+    public AssertionType getAssertion() {
+       ...
+    }
+
+    /**
+     * Get SAML subject sent in assertion
+     *
+     * @return
+     */
+    public String getSamlSubject() {
+        ...
+    }
+
+    /**
+     * Subject nameID format
+     *
+     * @return
+     */
+    public String getNameIDFormat() {
+        ...
+    }
+
+    @Override
+    public String getName() {
+        ...
+    }
+
+    /**
+     * Convenience function that gets Attribute value by attribute name
+     *
+     * @param name
+     * @return
+     */
+    public List&lt;String&gt; getAttributes(String name) {
+        ...
+
+    }
+
+    /**
+     * Convenience function that gets Attribute value by attribute friendly name
+     *
+     * @param friendlyName
+     * @return
+     */
+    public List&lt;String&gt; getFriendlyAttributes(String friendlyName) {
+        ...
+    }
+
+    /**
+     * Convenience function that gets first  value of an attribute by attribute name
+     *
+     * @param name
+     * @return
+     */
+    public String getAttribute(String name) {
+        ...
+    }
+
+    /**
+     * Convenience function that gets first  value of an attribute by attribute name
+     *
+     *
+     * @param friendlyName
+     * @return
+     */
+    public String getFriendlyAttribute(String friendlyName) {
+        ...
+    }
+
+    /**
+     * Get set of all assertion attribute names
+     *
+     * @return
+     */
+    public Set&lt;String&gt; getAttributeNames() {
+        ...
+    }
+
+    /**
+     * Get set of all assertion friendly attribute names
+     *
+     * @return
+     */
+    public Set&lt;String&gt; getFriendlyNames() {
+        ...
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_error_handling"><a class="anchor" href="#_error_handling"></a>Error Handling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keycloak has some error handling facilities for servlet based client adapters.
+When an error is encountered in authentication, the client adapter will call <code>HttpServletResponse.sendError()</code>.
+You can set up an <code>error-page</code> within your <code>web.xml</code> file to handle the error however you want.
+The client adapter can throw 400, 401, 403, and 500 errors.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;error-page&gt;
+    &lt;error-code&gt;403&lt;/error-code&gt;
+    &lt;location&gt;/ErrorHandler&lt;/location&gt;
+&lt;/error-page&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The client adapter also sets an <code>HttpServletRequest</code> attribute that you can retrieve.
+The attribute name is <code>org.keycloak.adapters.spi.AuthenticationError</code>.
+Typecast this object to: <code>org.keycloak.adapters.saml.SamlAuthenticationError</code>.
+This class can tell you exactly what happened.
+If this attribute is not set, then the adapter was not responsible for the error code.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class SamlAuthenticationError implements AuthenticationError {
+    public static enum Reason {
+        EXTRACTION_FAILURE,
+        INVALID_SIGNATURE,
+        ERROR_STATUS
+    }
+
+    public Reason getReason() {
+        return reason;
+    }
+    public StatusResponseType getStatus() {
+        return status;
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_troubleshooting"><a class="anchor" href="#_troubleshooting"></a>Troubleshooting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The best way to troubleshoot problems is to turn on debugging for SAML in both the client adapter and Keycloak Server. Using your logging framework, set the log level to <code>DEBUG</code> for the <code>org.keycloak.saml</code> package. Turning this on allows you to see the SAML requests and response documents being sent to and from the server.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_saml_multi_tenancy"><a class="anchor" href="#_saml_multi_tenancy"></a>Multi Tenancy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SAML offers Multi Tenancy, meaning that a single target application (WAR) can be secured with multiple Keycloak realms. The realms can be located on the same Keycloak instance or on different instances.</p>
+</div>
+<div class="paragraph">
+<p>To do this, the application must have multiple <code>keycloak-saml.xml</code> adapter configuration files.</p>
+</div>
+<div class="paragraph">
+<p>While you could have multiple instances of your WAR with different adapter configuration files deployed to different context-paths, this may be inconvenient and you may also want to select the realm based on something other than context-path.</p>
+</div>
+<div class="paragraph">
+<p>Keycloak makes it possible to have a custom config resolver, so you can choose which adapter config is used for each request. In SAML, the configuration is only interesting in the login processing; once the user is logged in, the session is authenticated and it does not matter if the <code>keycloak-saml.xml</code> returned is different. For that reason, returning the same configuration for the same session is the correct way to go.</p>
+</div>
+<div class="paragraph">
+<p>To achieve this, create an implementation of <code>org.keycloak.adapters.saml.SamlConfigResolver</code>. The following example uses the <code>Host</code> header to locate the proper configuration and load it and the associated elements from the applications' Java classpath:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package example;
+
+import java.io.InputStream;
+import org.keycloak.adapters.saml.SamlConfigResolver;
+import org.keycloak.adapters.saml.SamlDeployment;
+import org.keycloak.adapters.saml.config.parsers.DeploymentBuilder;
+import org.keycloak.adapters.saml.config.parsers.ResourceLoader;
+import org.keycloak.adapters.spi.HttpFacade;
+import org.keycloak.saml.common.exceptions.ParsingException;
+
+public class SamlMultiTenantResolver implements SamlConfigResolver {
+
+    @Override
+    public SamlDeployment resolve(HttpFacade.Request request) {
+        String host = request.getHeader("Host");
+        String realm = null;
+        if (host.contains("tenant1")) {
+            realm = "tenant1";
+        } else if (host.contains("tenant2")) {
+            realm = "tenant2";
+        } else {
+            throw new IllegalStateException("Not able to guess the keycloak-saml.xml to load");
+        }
+
+        InputStream is = getClass().getResourceAsStream("/" + realm + "-keycloak-saml.xml");
+        if (is == null) {
+            throw new IllegalStateException("Not able to find the file /" + realm + "-keycloak-saml.xml");
+        }
+
+        ResourceLoader loader = new ResourceLoader() {
+            @Override
+            public InputStream getResourceAsStream(String path) {
+                return getClass().getResourceAsStream(path);
+            }
+        };
+
+        try {
+            return new DeploymentBuilder().build(is, loader);
+        } catch (ParsingException e) {
+            throw new IllegalStateException("Cannot load SAML deployment", e);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You must also configure which <code>SamlConfigResolver</code> implementation to use with the <code>keycloak.config.resolver</code> context-param in your <code>web.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;web-app&gt;
+    ...
+    &lt;context-param&gt;
+        &lt;param-name&gt;keycloak.config.resolver&lt;/param-name&gt;
+        &lt;param-value&gt;example.SamlMultiTenantResolver&lt;/param-value&gt;
+    &lt;/context-param&gt;
+&lt;/web-app&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_saml-errors"><a class="anchor" href="#_saml-errors"></a>Keycloak specific errors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keycloak server can send an error to the client application in the SAML response, which may contain a SAML status such as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;samlp:Status&gt;
+  &lt;samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Responder"&gt;
+    &lt;samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:AuthnFailed"/&gt;
+  &lt;/samlp:StatusCode&gt;
+  &lt;samlp:StatusMessage&gt;authentication_expired&lt;/samlp:StatusMessage&gt;
+&lt;/samlp:Status&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Keycloak sends this error when a user is authenticated and has an SSO session, but the authentication session expired in the current browser tab and hence Keycloak server cannot automatically do SSO
+re-authentication of the user and redirect back to client with successful response. When a client application receives this type of error, it is ideal to retry authentication immediately and send a new
+SAML request to the Keycloak server, which should typically always authenticate the user due to the SSO session and redirect back.
+The SAML adapter performs that retry automatically if the commented status is returned by the server.
+More details in the <a href="https://www.keycloak.org/docs/latest/server_admin/#_authentication-sessions">Server Administration Guide</a>.</p>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak/tree/main/docs/guides/securing-apps/saml-galleon-layers.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

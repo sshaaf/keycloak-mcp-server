@@ -1,0 +1,428 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Keycloak authorization client - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Keycloak authorization client">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Using the Keycloak authz client administer and check permissions">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/authz-client">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/authz-client">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Keycloak authorization client</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Keycloak authorization client</h1>
+                    <span class="text-muted">Using the Keycloak authz client administer and check permissions</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Depending on your requirements, a resource server should be able to manage resources remotely or even check for permissions programmatically.
+If you are using Java, you can access the Keycloak Authorization Services using the Authorization Client API.</p>
+</div>
+<div class="paragraph">
+<p>It is targeted for resource servers that want to access the different endpoints provided by the server such as the Token Endpoint, Resource, and Permission management endpoints.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_maven_dependency"><a class="anchor" href="#_maven_dependency"></a>Maven dependency</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.keycloak&lt;/groupId&gt;
+        &lt;artifactId&gt;keycloak-authz-client&lt;/artifactId&gt;
+        &lt;version&gt;999.0.0-SNAPSHOT&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration"><a class="anchor" href="#_configuration"></a>Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The client configuration is defined in a <code>keycloak.json</code> file as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "realm": "hello-world-authz",
+  "auth-server-url" : "http://localhost:8080",
+  "resource" : "hello-world-authz-service",
+  "credentials": {
+    "secret": "secret"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>realm</strong> (required)</p>
+<div class="paragraph">
+<p>The name of the realm.</p>
+</div>
+</li>
+<li>
+<p><strong>auth-server-url</strong> (required)</p>
+<div class="paragraph">
+<p>The base URL of the Keycloak server. All other Keycloak pages and REST service endpoints are derived from this. It is usually in the form <a href="https://host:port" class="bare">https://host:port</a>.</p>
+</div>
+</li>
+<li>
+<p><strong>resource</strong> (required)</p>
+<div class="paragraph">
+<p>The client-id of the application. Each application has a client-id that is used to identify the application.</p>
+</div>
+</li>
+<li>
+<p><strong>credentials</strong> (required)</p>
+<div class="paragraph">
+<p>Specifies the credentials of the application. This is an object notation where the key is the credential type and the value is the value of the credential type. The details are in the <a href="#_client_authentication_adapter">dedicated section</a>.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The configuration file is usually located in your application&#8217;s classpath, the default location from where the client is going to try to find a <code><code>keycloak.json</code></code> file.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_the_authorization_client"><a class="anchor" href="#_creating_the_authorization_client"></a>Creating the authorization client</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Considering you have a <code><code>keycloak.json</code></code> file in your classpath, you can create a new <code><code>AuthzClient</code></code> instance as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// create a new instance based on the configuration defined in a keycloak.json located in your classpath
+AuthzClient authzClient = AuthzClient.create();</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_obtaining_user_entitlements"><a class="anchor" href="#_obtaining_user_entitlements"></a>Obtaining user entitlements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here is an example illustrating how to obtain user entitlements:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// create a new instance based on the configuration defined in keycloak.json
+AuthzClient authzClient = AuthzClient.create();
+
+// create an authorization request
+AuthorizationRequest request = new AuthorizationRequest();
+
+// send the entitlement request to the server in order to
+// obtain an RPT with all permissions granted to the user
+AuthorizationResponse response = authzClient.authorization("alice", "alice").authorize(request);
+String rpt = response.getToken();
+
+System.out.println("You got an RPT: " + rpt);
+
+// now you can use the RPT to access protected resources on the resource server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here is an example illustrating how to obtain user entitlements for a set of one or more resources:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// create a new instance based on the configuration defined in keycloak.json
+AuthzClient authzClient = AuthzClient.create();
+
+// create an authorization request
+AuthorizationRequest request = new AuthorizationRequest();
+
+// add permissions to the request based on the resources and scopes you want to check access
+request.addPermission("Default Resource");
+
+// send the entitlement request to the server in order to
+// obtain an RPT with permissions for a single resource
+AuthorizationResponse response = authzClient.authorization("alice", "alice").authorize(request);
+String rpt = response.getToken();
+
+System.out.println("You got an RPT: " + rpt);
+
+// now you can use the RPT to access protected resources on the resource server</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_a_resource_using_the_protection_api"><a class="anchor" href="#_creating_a_resource_using_the_protection_api"></a>Creating a resource using the protection API</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// create a new instance based on the configuration defined in keycloak.json
+AuthzClient authzClient = AuthzClient.create();
+
+// create a new resource representation with the information we want
+ResourceRepresentation newResource = new ResourceRepresentation();
+
+newResource.setName("New Resource");
+newResource.setType("urn:hello-world-authz:resources:example");
+
+newResource.addScope(new ScopeRepresentation("urn:hello-world-authz:scopes:view"));
+
+ProtectedResource resourceClient = authzClient.protection().resource();
+ResourceRepresentation existingResource = resourceClient.findByName(newResource.getName());
+
+if (existingResource != null) {
+    resourceClient.delete(existingResource.getId());
+}
+
+// create the resource on the server
+ResourceRepresentation response = resourceClient.create(newResource);
+String resourceId = response.getId();
+
+// query the resource using its newly generated id
+ResourceRepresentation resource = resourceClient.findById(resourceId);
+
+System.out.println(resource);</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introspecting_an_rpt"><a class="anchor" href="#_introspecting_an_rpt"></a>Introspecting an RPT</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// create a new instance based on the configuration defined in keycloak.json
+AuthzClient authzClient = AuthzClient.create();
+
+// send the authorization request to the server in order to
+// obtain an RPT with all permissions granted to the user
+AuthorizationResponse response = authzClient.authorization("alice", "alice").authorize();
+String rpt = response.getToken();
+
+// introspect the token
+TokenIntrospectionResponse requestingPartyToken = authzClient.protection().introspectRequestingPartyToken(rpt);
+
+System.out.println("Token status is: " + requestingPartyToken.getActive());
+System.out.println("Permissions granted by the server: ");
+
+for (Permission granted : requestingPartyToken.getPermissions()) {
+    System.out.println(granted);
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_client_authentication_adapter"><a class="anchor" href="#_client_authentication_adapter"></a>Client authentication</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When an authorization client needs to send a backchannel request, it needs to authenticate against the Keycloak server. By default, there are three ways to authenticate the client: client ID and client secret, client authentication with signed JWT, or client authentication with signed JWT using client secret.</p>
+</div>
+<div class="sect2">
+<h3 id="_client_id_and_client_secret"><a class="anchor" href="#_client_id_and_client_secret"></a>Client ID and Client Secret</h3>
+<div class="paragraph">
+<p>This is the traditional method described in the OAuth2 specification. The client has a secret, which needs to be known to both the client and the Keycloak server.
+You can generate the secret for a particular client in the Keycloak Admin Console, and then paste this secret into the <code>keycloak.json</code> file on the application side:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">"credentials": {
+    "secret": "19666a4f-32dd-4049-b082-684c74115f28"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_authentication_with_signed_jwt"><a class="anchor" href="#_client_authentication_with_signed_jwt"></a>Client authentication with Signed JWT</h3>
+<div class="paragraph">
+<p>This is based on the <a href="https://datatracker.ietf.org/doc/html/rfc7523">RFC7523</a> specification. It works this way:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The client must have the private key and certificate. For authorization client, this is available through the traditional <code>keystore</code> file, which is either available on the client application&#8217;s classpath or somewhere on the file system.</p>
+</li>
+<li>
+<p>During authentication, the client generates a JWT token and signs it with its private key and sends it to Keycloak in
+the particular request in the <code>client_assertion</code> parameter.</p>
+</li>
+<li>
+<p>Keycloak must have the public key or certificate of the client so that it can verify the signature on JWT. In Keycloak, you configure client credentials for your client. First, you choose <code>Signed JWT</code> as the method of authenticating your client in the tab <code>Credentials</code> in the Admin Console.
+Then you can choose one of these methods in the <code>Keys</code> tab:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Configure the JWKS URL where Keycloak can download the client&#8217;s public keys. This option is the most flexible, since the client can rotate its keys anytime and Keycloak always downloads new keys as needed without changing the configuration. In other words,  Keycloak downloads new keys when it sees the token signed by an unknown <code>kid</code> (Key ID).  However, you will need to care of exposing the public key somewhere in JWKS format to be available to the server.</p>
+</li>
+<li>
+<p>Upload the client&#8217;s public key or certificate, either in PEM format, in JWK format, or from the keystore. With this option, the public key is hardcoded and must be changed when the client generates a new key pair.
+You can even generate your own keystore from the Keycloak Admin Console if you do not have your own keystore available. This option is the easiest when using authorization client.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To set up for this method, you need to code something such as the following in your <code>keycloak.json</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">"credentials": {
+  "jwt": {
+    "client-keystore-file": "classpath:keystore-client.jks",
+    "client-keystore-type": "JKS",
+    "client-keystore-password": "storepass",
+    "client-key-password": "keypass",
+    "client-key-alias": "clientkey",
+    "token-expiration": 10
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this configuration, the keystore file <code>keystore-client.jks</code> must be available on classpath of the application, which uses authorization client. If you do not use the prefix <code>classpath:</code>
+you can point to any file on the file system where the client application is running.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_client_authentication_with_signed_jwt_using_client_secret"><a class="anchor" href="#_client_authentication_with_signed_jwt_using_client_secret"></a>Client authentication with Signed JWT using client secret</h3>
+<div class="paragraph">
+<p>This is the same as Client Authentication with Signed JWT except for using the client secret instead of the private key and certificate.</p>
+</div>
+<div class="paragraph">
+<p>The client has a secret, which needs to be known to both the application using authorization client and the Keycloak server. You choose <code>Signed JWT with Client Secret</code> as the method of authenticating your client in the <code>Credentials</code> tab in the Admin Console, and then paste this secret into the <code>keycloak.json</code> file on the application side:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">"credentials": {
+  "secret-jwt": {
+    "secret": "19666a4f-32dd-4049-b082-684c74115f28",
+    "algorithm": "HS512"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The "algorithm" field specifies the algorithm for the Signed JWT using Client Secret. It needs to be one of the following values : HS256, HS384, and HS512. For details, see <a href="https://datatracker.ietf.org/doc/html/rfc7518#section-3.2">JSON Web Algorithms (JWA)</a>.</p>
+</div>
+<div class="paragraph">
+<p>This "algorithm" field is optional; HS256 is applied automatically if the "algorithm" field does not exist on the <code>keycloak.json</code> file.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_add_your_own_client_authentication_method"><a class="anchor" href="#_add_your_own_client_authentication_method"></a>Add your own client authentication method</h3>
+<div class="paragraph">
+<p>You can add your own client authentication method as well. You will need to implement both client-side and server-side providers. For more details see the <code>Authentication SPI</code> section in <a href="https://www.keycloak.org/docs/latest/server_development/">Server Developer Guide</a>.</p>
+</div>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak-client/tree/main/docs/guides/securing-apps/authz-client.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

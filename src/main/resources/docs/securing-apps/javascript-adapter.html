@@ -1,0 +1,1018 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Keycloak JavaScript adapter - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Keycloak JavaScript adapter">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Client-side JavaScript library that can be used to secure web applications.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/securing-apps/javascript-adapter">
+<meta property="og:url" content="https://www.keycloak.org/nightly/securing-apps/javascript-adapter">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#securing-apps">Securing applications</a></li>
+                    <li class="breadcrumb-item active">Keycloak JavaScript adapter</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Keycloak JavaScript adapter</h1>
+                    <span class="text-muted">Client-side JavaScript library that can be used to secure web applications.</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keycloak comes with a client-side JavaScript library called <code>keycloak-js</code> that can be used to secure web applications. The adapter also comes with built-in support for Cordova applications.
+The adapter uses OpenID Connect protocol under the covers. You can take a look at the <a href="https://www.keycloak.org/nightly/securing-apps/oidc-layers#_oidc_available_endpoints">Securing applications and services with OpenID Connect</a> guide for the more generic information about OpenID Connect endpoints and capabilities.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation"><a class="anchor" href="#_installation"></a>Installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We recommend that you install the <a href="https://www.npmjs.com/package/keycloak-js"><code>keycloak-js</code></a> package from NPM:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">npm install keycloak-js</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_keycloak_server_configuration"><a class="anchor" href="#_keycloak_server_configuration"></a>Keycloak server configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>One important thing to consider about using client-side applications is that the client has to be a public client as there is no secure way to store client credentials in a client-side application. This consideration makes it very important to make sure the redirect URIs you have configured for the client are correct and as specific as possible.</p>
+</div>
+<div class="paragraph">
+<p>To use the adapter, create a client for your application in the Keycloak Admin Console. Make the client public by toggling <strong>Client authentication</strong>  to <strong>Off</strong>  on the <strong>Capability config</strong> page.</p>
+</div>
+<div class="paragraph">
+<p>You also need to configure <code>Valid Redirect URIs</code> and <code>Web Origins</code>. Be as specific as possible as failing to do so may result in a security vulnerability.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_the_adapter"><a class="anchor" href="#_using_the_adapter"></a>Using the adapter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following example shows how to initialize the adapter. Make sure that you replace the options passed to the <code>Keycloak</code> constructor with those of the client you have configured.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">import Keycloak from 'keycloak-js';
+
+const keycloak = new Keycloak({
+    url: "http://keycloak-server",
+    realm: "my-realm",
+    clientId: "my-app"
+});
+
+try {
+    const authenticated = await keycloak.init();
+    if (authenticated) {
+        console.log('User is authenticated');
+    } else {
+        console.log('User is not authenticated');
+    }
+} catch (error) {
+    console.error('Failed to initialize adapter:', error);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To authenticate, you call the <code>login</code> function. Two options exist to make the adapter automatically authenticate. You can pass <code>login-required</code> or <code>check-sso</code> to the <code>init()</code> function.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>login-required</code> authenticates the client if the user is logged in to Keycloak or displays the login page if the user is not logged in.</p>
+</li>
+<li>
+<p><code>check-sso</code> only authenticates the client if the user is already logged in. If the user is not logged in, the browser is redirected back to the application and remains unauthenticated.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can configure a <em>silent</em> <code>check-sso</code> option. With this feature enabled, your browser will not perform a full redirect to the Keycloak server and back to your application, but this action will be performed in a hidden iframe. Therefore, your application resources are only loaded and parsed once by the browser, namely when the application is initialized and not again after the redirect back from Keycloak to your application. This approach is particularly useful in case of SPAs (Single Page Applications).</p>
+</div>
+<div class="paragraph">
+<p>To enable the <em>silent</em> <code>check-sso</code>, you provide a <code>silentCheckSsoRedirectUri</code> attribute in the init method. Make sure this URI is a valid endpoint in the application; it must be configured as a valid redirect for the client in the Keycloak Admin Console:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">await keycloak.init({
+    onLoad: 'check-sso',
+    silentCheckSsoRedirectUri: `${location.origin}/silent-check-sso.html`
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The page at the silent check-sso redirect uri is loaded in the iframe after successfully checking your authentication state and retrieving the tokens from the Keycloak server.
+It has no other task than sending the received tokens to the main application and should only look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;!doctype html&gt;
+&lt;html&gt;
+&lt;body&gt;
+    &lt;script&gt;
+        parent.postMessage(location.href, location.origin);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Remember that this page must be served by your application at the specified location in <code>silentCheckSsoRedirectUri</code> and is <em>not</em> part of the adapter.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<em>Silent</em> <code>check-sso</code> functionality is limited in some modern browsers. Please see the <a href="#_modern_browsers">Modern Browsers with Tracking Protection Section</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To enable <code>login-required</code> set <code>onLoad</code> to <code>login-required</code> and pass to the init method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">await keycloak.init({
+    onLoad: 'login-required'
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After the user is authenticated the application can make requests to RESTful services secured by Keycloak by including the bearer token in the
+<code>Authorization</code> header. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">async function fetchUsers() {
+    const response = await fetch('/api/users', {
+        headers: {
+            accept: 'application/json',
+            authorization: `Bearer ${keycloak.token}`
+        }
+    });
+
+    return response.json();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One thing to keep in mind is that the access token by default has a short life expiration so you may need to refresh the access token prior to sending the request. You refresh this token by calling the <code>updateToken()</code> method. This method returns a Promise, which makes it easy to invoke the service only if the token was successfully refreshed and displays an error to the user if it was not refreshed. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">try {
+    await keycloak.updateToken(30);
+} catch (error) {
+    console.error('Failed to refresh token:', error);
+}
+
+const users = await fetchUsers();</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Both access and refresh token are stored in memory and are not persisted in any kind of storage. Therefore, these tokens should never be persisted to prevent hijacking attacks.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_session_status_iframe"><a class="anchor" href="#_session_status_iframe"></a>Session Status iframe</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, the adapter creates a hidden iframe that is used to detect if a Single-Sign Out has occurred. This iframe does not require any network traffic. Instead the status is retrieved by looking at a special status cookie. This feature can be disabled by setting <code>checkLoginIframe: false</code> in the options passed to the <code>init()</code> method.</p>
+</div>
+<div class="paragraph">
+<p>You should not rely on looking at this cookie directly. Its format can change and it&#8217;s also associated with the URL of the Keycloak server, not
+your application.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Session Status iframe functionality is limited in some modern browsers. Please see <a href="#_modern_browsers">Modern Browsers with Tracking Protection Section</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_javascript_implicit_flow"><a class="anchor" href="#_javascript_implicit_flow"></a>Implicit and hybrid flow</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, the adapter uses the <a href="https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth">Authorization Code</a> flow.</p>
+</div>
+<div class="paragraph">
+<p>With this flow, the Keycloak server returns an authorization code, not an authentication token, to the application. The JavaScript adapter exchanges the <code>code</code> for an access token and a refresh token after the browser is redirected back to the application.</p>
+</div>
+<div class="paragraph">
+<p>Keycloak also supports the <a href="https://openid.net/specs/openid-connect-core-1_0.html#ImplicitFlowAuth">Implicit</a> flow where an access token is sent immediately after successful authentication with Keycloak. This flow may have better performance than the standard flow because no additional request exists to exchange the code for tokens, but it has implications when the access token expires.</p>
+</div>
+<div class="paragraph">
+<p>However, sending the access token in the URL fragment can be a security vulnerability. For example the token could be leaked through web server logs and or
+browser history.</p>
+</div>
+<div class="paragraph">
+<p>To enable implicit flow, you enable the <strong>Implicit Flow Enabled</strong> flag for the client in the Keycloak Admin Console. You also pass the parameter <code>flow</code> with the value <code>implicit</code> to <code>init</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">await keycloak.init({
+    flow: 'implicit'
+})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that only an access token is provided and no refresh token exists. This situation means that once the access token has expired, the application has to redirect to Keycloak again to obtain a new access token.</p>
+</div>
+<div class="paragraph">
+<p>Keycloak also supports the <a href="https://openid.net/specs/openid-connect-core-1_0.html#HybridFlowAuth">Hybrid</a> flow.</p>
+</div>
+<div class="paragraph">
+<p>This flow requires the client to have both the <strong>Standard Flow</strong>  and <strong>Implicit Flow</strong>  enabled in the Admin Console. The Keycloak server then sends both the code and tokens to your application. The access token can be used immediately while the code can be exchanged for access and refresh tokens. Similar to the implicit flow, the hybrid flow is good for performance because the access token is available immediately.
+But, the token is still sent in the URL, and the security vulnerability mentioned earlier may still apply.</p>
+</div>
+<div class="paragraph">
+<p>One advantage in the Hybrid flow is that the refresh token is made available to the application.</p>
+</div>
+<div class="paragraph">
+<p>For the Hybrid flow, you need to pass the parameter <code>flow</code> with value <code>hybrid</code> to the <code>init</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">await keycloak.init({
+    flow: 'hybrid'
+});</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="hybrid-apps-with-cordova"><a class="anchor" href="#hybrid-apps-with-cordova"></a>Hybrid Apps with Cordova</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keycloak supports hybrid mobile apps developed with <a href="https://cordova.apache.org/">Apache Cordova</a>. The adapter has two modes for this: <code>cordova</code> and <code>cordova-native</code>:</p>
+</div>
+<div class="paragraph">
+<p>The default is <code>cordova</code>, which the adapter automatically selects if no adapter type has been explicitly configured and <code>window.cordova</code> is present. When logging in, it opens an <a href="https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-inappbrowser/">InApp Browser</a> that lets the user interact with Keycloak and afterwards returns to the app by redirecting to <code><a href="http://localhost" class="bare">http://localhost</a></code>. Because of this behavior, you whitelist this URL as a valid redirect-uri in the client configuration section of the Admin Console.</p>
+</div>
+<div class="paragraph">
+<p>While this mode is easy to set up, it also has some disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The InApp-Browser is a browser embedded in the app and is not the phone&#8217;s default browser. Therefore it will have different settings and stored credentials will not be available.</p>
+</li>
+<li>
+<p>The InApp-Browser might also be slower, especially when rendering more complex themes.</p>
+</li>
+<li>
+<p>There are security concerns to consider, before using this mode, such as that it is possible for the app to gain access to the credentials of the user, as it has full control of the browser rendering the login page, so do not allow its use in apps you do not trust.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The alternative mode  is`cordova-native`, which takes a different approach. It opens the login page using the system&#8217;s browser. After the user has authenticated, the browser redirects back into the application using a special URL. From there, the Keycloak adapter can finish the login by reading the code or token from the URL.</p>
+</div>
+<div class="paragraph">
+<p>You can activate the native mode by passing the adapter type <code>cordova-native</code> to the <code>init()</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">await keycloak.init({
+    adapter: 'cordova-native'
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This adapter requires two additional plugins:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/google/cordova-plugin-browsertab">cordova-plugin-browsertab</a>: allows the app to open webpages in the system&#8217;s browser</p>
+</li>
+<li>
+<p><a href="https://github.com/e-imaxina/cordova-plugin-deeplinks">cordova-plugin-deeplinks</a>: allow the browser to redirect back to your app by special URLs</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The technical details for linking to an app differ on each platform and special setup is needed.
+Please refer to the Android and iOS sections of the <a href="https://github.com/e-imaxina/cordova-plugin-deeplinks/blob/master/README.md">deeplinks plugin documentation</a> for further instructions.</p>
+</div>
+<div class="paragraph">
+<p>Different kinds of links exist for opening apps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>custom schemes, such as <code>myapp://login</code> or <code>android-app://com.example.myapp/https/example.com/login</code>.</p>
+</li>
+<li>
+<p><a href="https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content/">Universal Links (iOS)</a> / <a href="https://developer.android.com/training/app-links/deep-linking">Deep Links (Android)</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>While the former are easier to set up and tend to work more reliably, the latter offer extra security because they are unique and only the owner of a domain can register them. Custom-URLs are deprecated on iOS.  For best reliability, we recommend that you use universal links combined with a fallback site that uses a custom-url link.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, we recommend the following steps to improve compatibility with the adapter:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Universal Links on iOS seem to work more reliably with <code>response-mode</code> set to <code>query</code></p>
+</li>
+<li>
+<p>To prevent Android from opening a new instance of your app on redirect add the following snippet to <code>config.xml</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;preference name="AndroidLaunchMode" value="singleTask" /&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="custom-adapters"><a class="anchor" href="#custom-adapters"></a>Custom Adapters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In some situations, you may need to run the adapter in environments that are not supported by default, such as Capacitor. To use the JavasScript client in these environments, you can pass a custom adapter. For example, a third-party library could provide such an adapter to make it possible to reliably run the adapter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">import Keycloak from 'keycloak-js';
+import KeycloakCapacitorAdapter from 'keycloak-capacitor-adapter';
+
+const keycloak = new Keycloak({
+    url: "http://keycloak-server",
+    realm: "my-realm",
+    clientId: "my-app"
+});
+
+await keycloak.init({
+    adapter: KeycloakCapacitorAdapter,
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This specific package does not exist, but it gives a pretty good example of how such an adapter could be passed into the client.</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s also possible to make your own adapter, to do so you will have to implement the methods described in the <code>KeycloakAdapter</code> interface. For example the following TypeScript code ensures that all the methods are properly implemented:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">import Keycloak, { KeycloakAdapter } from 'keycloak-js';
+
+// Implement the 'KeycloakAdapter' interface so that all required methods are guaranteed to be present.
+const MyCustomAdapter: KeycloakAdapter = {
+    async login(options) {
+        // Write your own implementation here.
+    }
+
+    // The other methods go here...
+};
+
+const keycloak = new Keycloak({
+    url: "http://keycloak-server",
+    realm: "my-realm",
+    clientId: "my-app"
+});
+
+await keycloak.init({
+    adapter: MyCustomAdapter,
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Naturally you can also do this without TypeScript by omitting the type information, but ensuring implementing the interface properly will then be left entirely up to you.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_modern_browsers"><a class="anchor" href="#_modern_browsers"></a>Modern Browsers with Tracking Protection</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the latest versions of some browsers, various cookies policies are applied to prevent tracking of the users by third parties, such as SameSite in Chrome or completely blocked third-party cookies. Those policies are likely to become more restrictive and adopted by other browsers over time. Eventually cookies in third-party contexts may become completely unsupported and blocked by the browsers. As a result, the affected adapter features might ultimately be deprecated.</p>
+</div>
+<div class="paragraph">
+<p>The adapter relies on third-party cookies for Session Status iframe, <em>silent</em> <code>check-sso</code> and partially also for regular (non-silent) <code>check-sso</code>. Those features have limited functionality or are completely disabled based on how restrictive the browser is regarding cookies. The adapter tries to detect this setting and reacts accordingly.</p>
+</div>
+<div class="sect2">
+<h3 id="_browsers_with_samesitelax_by_default_policy"><a class="anchor" href="#_browsers_with_samesitelax_by_default_policy"></a>Browsers with "SameSite=Lax by Default" Policy</h3>
+<div class="paragraph">
+<p>All features are supported if SSL / TLS connection is configured on the Keycloak side as well as on the application side.  For example, Chrome is affected starting with version 84.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_browsers_with_blocked_third_party_cookies"><a class="anchor" href="#_browsers_with_blocked_third_party_cookies"></a>Browsers with Blocked Third-Party Cookies</h3>
+<div class="paragraph">
+<p>Session Status iframe is not supported and is automatically disabled if such browser behavior is detected by the adapter. This means the adapter cannot use a session cookie for Single Sign-Out detection and must rely purely on tokens. As a result, when a user logs out in another window, the application using the adapter will not be logged out until the application tries to refresh the Access Token. Therefore, consider setting the Access Token Lifespan to a relatively short time, so that the logout is detected as soon as possible. For more details, see <a href="https://www.keycloak.org/docs/latest/server_admin/#_timeouts">Session and Token Timeouts</a>.</p>
+</div>
+<div class="paragraph">
+<p><em>Silent</em> <code>check-sso</code> is not supported and falls back to regular (non-silent) <code>check-sso</code> by default. This behavior can be changed by setting <code>silentCheckSsoFallback: false</code> in the options passed to the <code>init</code> method. In this case, <code>check-sso</code> will be completely disabled if restrictive browser behavior is detected.</p>
+</div>
+<div class="paragraph">
+<p>Regular <code>check-sso</code> is affected as well. Since Session Status iframe is unsupported, an additional redirect to Keycloak has to be made when the adapter is initialized to check the user&#8217;s login status. This check is different from the standard behavior when the iframe is used to tell whether the user is logged in, and the redirect is performed only when the user is logged out.</p>
+</div>
+<div class="paragraph">
+<p>An affected browser is for example Safari starting with version 13.1.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_api_reference"><a class="anchor" href="#_api_reference"></a>API Reference</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_constructor"><a class="anchor" href="#_constructor"></a>Constructor</h3>
+<div class="paragraph">
+<p>The recommended way of constructing the adapter is by passing the configuration directly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">new Keycloak({
+    url: "http://keycloak-server",
+    realm: "my-realm",
+    clientId: "my-app"
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, it is possible to pass a URL to a JSON file that contains the configuration instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">new Keycloak("http://your-app/adapter-config.json");</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The JSON configuration file must include the following fields:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+    "auth-server-url": "https://auth.example.com",
+    "realm": "my-realm",
+    "resource": "my-app"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that using a JSON configuration file will trigger an additional request before initialization, and is thus not recommended for performance reasons.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_properties"><a class="anchor" href="#_properties"></a>Properties</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">authenticated</dt>
+<dd>
+<p>Is <code>true</code> if the user is authenticated, <code>false</code> otherwise.</p>
+</dd>
+<dt class="hdlist1">token</dt>
+<dd>
+<p>The base64 encoded token that can be sent in the <code>Authorization</code> header in requests to services.</p>
+</dd>
+<dt class="hdlist1">tokenParsed</dt>
+<dd>
+<p>The parsed token as a JavaScript object.</p>
+</dd>
+<dt class="hdlist1">subject</dt>
+<dd>
+<p>The user id.</p>
+</dd>
+<dt class="hdlist1">idToken</dt>
+<dd>
+<p>The base64 encoded ID token.</p>
+</dd>
+<dt class="hdlist1">idTokenParsed</dt>
+<dd>
+<p>The parsed id token as a JavaScript object.</p>
+</dd>
+<dt class="hdlist1">realmAccess</dt>
+<dd>
+<p>The realm roles associated with the token.</p>
+</dd>
+<dt class="hdlist1">resourceAccess</dt>
+<dd>
+<p>The resource roles associated with the token.</p>
+</dd>
+<dt class="hdlist1">refreshToken</dt>
+<dd>
+<p>The base64 encoded refresh token that can be used to retrieve a new token.</p>
+</dd>
+<dt class="hdlist1">refreshTokenParsed</dt>
+<dd>
+<p>The parsed refresh token as a JavaScript object.</p>
+</dd>
+<dt class="hdlist1">timeSkew</dt>
+<dd>
+<p>The estimated time difference between the browser time and the Keycloak server in seconds. This value is just an estimation, but is accurate
+enough when determining if a token is expired or not.</p>
+</dd>
+<dt class="hdlist1">responseMode</dt>
+<dd>
+<p>Response mode passed in init (default value is fragment).</p>
+</dd>
+<dt class="hdlist1">flow</dt>
+<dd>
+<p>Flow passed in init.</p>
+</dd>
+<dt class="hdlist1">adapter</dt>
+<dd>
+<p>Allows you to override the way that redirects and other browser-related functions will be handled by the library.
+Available options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>"default" - the library uses the browser api for redirects (this is the default)</p>
+</li>
+<li>
+<p>"cordova" - the library will try to use the InAppBrowser cordova plugin to load keycloak login/registration pages (this is used automatically when the library is working in a cordova ecosystem)</p>
+</li>
+<li>
+<p>"cordova-native" - the library tries to open the login and registration page using the phone&#8217;s system browser using the BrowserTabs cordova plugin. This requires extra setup for redirecting back to the app (see <a href="#hybrid-apps-with-cordova">Hybrid Apps with Cordova</a>).</p>
+</li>
+<li>
+<p>"custom" - allows you to implement a custom adapter (only for advanced use cases)</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">responseType</dt>
+<dd>
+<p>Response type sent to Keycloak with login requests. This is determined based on the flow value used during initialization, but can be overridden by setting this value.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_methods"><a class="anchor" href="#_methods"></a>Methods</h3>
+<div class="paragraph">
+<p><strong>init(options)</strong></p>
+</div>
+<div class="paragraph">
+<p>Called to initialize the adapter.</p>
+</div>
+<div class="paragraph">
+<p>Options is an Object, where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>useNonce - Adds a cryptographic nonce to verify that the authentication response matches the request (default is <code>true</code>).</p>
+</li>
+<li>
+<p>onLoad - Specifies an action to do on load. Supported values are <code>login-required</code> or <code>check-sso</code>.</p>
+</li>
+<li>
+<p>redirectUri - Specifies a default uri to redirect to after login or logout. This is currently supported for adapter 'cordova-native' and 'default'.</p>
+</li>
+<li>
+<p>silentCheckSsoRedirectUri - Set the redirect uri for silent authentication check if onLoad is set to 'check-sso'.</p>
+</li>
+<li>
+<p>silentCheckSsoFallback - Enables fall back to regular <code>check-sso</code> when <em>silent</em> <code>check-sso</code> is not supported by the browser (default is <code>true</code>).</p>
+</li>
+<li>
+<p>token - Set an initial value for the token.</p>
+</li>
+<li>
+<p>refreshToken - Set an initial value for the refresh token.</p>
+</li>
+<li>
+<p>idToken - Set an initial value for the id token (only together with token or refreshToken).</p>
+</li>
+<li>
+<p>scope - Set the default scope parameter to the Keycloak login endpoint. Use a space-delimited list of scopes. Those typically
+reference <a href="https://www.keycloak.org/docs/latest/server_admin/#_client_scopes">Client scopes</a> defined on a particular client. Note that the scope <code>openid</code> will
+always be added to the list of scopes by the adapter. For example, if you enter the scope options <code>address phone</code>, then the request
+to Keycloak will contain the scope parameter <code>scope=openid address phone</code>. Note that the default scope specified here is overwritten if the <code>login()</code> options specify scope explicitly.</p>
+</li>
+<li>
+<p>timeSkew - Set an initial value for skew between local time and Keycloak server in seconds (only together with token or refreshToken).</p>
+</li>
+<li>
+<p>checkLoginIframe - Set to enable/disable monitoring login state (default is <code>true</code>).</p>
+</li>
+<li>
+<p>checkLoginIframeInterval - Set the interval to check login state (default is 5 seconds).</p>
+</li>
+<li>
+<p>responseMode - Set the OpenID Connect response mode send to Keycloak server at login request. Valid values are <code>query</code> or <code>fragment</code>. Default value is <code>fragment</code>, which means that after successful authentication will Keycloak redirect to JavaScript application with OpenID Connect parameters added in URL fragment. This is generally safer and recommended over <code>query</code>.</p>
+</li>
+<li>
+<p>flow - Set the OpenID Connect flow. Valid values are <code>standard</code>, <code>implicit</code> or <code>hybrid</code>.</p>
+</li>
+<li>
+<p>enableLogging - Enables logging messages from Keycloak to the console (default is <code>false</code>).</p>
+</li>
+<li>
+<p>pkceMethod - The method for Proof Key Code Exchange (<a href="https://datatracker.ietf.org/doc/html/rfc7636">PKCE</a>) to use. Configuring this value enables the PKCE mechanism. Available options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>"S256" - The SHA256 based PKCE method (default)</p>
+</li>
+<li>
+<p>false - PKCE is disabled.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>messageReceiveTimeout - Set a timeout in milliseconds for waiting for message responses from the Keycloak server. This is used, for example, when waiting for a message during 3rd party cookies check. The default value is 10000.</p>
+</li>
+<li>
+<p>locale - When onLoad is 'login-required', sets the 'ui_locales' query param in compliance with <a href="https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest">section 3.1.2.1 of the OIDC 1.0 specification</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Returns a promise that resolves when initialization completes.</p>
+</div>
+<div class="paragraph">
+<p><strong>login(options)</strong></p>
+</div>
+<div class="paragraph">
+<p>Redirects to login form, returns a Promise.</p>
+</div>
+<div class="paragraph">
+<p>Options is an optional Object, where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>redirectUri - Specifies the uri to redirect to after login.</p>
+</li>
+<li>
+<p>prompt - This parameter allows to slightly customize the login flow on the Keycloak server side.
+For example, enforce displaying the login screen in case of value <code>login</code>. Or enforce displaying of consent screen for the value <code>consent</code> in case that client has <code>Consent Required</code>.
+Finally it is possible use the value <code>none</code> to make sure that login screen is not displayed to the user, which is useful just to check SSO for the case when user was already
+authenticated before (This is related to the <code>onLoad</code> check with value <code>check-sso</code> described above).</p>
+</li>
+<li>
+<p>maxAge - Used just if user is already authenticated. Specifies maximum time since the authentication of user happened. If user is already authenticated for longer time than <code>maxAge</code>, the SSO is ignored and he will need to re-authenticate again.</p>
+</li>
+<li>
+<p>loginHint - Used to pre-fill the username/email field on the login form.</p>
+</li>
+<li>
+<p>scope - Override the scope configured in <code>init</code> with a different value for this specific login.</p>
+</li>
+<li>
+<p>idpHint - Used to tell Keycloak to skip showing the login page and automatically redirect to the specified identity
+provider instead. More info in the <a href="https://www.keycloak.org/docs/latest/server_admin/#_client_suggested_idp">Identity Provider documentation</a>.</p>
+</li>
+<li>
+<p>acr - Contains the information about <code>acr</code> claim, which will be sent inside <code>claims</code> parameter to the Keycloak server. Typical usage
+is for step-up authentication. Example of use <code>{ values: ["silver", "gold"], essential: true }</code>. See OpenID Connect specification
+and <a href="https://www.keycloak.org/docs/latest/server_admin/#_step-up-flow">Step-up authentication documentation</a> for more details.</p>
+</li>
+<li>
+<p>acrValues - Generates the <code>acr_values</code> parameter which refers to authentication context class reference and allows clients to declare the required assurance level requirements, e.g. authentication mechanisms. See <a href="https://openid.net/specs/openid-connect-modrna-authentication-1_0.html#acr_values">Section 4. acr_values request values and level of assurance in OpenID Connect MODRNA Authentication Profile 1.0</a>.</p>
+</li>
+<li>
+<p>action - If the value is <code>register</code>, the user is redirected to the registration page. See <a href="https://www.keycloak.org/docs/latest/server_admin/#_registration-rc-client-flows">Registration requested by client section</a> for more details.
+If the value is <code>UPDATE_PASSWORD</code> or another supported required action, the user will be redirected to the reset password page or the other required action page. However, if the user is not authenticated, the user will be sent to the login page and redirected after authentication.
+See <a href="https://www.keycloak.org/docs/latest/server_admin/#con-aia_server_administration_guide">Application Initiated Action section</a> for more details.</p>
+</li>
+<li>
+<p>locale - Sets the 'ui_locales' query param in compliance with <a href="https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest">section 3.1.2.1 of the OIDC 1.0 specification</a>.</p>
+</li>
+<li>
+<p>cordovaOptions - Specifies the arguments that are passed to the Cordova in-app-browser (if applicable). Options <code>hidden</code> and <code>location</code> are not affected by these arguments. All available options are defined at <a href="https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-inappbrowser/" class="bare">https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-inappbrowser/</a>. Example of use: <code>{ zoom: "no", hardwareback: "yes" }</code>;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>createLoginUrl(options)</strong></p>
+</div>
+<div class="paragraph">
+<p>Returns a Promise containing the URL to login form.</p>
+</div>
+<div class="paragraph">
+<p>Options is an optional Object, which supports same options as the function <code>login</code> .</p>
+</div>
+<div class="paragraph">
+<p><strong>logout(options)</strong></p>
+</div>
+<div class="paragraph">
+<p>Redirects to logout.</p>
+</div>
+<div class="paragraph">
+<p>Options is an Object, where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>redirectUri - Specifies the uri to redirect to after logout.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>createLogoutUrl(options)</strong></p>
+</div>
+<div class="paragraph">
+<p>Returns the URL to log out the user.</p>
+</div>
+<div class="paragraph">
+<p>Options is an Object, where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>redirectUri - Specifies the uri to redirect to after logout.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>register(options)</strong></p>
+</div>
+<div class="paragraph">
+<p>Redirects to registration form. Shortcut for login with option action = 'register'</p>
+</div>
+<div class="paragraph">
+<p>Options are same as for the login method but 'action' is set to 'register'</p>
+</div>
+<div class="paragraph">
+<p><strong>createRegisterUrl(options)</strong></p>
+</div>
+<div class="paragraph">
+<p>Returns a Promise containing the url to registration page. Shortcut for createLoginUrl with option action = 'register'</p>
+</div>
+<div class="paragraph">
+<p>Options are same as for the createLoginUrl method but 'action' is set to 'register'</p>
+</div>
+<div class="paragraph">
+<p><strong>accountManagement()</strong></p>
+</div>
+<div class="paragraph">
+<p>Redirects to the Account Console.</p>
+</div>
+<div class="paragraph">
+<p><strong>createAccountUrl(options)</strong></p>
+</div>
+<div class="paragraph">
+<p>Returns the URL to the Account Console.</p>
+</div>
+<div class="paragraph">
+<p>Options is an Object, where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>redirectUri - Specifies the uri to redirect to when redirecting back to the application.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>hasRealmRole(role)</strong></p>
+</div>
+<div class="paragraph">
+<p>Returns true if the token has the given realm role.</p>
+</div>
+<div class="paragraph">
+<p><strong>hasResourceRole(role, resource)</strong></p>
+</div>
+<div class="paragraph">
+<p>Returns true if the token has the given role for the resource (resource is optional, if not specified clientId is used).</p>
+</div>
+<div class="paragraph">
+<p><strong>loadUserProfile()</strong></p>
+</div>
+<div class="paragraph">
+<p>Loads the users profile.</p>
+</div>
+<div class="paragraph">
+<p>Returns a promise that resolves with the profile.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">try {
+    const profile = await keycloak.loadUserProfile();
+    console.log('Retrieved user profile:', profile);
+} catch (error) {
+    console.error('Failed to load user profile:', error);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>isTokenExpired(minValidity)</strong></p>
+</div>
+<div class="paragraph">
+<p>Returns true if the token has less than minValidity seconds left before it expires (minValidity is optional, if not specified 0 is used).</p>
+</div>
+<div class="paragraph">
+<p><strong>updateToken(minValidity)</strong></p>
+</div>
+<div class="paragraph">
+<p>If the token expires within minValidity seconds (minValidity is optional, if not specified 5 is used) the token is refreshed.
+If -1 is passed as the minValidity, the token will be forcibly refreshed.
+If the session status iframe is enabled, the session status is also checked.</p>
+</div>
+<div class="paragraph">
+<p>Returns a promise that resolves with a boolean indicating whether or not the token has been refreshed.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">try {
+    const refreshed = await keycloak.updateToken(5);
+    console.log(refreshed ? 'Token was refreshed' : 'Token is still valid');
+} catch (error) {
+    console.error('Failed to refresh the token:', error);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>clearToken()</strong></p>
+</div>
+<div class="paragraph">
+<p>Clear authentication state, including tokens.
+This can be useful if application has detected the session was expired, for example if updating token fails.</p>
+</div>
+<div class="paragraph">
+<p>Invoking this results in onAuthLogout callback listener being invoked.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_callback_events"><a class="anchor" href="#_callback_events"></a>Callback Events</h3>
+<div class="paragraph">
+<p>The adapter supports setting callback listeners for certain events. Keep in mind that these have to be set before the call to the <code>init()</code> method.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">keycloak.onAuthSuccess = () =&gt; console.log('Authenticated!');</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The available events are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>onReady(authenticated)</strong> - Called when the adapter is initialized.</p>
+</li>
+<li>
+<p><strong>onAuthSuccess</strong> - Called when a user is successfully authenticated.</p>
+</li>
+<li>
+<p><strong>onAuthError</strong> - Called if there was an error during authentication.</p>
+</li>
+<li>
+<p><strong>onAuthRefreshSuccess</strong> - Called when the token is refreshed.</p>
+</li>
+<li>
+<p><strong>onAuthRefreshError</strong> - Called if there was an error while trying to refresh the token.</p>
+</li>
+<li>
+<p><strong>onAuthLogout</strong> - Called if the user is logged out (will only be called if the session status iframe is enabled, or in Cordova mode).</p>
+</li>
+<li>
+<p><strong>onTokenExpired</strong> - Called when the access token is expired. If a refresh token is available the token can be refreshed with updateToken, or in cases where it is not (that is, with implicit flow) you can redirect to the login screen to obtain a new access token.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak-js/tree/main/docs/guides/securing-apps/javascript-adapter.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+
+<!doctype html>
+<html lang="en" prefix="og: https://ogp.me/ns#">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0J2P9316N6"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0J2P9316N6');
+</script>
+<meta charset="utf-8"/>
+<title>Scaling - Keycloak</title>
+<meta name="twitter:card" content="summary_large">
+<meta name="twitter:site" content="@keycloak">
+<meta property="og:site_name" content="Keycloak">
+<meta property="og:title" content="Scaling">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" property="og:description" content="Scale and tune your Keycloak installation.">
+<meta name="author" content="Keycloak Team">
+<meta name="keywords" content="sso,idm,openid connect,saml,kerberos,ldap">
+<meta name="robots" content="noindex">
+<link href="https://www.keycloak.org/resources/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+<link href="https://www.keycloak.org/resources/css/keycloak.css" rel="stylesheet">
+<link rel="canonical" href="https://www.keycloak.org/nightly/getting-started/getting-started-scaling-and-tuning">
+<meta property="og:url" content="https://www.keycloak.org/nightly/getting-started/getting-started-scaling-and-tuning">
+<link rel="shortcut icon" href="https://www.keycloak.org/resources/favicon.svg"></head>
+<body>
+
+<header class="navbar navbar-expand-md bg-light shadow-sm">
+<nav class="container-xxl flex-wrap flex-md-no-wrap navbar-light" data-nosnippet>
+    <a class="navbar-brand me-3 me-md-4 me-lg-5" href="https://www.keycloak.org/">
+        <img style="aspect-ratio: 730/151" class="img-fluid" src="https://www.keycloak.org/resources/images/logo.svg" width="240" alt="Keycloak"/>
+    </a>
+    <a class="nav-link d-none d-sm-block d-md-none d-lg-block" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-large.svg" style="height: 25px; aspect-ratio: 128/20" alt="GitHub stars"/></a>
+    <a class="nav-link d-block d-sm-none d-md-block d-lg-none" href="https://github.com/keycloak/keycloak"><img src="https://www.keycloak.org/resources/images/stars-small.svg" style="height: 25px; aspect-ratio: 59/20" alt="GitHub stars"/></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="fa fa-bars fa-lg px-1 py-2"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav flex-row flex-wrap bd-navbar-nav pt-2 py-md-0">
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/guides">Guides</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/documentation">Docs</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/downloads">Downloads</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/community">Community</a>
+        </li>
+        <li class="nav-item col-6 col-md-auto">
+          <a class="nav-link " href="https://www.keycloak.org/blog">Blog</a>
+        </li>
+      </ul>
+    </div>
+</nav>
+</header>
+
+
+<div class="container mt-5 kc-article">
+    <div class="row">
+        <div class="col-md-9 col-xl-10 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides">Guides</a></li>
+                    <li class="breadcrumb-item"><a href="https://www.keycloak.org/nightly/guides#getting-started">Getting started</a></li>
+                    <li class="breadcrumb-item active">Scaling</li>
+                </ol>
+            </nav>
+
+                <div class="mb-4 alert alert-warning" role="alert">
+                  <h4 class="no-top-margin">Nightly release</h4>
+
+                  This guide is for the unstable nightly release, for the latest release go <a href="https://www.keycloak.org/guides">here</a>.
+                </div>
+
+            <div class="mb-4">
+                <h1>Scaling</h1>
+                    <span class="text-muted">Scale and tune your Keycloak installation.</span>
+            </div>
+
+
+
+            <div class="kc-asciidoc" id="guide-body">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>After starting Keycloak, consider adapting your instance to the required load using these scaling and tuning guidelines:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>minimize resource utilization</p>
+</li>
+<li>
+<p>achieve target response times</p>
+</li>
+<li>
+<p>minimize database pool contention</p>
+</li>
+<li>
+<p>resolve out of memory errors, or excessive garbage collection overhead</p>
+</li>
+<li>
+<p>provide higher availability via horizontal scaling</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_vertical_scaling"><a class="anchor" href="#_vertical_scaling"></a>Vertical Scaling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As you monitor your Keycloak workload, check to see if the CPU or memory is under or over utilized. Consult <a href="https://www.keycloak.org/nightly/high-availability/concepts-memory-and-cpu-sizing">Concepts for sizing CPU and memory resources</a> to better tune the resources available to the Java Virtual Machine (JVM).</p>
+</div>
+<div class="paragraph">
+<p>Before increasing the amount of memory available to the JVM, in particular when experiencing an out of memory error, it is best to determine what is contributing to the increased footprint using a heap dump. Excessive response times may also indicate the HTTP work queue is too large and tuning for load shedding would be better than simply providing more memory. See the following section.</p>
+</div>
+<div class="sect2">
+<h3 id="_common_tuning_options"><a class="anchor" href="#_common_tuning_options"></a>Common Tuning Options</h3>
+<div class="paragraph">
+<p>Keycloak automatically adjusts the number of used threads based upon how many cores you make available. Manually changing the thread count can improve overall throughput. For more details,  see <a href="https://www.keycloak.org/nightly/high-availability/concepts-threads">Concepts for configuring thread pools</a>. However, changing the thread count must be done in conjunction with other JVM resources, such as database connections;  otherwise, you may be moving a bottleneck somewhere else. For more details, see <a href="https://www.keycloak.org/nightly/high-availability/concepts-database-connections">Concepts for database connection pools</a>.</p>
+</div>
+<div class="paragraph">
+<p>To limit memory utilization of queued work and to provide for load shedding, see <a href="https://www.keycloak.org/nightly/high-availability/concepts-threads#load-shedding">Concepts for configuring thread pools</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you are experiencing timeouts in obtaining database connections, you should consider increasing the number of connections available. For more details, see <a href="https://www.keycloak.org/nightly/high-availability/concepts-database-connections">Concepts for database connection pools</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_vertical_autoscaling"><a class="anchor" href="#_vertical_autoscaling"></a>Vertical Autoscaling</h3>
+<div class="paragraph">
+<p>Some platforms, such as Kubernetes, provide mechanisms to vertically autoscale.  Vertical autoscaling is not recommended for Keycloak if it requires restarting the server instance, which is currently the case for Java on Kubernetes. You can consider instead providing higher CPU and/or memory limits to allow your JVM to adapt within those limits as needed.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_horizontal_scaling"><a class="anchor" href="#_horizontal_scaling"></a>Horizontal Scaling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A single Keycloak instance is susceptible to availability issues. If the instance goes down, you experience a full outage until another instance comes up. By running two or more cluster members on different machines, you greatly increase the availability of Keycloak.</p>
+</div>
+<div class="paragraph">
+<p>A single JVM has a limit on how many concurrent requests it can handle. Additional server instances can provide roughly linear scaling of throughput until associated resources, such as the database or distributed caching, limit that scaling.</p>
+</div>
+<div class="paragraph">
+<p>In general, consider allowing the Keycloak Operator to handle horizontal scaling concerns. When using the Operator, set the Keycloak custom resource <code>spec.instances</code> as desired to horizontally scale.  For more details, see <a href="https://www.keycloak.org/nightly/high-availability/deploy-keycloak-kubernetes">Deploying Keycloak for HA with the Operator</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you are not using the Operator, please review the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Higher availability is possible of your instances are on separate machines. On Kubernetes, use Pod anti-affinitity to enforce this.</p>
+</li>
+<li>
+<p>Use distributed caching; for multi-site clusters, use external caching for cluster members to share the same state. For details on the relevant configuration, see <a href="https://www.keycloak.org/nightly/server/caching">Configuring distributed caches</a>. The embedded Infinispan cache has horizontal scaling considerations including:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Your instances need a way to discover each other. For more information, see discovery in <a href="https://www.keycloak.org/nightly/server/caching">Configuring distributed caches</a>.</p>
+</li>
+<li>
+<p>This cache is not optimal for clusters that span multiple availability zones, which are also called stretch clusters. For embedded Infinispan cache, work to have all instances in one availability zone. The goal is to avoid unnecessary round-trips in the communication that would amplify in the response times. On Kubernetes, use Pod affinity to enforce this grouping of Pods.</p>
+</li>
+<li>
+<p>This cache does not gracefully handle multiple members joining or leaving concurrently. In particular, members leaving at the same time can lead to data loss. On Kubernetes, use a StatefulSet with the default serial handling to ensure Pods are started and stopped sequentially, using a deployment is not supported or recommended.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To avoid losing service availability when a whole site is unavailable, see the high availability guide for more information on a multi-site deployment. See <a href="https://www.keycloak.org/nightly/high-availability/introduction">Multi-site deployments</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_horizontal_autoscaling"><a class="anchor" href="#_horizontal_autoscaling"></a>Horizontal Autoscaling</h3>
+<div class="paragraph">
+<p>Horizontal autoscaling allows for adding or removing Keycloak instances on demand. Keep in mind that startup times will not be instantaneous and that optimized images should be used to minimize the start time.</p>
+</div>
+<div class="paragraph">
+<p>When using the embedded Infinispan cache cluster, dynamically adding or removing cluster members requires Infinispan to perform a rebalancing of the Infinispan caches, which can get expensive if many entries exist in those caches.
+To minimize this time we limit number of entries in session related caches to 10000 by default. Note, this optimization is possible only if <code>persistent-user-sessions</code> feature is not explicitly disabled in your configuration.</p>
+</div>
+<div class="paragraph">
+<p>On Kubernetes, the Keycloak custom resource is scalable meaning that it can be targeted by the <a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/">built-in autoscaler</a>. For example to scale on average CPU utilization:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: keycloak-hpa
+  namespace: keycloak-cluster
+spec:
+  scaleTargetRef:
+    apiVersion: k8s.keycloak.org/v2alpha1
+    kind: Keycloak
+    name: keycloak
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Scaling on memory is generally not needed with persistent sessions enabled, and should not be needed at all when using remote Infinispan. If you are using persistent sessions or remote Infinispan and you experience memory issues, it is best to fully diagnose the problem and revisit the <a href="https://www.keycloak.org/nightly/high-availability/concepts-memory-and-cpu-sizing">Concepts for sizing CPU and memory resources</a> guide. Adjusting the memory request and limit is preferable to horizontal scaling.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Consult the <a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/">Kubernetes docs</a> for additional information, including the usage of <a href="https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/#autoscaling-on-multiple-metrics-and-custom-metrics">custom metrics</a>.</p>
+</div>
+</div>
+</div>
+</div>            </div>
+        </div>
+
+        <div class="col-md-3 mt-4 col-xl-2 col-sm-12 bg-light">
+            <div class="sticky-top px-2 py-3">
+                <div class="mt-2 mb-2 fw-bold">On this page</div>
+                <div id="js-toc"></div>
+                <div class="mt-4">
+                    <a href="https://github.com/keycloak/keycloak/tree/main/docs/guides/getting-started/getting-started-scaling-and-tuning.adoc" target="_blank"><i class="fa fa-edit"></i> Edit this guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.keycloak.org/resources/js/guide.js" type="text/javascript"></script>
+
+
+<div class="container mt-5" data-nosnippet>
+    <footer class="py-3 my-4 border-top">
+        <p class="text-center text-muted">Keycloak is a Cloud Native Computing Foundation incubation project</p>
+        <div class="text-center">
+            <img style="aspect-ratio: 300/48" alt="Cloud Native Computing Foundation" src="https://www.keycloak.org/resources/images/cncf_logo.png" loading="lazy"/>
+        </div>
+        <p class="mt-4 text-center small text-muted">&copy; Keycloak Authors 2025. &copy; 2025 The Linux Foundation. All rights reserved. The Linux Foundation has registered trademarks and uses trademarks. For a list of trademarks of The Linux Foundation, please see our <a href="https://www.linuxfoundation.org/trademark-usage">Trademark Usage page</a>.</p>
+    </footer>
+</div>
+
+<script src="https://www.keycloak.org/resources/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://www.keycloak.org/resources/tocbot/dist/tocbot.min.js" type="text/javascript"></script>
+</body>
+</html>
