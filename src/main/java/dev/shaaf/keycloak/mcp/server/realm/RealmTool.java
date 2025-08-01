@@ -1,7 +1,6 @@
-package dev.shaaf.keycloak.mcp.server.tools;
+package dev.shaaf.keycloak.mcp.server.realm;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.shaaf.keycloak.mcp.server.service.RealmService;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
 import io.quarkiverse.mcp.server.ToolCallException;

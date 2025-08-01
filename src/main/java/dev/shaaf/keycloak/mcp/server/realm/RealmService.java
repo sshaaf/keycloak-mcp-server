@@ -1,4 +1,4 @@
-package dev.shaaf.keycloak.mcp.server.service;
+package dev.shaaf.keycloak.mcp.server.realm;
 
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;

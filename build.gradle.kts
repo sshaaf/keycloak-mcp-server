@@ -24,28 +24,25 @@ java {
 
 // Defines the project dependencies.
 dependencies {
+
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
     implementation("io.quarkus:quarkus-arc")
     implementation("io.quarkus:quarkus-rest")
-    implementation("io.quarkus:quarkus-jsonb")
-
-    // MCP
-
+    implementation("io.quarkus.resteasy.reactive:resteasy-reactive-jackson:3.23.0")
     implementation("io.quarkiverse.mcp:quarkus-mcp-server-stdio:1.4.0")
+    implementation("io.quarkus:quarkus-rest-jackson:3.23.0")
 
-    // MCP SSE
-    //implementation("io.quarkiverse.mcp:quarkus-mcp-server-sse")
+    //implementation("io.quarkiverse.langchain4j:quarkus-langchain4j-easy-rag:1.1.0")
+    implementation("dev.langchain4j:langchain4j:1.0.0")
+    implementation("dev.langchain4j:langchain4j-embeddings:1.0.0-beta5")
+    implementation("dev.langchain4j:langchain4j-embeddings-all-minilm-l6-v2:1.0.0-beta5")
 
-    implementation("io.quarkus:quarkus-rest-qute")
+    implementation("org.jsoup:jsoup:1.21.1")
 
-    // Keycloak admin client
     implementation("io.quarkus:quarkus-keycloak-admin-rest-client")
 
     testImplementation("io.quarkus:quarkus-junit5")
-    testImplementation("io.rest-assured:rest-assured")
-    testImplementation("io.quarkus:quarkus-junit5-mockito")
-    testImplementation("org.mockito:mockito-junit-jupiter")
-    testImplementation("org.mockito:mockito-core")
+
 }
 
 group = "dev.shaaf.keycloak.mcp.server"
