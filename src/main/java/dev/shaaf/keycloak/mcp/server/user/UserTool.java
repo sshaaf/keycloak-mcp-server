@@ -1,12 +1,10 @@
-package dev.shaaf.keycloak.mcp.server.tools;
+package dev.shaaf.keycloak.mcp.server.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.shaaf.keycloak.mcp.server.service.UserService;
 import io.quarkiverse.mcp.server.Tool;
 import io.quarkiverse.mcp.server.ToolArg;
 import io.quarkiverse.mcp.server.ToolCallException;
 import jakarta.inject.Inject;
-import org.keycloak.representations.idm.UserRepresentation;
 
 public class UserTool {
 
