@@ -14,15 +14,11 @@
 
 This project is designed to work with Keycloak for identity and access management, providing a robust and scalable solution for managing Keycloak resources through a command-line interface.
 
-### Releases
-The Keycloak MCP server is available in the following formats:
-- **Uber JAR**: Available in regular releases and builds
-- **Native Binaries**: Available in regular releases and builds for MacOS, Linux, and Windows
-
 ## Features
 
 - **MCP Standard**: Implements the Model-Context Protocol for efficient standard input/output server operations.
 - **Keycloak Integration**: Seamlessly integrates with Keycloak for authentication and authorization.
+- **Discourse Search**: Users can now ask about related issues in Keycloak discourse.
 - **Comprehensive API**: Provides tools for managing various Keycloak resources:
 ```mermaid
 graph LR
@@ -36,6 +32,11 @@ graph LR
 ```
 - **Quarkus Framework**: Built using Quarkus to provide fast startup times and low memory footprint.
 
+### Releases
+The Keycloak MCP server is available in the following formats:
+- **Uber JAR**: Available in regular releases and builds
+- **Native Binaries**: Available in regular releases and builds for MacOS, Linux, and Windows
+- 
 ## Getting started - configuration
 
 ### Cursor
