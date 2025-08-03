@@ -19,6 +19,7 @@ The project is under active development. You can contribute by reporting issues,
 For more details on how to contribute, please see
 - [Developers guide](DEVELOPERS.md)
 - [Contributors guide](CONTRIBUTORS.md)
+- [Deepwiki docs](https://deepwiki.com/sshaaf/keycloak-mcp-server)
 
 ## Features
 - **MCP Standard**: Implements the Model-Context Protocol for efficient standard input/output server operations.
