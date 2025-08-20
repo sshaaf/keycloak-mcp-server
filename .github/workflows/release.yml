@@ -198,9 +198,9 @@ jobs:
 
           mv artifacts/runner-jar/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar
 
-          mv artifacts/${{ env.APP_NAME }}-linux/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.exe release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-linux
+          mv artifacts/${{ env.APP_NAME }}-linux/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-linux
           
-          mv artifacts/${{ env.APP_NAME }}-macos/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.exe release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-macos
+          mv artifacts/${{ env.APP_NAME }}-macos/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-macos
 
           mv artifacts/${{ env.APP_NAME }}-windows/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.exe release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-windows.exe
 
