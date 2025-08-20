@@ -38,8 +38,8 @@ jobs:
       - name: Upload Uber JAR
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-mcp-server-jar
-          path: target/quarkus-app/
+          name: keycloak-mcp-server-0.2-runner.jar
+          path: target/
           retention-days: 30
 
   build-native-linux:
