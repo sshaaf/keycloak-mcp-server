@@ -38,13 +38,13 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Build Uber JAR
-        run: mvn -B clean package -DskipTests
+        run: mvn -B clean package -Dquarkus.package.type=uber-jar
 
       - name: Upload Uber JAR
         uses: actions/upload-artifact@v4
         with:
           name: keycloak-mcp-server-jar
-          path: target/quarkus-app/
+          path: target/
           retention-days: 30
 
   build-native-linux:
