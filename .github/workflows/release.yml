@@ -37,8 +37,8 @@ jobs:
       - name: Upload Uber JAR
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-mcp-server-0.2-runner.jar
-          path: target/
+          name: keycloak-mcp-server-${{ env.APP_VERSION }}-runner.jar
+          path: target/runner-jar
           retention-days: 30
 
   build-native-linux:
@@ -181,16 +181,33 @@ jobs:
       - name: Prepare release assets
         id: prepare_assets
         run: |
+          run: |
+          # Stop the script if any command fails (e.g., a file isn't found)
+          set -e
+      
+          # --- Optional but recommended: Add this to see the exact structure ---
+          echo "--- Artifacts Directory Structure ---"
+          ls -R artifacts/
+          echo "------------------------------------"
+
           # Create a directory for the final assets that will be uploaded
           mkdir release-assets
           
           # Move and rename artifacts for the release
           # The paths reflect the structure created by actions/download-artifact@v4
-          mv artifacts/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar
-          mv artifacts/${{ env.APP_NAME }}-linux release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-linux
-          mv artifacts/${{ env.APP_NAME }}-macos release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-macos
-          mv artifacts/${{ env.APP_NAME }}-windows release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-windows.exe
 
+          mv artifacts/runner-jar/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar
+
+          mv artifacts/${{ env.APP_NAME }}-linux/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.exe release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-linux
+          
+          mv artifacts/${{ env.APP_NAME }}-macos/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.exe release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-macos
+
+          mv artifacts/${{ env.APP_NAME }}-windows/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.exe release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-windows.exe
+
+          # --- Final Check: Verify that the files are now in release-assets ---
+          echo "--- Prepared Release Assets ---"
+          ls -R release-assets/
+          echo "-------------------------------"
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
