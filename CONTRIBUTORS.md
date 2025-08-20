@@ -45,6 +45,14 @@ Pull requests are welcomed for bug fixes, improvements, and new features:
 - Write unit tests for new functionality
 - Follow Java best practices
 
+#### Commit Message Format
+
+To control the version number, use conventional commit messages:
+- `fix: ...` - for bug fixes (creates a PATCH release)
+- `feat: ...` - for new features (creates a MINOR release)
+- `feat!: ...` or `fix!: ...` or any commit with `BREAKING CHANGE:` in the footer - for breaking changes (creates a MAJOR release)
+
+
 ## Working with Keycloak
 When contributing features that interact with Keycloak:
 1. Ensure your code works with the supported Keycloak versions
