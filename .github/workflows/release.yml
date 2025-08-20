@@ -4,8 +4,7 @@ env:
   JAVA_DISTRIBUTION: 'temurin'
   GRAALVM_DISTRIBUTION: 'graalvm'
   APP_NAME: 'keycloak-mcp-server'
-  APP_VERSION: '0.1'
-  ARTIFACT_RETENTION_DAYS: 7
+  APP_VERSION: '0.2.0'
 
 on:
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
@@ -38,9 +37,9 @@ jobs:
       - name: Upload Uber JAR
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-mcp-server-0.2-runner.jar
-          path: target/
-          retention-days: 30
+          name: runner-jar
+          path: target/keycloak-mcp-server-*-runner.jar
+          if-no-files-found: error
 
   build-native-linux:
     name: Build Native Linux
@@ -78,7 +77,7 @@ jobs:
         with:
           name: keycloak-mcp-server-linux
           path: target/keycloak-mcp-server-*-runner
-          retention-days: 30
+          if-no-files-found: error
 
   build-native-macos:
     name: Build Native macOS
@@ -116,7 +115,7 @@ jobs:
         with:
           name: keycloak-mcp-server-macos
           path: target/keycloak-mcp-server-*-runner
-          retention-days: 30
+          if-no-files-found: error
 
   build-native-windows:
     name: Build Native Windows
@@ -154,7 +153,7 @@ jobs:
         with:
           name: keycloak-mcp-server-windows
           path: target/keycloak-mcp-server-*-runner.exe
-          retention-days: 30
+          if-no-files-found: error
 
   release:
     name: Create GitHub Release
@@ -182,16 +181,33 @@ jobs:
       - name: Prepare release assets
         id: prepare_assets
         run: |
+          run: |
+          # Stop the script if any command fails (e.g., a file isn't found)
+          set -e
+      
+          # --- Optional but recommended: Add this to see the exact structure ---
+          echo "--- Artifacts Directory Structure ---"
+          ls -R artifacts/
+          echo "------------------------------------"
+
           # Create a directory for the final assets that will be uploaded
           mkdir release-assets
           
           # Move and rename artifacts for the release
           # The paths reflect the structure created by actions/download-artifact@v4
-          mv artifacts/${{ env.APP_NAME }}-uber-jar/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-uber.jar
-          mv artifacts/${{ env.APP_NAME }}-linux/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-linux
-          mv artifacts/${{ env.APP_NAME }}-macos/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-macos
-          mv artifacts/${{ env.APP_NAME }}-windows/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-windows.exe
 
+          mv artifacts/runner-jar/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar
+
+          mv artifacts/${{ env.APP_NAME }}-linux/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-linux
+          
+          mv artifacts/${{ env.APP_NAME }}-macos/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-macos
+
+          mv artifacts/${{ env.APP_NAME }}-windows/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.exe release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-windows.exe
+
+          # --- Final Check: Verify that the files are now in release-assets ---
+          echo "--- Prepared Release Assets ---"
+          ls -R release-assets/
+          echo "-------------------------------"
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
