@@ -33,4 +33,11 @@ public class RealmTool {
             throw new ToolCallException("Failed to get realm: " + realmName);
         }
     }
+
+    @Tool(description = "Create a new realm")
+    String createRealm(@ToolArg(description = "A String denoting the name of the realm to create") String realmName,
+                       @ToolArg(description = "A String denoting the display name for the realm") String displayName,
+                       @ToolArg(description = "A boolean indicating whether the realm should be enabled") boolean enabled) {
+        return realmsService.createRealm(realmName, displayName, enabled);
+    }
 }
