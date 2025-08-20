@@ -37,9 +37,9 @@ jobs:
       - name: Upload Uber JAR
         uses: actions/upload-artifact@v4
         with:
-          name: keycloak-mcp-server-${{ env.APP_VERSION }}-runner.jar
-          path: target/runner-jar
-          retention-days: 30
+          name: runner-jar
+          path: target/keycloak-mcp-server-*-runner.jar
+          if-no-files-found: error
 
   build-native-linux:
     name: Build Native Linux
