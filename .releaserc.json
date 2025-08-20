@@ -5,7 +5,10 @@
     "@semantic-release/release-notes-generator",
     ["@semantic-release/github", {
       "assets": [
-        {"path": "release-assets/*", "label": "Keycloak MCP Server Binaries"}
+        { "path": "release-assets/keycloak-mcp-server-*-linux", "label": "Linux Binary v${nextRelease.version}" },
+        { "path": "release-assets/keycloak-mcp-server-*-macos", "label": "macOS Binary v${nextRelease.version}" },
+        { "path": "release-assets/keycloak-mcp-server-*-windows.exe", "label": "Windows Binary v${nextRelease.version}" },
+        { "path": "release-assets/keycloak-mcp-server-*-runner.jar", "label": "Executable JAR v${nextRelease.version}" }
       ]
     }],
     ["@semantic-release/git", {
