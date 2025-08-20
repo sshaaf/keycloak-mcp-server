@@ -9,7 +9,7 @@ This guide provides detailed technical information for developers working on the
    ```
 2. Build the project:
    ```
-   ./gradlew build
+   ./mvnw clean package
    ```
 
 ## GitHub Actions Builds
@@ -28,13 +28,13 @@ The Keycloak MCP Server is built using Quarkus, which provides fast startup time
 
 ### Prerequisites
 - Java 21 or higher
-- Gradle 8.0 or higher
+- Maven 3.6 or higher
 - Keycloak server (for integration)
 
 ### Running in Development Mode
 To run the application in development mode:
 ```bash
-./gradlew quarkusDev
+./mvnw quarkus:dev
 ```
 
 This enables hot deployment with background compilation, allowing you to make changes to the code and automatically reload the application.
@@ -52,7 +52,7 @@ Keycloak MCP Server includes a comprehensive test suite to ensure code quality a
 ### Running Tests
 To run the tests locally:
 ```bash
-./gradlew test
+./mvnw test
 ```
 
 This will execute all tests and generate a report in `build/reports/tests/test/index.html`.
@@ -65,12 +65,11 @@ The GitHub Actions workflow automatically runs all tests for:
 This ensures that all code changes pass tests before being merged, maintaining code quality and preventing regressions.
 
 ## Project Architecture
-Keycloak MCP Server is organized into several key packages:
-
-- `dev.shaaf.keycloak.mcp.server.service`: Service classes that handle operations with Keycloak
-- `dev.shaaf.keycloak.mcp.server.tools`: Tool classes that expose functionality through the MCP protocol
-
-The project follows a layered architecture with tool classes that expose functionality through the MCP protocol and service classes that handle the actual operations with Keycloak.
+Follows a layered architecture with tool classes that expose functionality through the MCP protocol and service classes that handle the actual operations with Keycloak.
+Each tool class follows a similar pattern:
+- Injects a corresponding service class that handles the actual operations with Keycloak
+- Injects an ObjectMapper for JSON serialization/deserialization
+- Exposes methods with @Tool annotations that delegate to the service class
 
 ### Class Structure
 The project includes the following main components:
@@ -90,6 +89,8 @@ The project includes the following main components:
   - `ClientTool`: Exposes client-related operations
   - `RoleTool`: Exposes role-related operations
   - `GroupTool`: Exposes group-related operations
+  - `IdentityProviderTool`: Exposes identity provider-related operations
+  - `AuthenticationTool`: Exposes authentication flow-related operations
 
 ### Class Diagram
 
@@ -180,16 +181,16 @@ docker-compose -f deploy/docker-compose.yml up
 
 ### Building the Application
 
-To build the application using Gradle:
+To build the application using Maven:
 
 ```bash
-./gradlew build
+./mvnw clean package
 ```
 
 To build an uber jar:
 
 ```bash
-./gradlew quarkusBuild -Dquarkus.package.type=uber-jar
+./mvnw clean package -Dquarkus.package.type=uber-jar
 ```
 
 ### Running with Goose
