@@ -77,7 +77,7 @@ jobs:
         with:
           name: keycloak-mcp-server-linux
           path: target/keycloak-mcp-server-*-runner
-          retention-days: 30
+          if-no-files-found: error
 
   build-native-macos:
     name: Build Native macOS
@@ -115,7 +115,7 @@ jobs:
         with:
           name: keycloak-mcp-server-macos
           path: target/keycloak-mcp-server-*-runner
-          retention-days: 30
+          if-no-files-found: error
 
   build-native-windows:
     name: Build Native Windows
@@ -153,7 +153,7 @@ jobs:
         with:
           name: keycloak-mcp-server-windows
           path: target/keycloak-mcp-server-*-runner.exe
-          retention-days: 30
+          if-no-files-found: error
 
   release:
     name: Create GitHub Release
