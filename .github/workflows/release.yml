@@ -4,8 +4,7 @@ env:
   JAVA_DISTRIBUTION: 'temurin'
   GRAALVM_DISTRIBUTION: 'graalvm'
   APP_NAME: 'keycloak-mcp-server'
-  APP_VERSION: '0.1'
-  ARTIFACT_RETENTION_DAYS: 7
+  APP_VERSION: '0.2'
 
 on:
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
@@ -187,7 +186,8 @@ jobs:
           
           # Move and rename artifacts for the release
           # The paths reflect the structure created by actions/download-artifact@v4
-          mv artifacts/${{ env.APP_NAME }}-uber-jar/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-uber.jar
+          keycloak-mcp-server-0.2-runner.jar
+          mv artifacts/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar
           mv artifacts/${{ env.APP_NAME }}-linux/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-linux
           mv artifacts/${{ env.APP_NAME }}-macos/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-macos
           mv artifacts/${{ env.APP_NAME }}-windows/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-windows.exe
