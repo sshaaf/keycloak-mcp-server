@@ -186,7 +186,6 @@ jobs:
           
           # Move and rename artifacts for the release
           # The paths reflect the structure created by actions/download-artifact@v4
-          keycloak-mcp-server-0.2-runner.jar
           mv artifacts/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar
           mv artifacts/${{ env.APP_NAME }}-linux/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-linux
           mv artifacts/${{ env.APP_NAME }}-macos/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-macos
