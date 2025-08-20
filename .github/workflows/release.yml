@@ -11,50 +11,18 @@ on:
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
 
 jobs:
-  build:
-    name: Build and Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ env.JAVA_BUILD_VERSION }}
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Build with Maven
-        run: mvn -B clean package
-
-      - name: Run tests
-        run: mvn -B test
-
-      - name: Upload JAR
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.APP_NAME }}-jar
-          path: target/quarkus-app/
-          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
-
-  build-uber-jar:
+  build-jar:
     name: Build Uber JAR
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          java-version: ${{ env.JAVA_BUILD_VERSION }}
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: '21'
+          distribution: 'temurin'
 
       - name: Cache Maven packages
         uses: actions/cache@v4
@@ -70,27 +38,28 @@ jobs:
       - name: Upload Uber JAR
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-uber-jar
-          path: target/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.jar
-          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+          name: keycloak-mcp-server-jar
+          path: target/quarkus-app/
+          retention-days: 30
 
-  native-linux:
+  build-native-linux:
     name: Build Native Linux
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          java-version: ${{ env.JAVA_BUILD_VERSION }}
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: '21'
+          distribution: 'temurin'
 
-      - name: Set up GraalVM
+      - name: Install GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: ${{ env.JAVA_BUILD_VERSION }}
-          distribution: ${{ env.GRAALVM_DISTRIBUTION }}
+          java-version: '21'
+          distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache Maven packages
@@ -101,34 +70,34 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build Native Image
-        run: |
-          mvn -B clean package -Pnative -Dquarkus.native.container-build=false -Dquarkus.native.enable-reports=true
+      - name: Build Native Linux Binary
+        run: mvn -B clean package -Pnative -Dquarkus.native.container-build=true -DskipTests
 
-      - name: Upload Linux Native Executable
+      - name: Upload Native Linux Binary
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-linux
-          path: target/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner
-          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+          name: keycloak-mcp-server-linux
+          path: target/keycloak-mcp-server-*-runner
+          retention-days: 30
 
-  native-macos:
-    name: Build Native macOS (Apple Silicon)
-    runs-on: macos-14
+  build-native-macos:
+    name: Build Native macOS
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
-          java-version: ${{ env.JAVA_BUILD_VERSION }}
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: '21'
+          distribution: 'temurin'
 
-      - name: Set up GraalVM
+      - name: Install GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: ${{ env.JAVA_BUILD_VERSION }}
-          distribution: ${{ env.GRAALVM_DISTRIBUTION }}
+          java-version: '21'
+          distribution: 'graalvm'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache Maven packages
@@ -139,18 +108,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build Native Image
-        run: |
-          mvn -B clean package -Pnative -Dquarkus.native.container-build=false -Dquarkus.native.enable-reports=true
+      - name: Build Native macOS Binary
+        run: mvn -B clean package -Pnative -DskipTests
 
-      - name: Upload macOS Native Executable
+      - name: Upload Native macOS Binary
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-macos
-          path: target/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner
-          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+          name: keycloak-mcp-server-macos
+          path: target/keycloak-mcp-server-*-runner
+          retention-days: 30
 
-  native-windows:
+  build-native-windows:
     name: Build Native Windows
     runs-on: windows-latest
     steps:
@@ -181,67 +149,58 @@ jobs:
       - name: Build Native Windows Binary
         run: mvn -B clean package -Pnative -DskipTests
 
-      - name: Upload Windows Native Executable
+      - name: Upload Native Windows Binary
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.APP_NAME }}-windows
-          path: target/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-runner.exe
-          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+          name: keycloak-mcp-server-windows
+          path: target/keycloak-mcp-server-*-runner.exe
+          retention-days: 30
 
   release:
     name: Create GitHub Release
-    needs: [build-uber-jar, native-linux, native-macos, native-windows]
+    # Run this job only after all build jobs have successfully completed
+    needs: [build-jar, build-native-linux, build-native-macos, build-native-windows]
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write # To create releases and tags
+      issues: write # To comment on issues/PRs
+      pull-requests: write # To comment on issues/PRs
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          # Fetch all history for semantic-release to analyze
           fetch-depth: 0
 
       - name: Download all build artifacts
         uses: actions/download-artifact@v4
         with:
+          # Download all artifacts into a single directory
           path: artifacts/
 
-      - name: Set up Node.js for semantic-release
+      - name: Prepare release assets
+        id: prepare_assets
+        run: |
+          # Create a directory for the final assets that will be uploaded
+          mkdir release-assets
+          
+          # Move and rename artifacts for the release
+          # The paths reflect the structure created by actions/download-artifact@v4
+          mv artifacts/${{ env.APP_NAME }}-uber-jar/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-uber.jar
+          mv artifacts/${{ env.APP_NAME }}-linux/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-linux
+          mv artifacts/${{ env.APP_NAME }}-macos/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-macos
+          mv artifacts/${{ env.APP_NAME }}-windows/* release-assets/${{ env.APP_NAME }}-${{ env.APP_VERSION }}-windows.exe
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Semantic Release
-        id: semantic
-        uses: cycjimmy/semantic-release-action@v4
-        with:
-          extra_plugins: |
-            @semantic-release/git
-            @semantic-release/github
+      - name: Install semantic-release and plugins
+        run: npm install semantic-release @semantic-release/git @semantic-release/github @semantic-release/commit-analyzer @semantic-release/release-notes-generator
+
+      - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Prepare and rename release assets
-        if: steps.semantic.outputs.new_release_published == 'true'
-        id: prepare_assets
-        run: |
-          VERSION=${{ steps.semantic.outputs.new_release_version }}
-          echo "Preparing assets for new version: $VERSION"
-          
-          # Create a directory for the final assets
-          mkdir release-assets
-          
-          # Find and rename artifacts (paths reflect download-artifact@v4 structure)
-          mv artifacts/${{ env.APP_NAME }}-uber-jar/* release-assets/${{ env.APP_NAME }}-${VERSION}-uber.jar
-          mv artifacts/${{ env.APP_NAME }}-linux/* release-assets/${{ env.APP_NAME }}-${VERSION}-linux
-          mv artifacts/${{ env.APP_NAME }}-macos/* release-assets/${{ env.APP_NAME }}-${VERSION}-macos
-          mv artifacts/${{ env.APP_NAME }}-windows/* release-assets/${{ env.APP_NAME }}-${VERSION}-windows.exe
-
-      - name: Upload release assets to GitHub Release
-        if: steps.semantic.outputs.new_release_published == 'true'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.semantic.outputs.new_release_tag }}
-          name: Release ${{ steps.semantic.outputs.new_release_version }}
-          body: ${{ steps.semantic.outputs.new_release_notes }}
-          files: release-assets/*
+        run: npx semantic-release

@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Build Uber JAR
-        run: mvn -B clean package -DskipTests
+        run: mvn -B clean package -Dquarkus.package.type=uber-jar
 
       - name: Upload Uber JAR
         uses: actions/upload-artifact@v4
