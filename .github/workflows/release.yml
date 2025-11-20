@@ -4,7 +4,7 @@ env:
   JAVA_DISTRIBUTION: 'temurin'
   GRAALVM_DISTRIBUTION: 'graalvm'
   APP_NAME: 'keycloak-mcp-server'
-  APP_VERSION: '0.2.0'
+  # APP_VERSION is automatically extracted from pom.xml in each job
 
 on:
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
@@ -235,6 +235,19 @@ jobs:
           # Fetch all history for semantic-release to analyze
           fetch-depth: 0
 
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Extract Version from POM
+        id: get-version
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version from pom.xml: $VERSION"
+
       - name: Download all build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -243,8 +256,9 @@ jobs:
 
       - name: Prepare release assets
         id: prepare_assets
+        env:
+          APP_VERSION: ${{ steps.get-version.outputs.version }}
         run: |
-          run: |
           # Stop the script if any command fails (e.g., a file isn't found)
           set -e
       
