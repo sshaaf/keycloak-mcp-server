@@ -160,3 +160,60 @@ jobs:
           name: keycloak-mcp-server-windows
           path: target/keycloak-mcp-server-*-runner.exe
           retention-days: 30
+
+  build-and-push-container:
+    name: Build and Push Container to Quay.io
+    runs-on: ubuntu-latest
+    # Only push on main branch pushes (not on PRs)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full git history for git commit SHA
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Get Git Commit SHA
+        id: git-sha
+        run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build and Push Container Image
+        run: |
+          mvn -B clean package -DskipTests \
+            -Dquarkus.container-image.build=true \
+            -Dquarkus.container-image.push=true \
+            -Dquarkus.container-image.username=${{ secrets.QUAY_USERNAME }} \
+            -Dquarkus.container-image.password=${{ secrets.QUAY_PASSWORD }}
+        env:
+          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Image Details
+        run: |
+          echo "### Container Images Pushed to Quay.io 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Registry:** quay.io/sshaaf/keycloak-mcp-server" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tags:**" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ steps.git-sha.outputs.short_sha }}\` (git commit SHA)" >> $GITHUB_STEP_SUMMARY
+          echo "- \`latest\` (always updated)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Pull command:**" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull quay.io/sshaaf/keycloak-mcp-server:${{ steps.git-sha.outputs.short_sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "# OR" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull quay.io/sshaaf/keycloak-mcp-server:latest" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
