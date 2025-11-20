@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-mcp-server
+  labels:
+    app: keycloak-mcp-server
+    app.kubernetes.io/name: keycloak-mcp-server
+spec:
+  selector:
+    app: keycloak-mcp-server
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  type: ClusterIP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 3600
+

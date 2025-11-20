@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak-mcp-server
+  labels:
+    app: keycloak-mcp-server
+    app.kubernetes.io/name: keycloak-mcp-server
+    app.kubernetes.io/component: mcp-server
+    app.openshift.io/runtime: quarkus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak-mcp-server
+  template:
+    metadata:
+      labels:
+        app: keycloak-mcp-server
+        deployment: keycloak-mcp-server
+    spec:
+      containers:
+      - name: keycloak-mcp-server
+        image: quay.io/sshaaf/keycloak-mcp-server:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+          name: http
+        env:
+        - name: KC_URL
+          valueFrom:
+            configMapKeyRef:
+              name: keycloak-mcp-config
+              key: keycloak-url
+        - name: KC_USER
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-mcp-secret
+              key: username
+        - name: KC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-mcp-secret
+              key: password
+        # TLS Configuration for HTTPS Keycloak
+        # Uncomment and configure based on your setup
+        # - name: JAVAX_NET_SSL_TRUSTSTORE
+        #   value: /certs/truststore.jks
+        # - name: JAVAX_NET_SSL_TRUSTSTOREPASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: keycloak-mcp-secret
+        #       key: truststore-password
+        volumeMounts:
+        # Mount CA certificate for HTTPS Keycloak
+        # Uncomment if using custom CA or self-signed certificates
+        # - name: keycloak-ca-cert
+        #   mountPath: /certs
+        #   readOnly: true
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /q/health/live
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /q/health/ready
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /q/health/started
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 30
+      volumes:
+      # Volume for Keycloak CA certificate
+      # Uncomment and configure based on your certificate source
+      # Option 1: From ConfigMap (for CA certificates)
+      # - name: keycloak-ca-cert
+      #   configMap:
+      #     name: keycloak-ca-bundle
+      #     items:
+      #     - key: ca.crt
+      #       path: ca.crt
+      # Option 2: From Secret (for truststore)
+      # - name: keycloak-ca-cert
+      #   secret:
+      #     secretName: keycloak-tls-secret
+      #     items:
+      #     - key: truststore.jks
+      #       path: truststore.jks
+      # Option 3: Use OpenShift's service-ca (automatically injected)
+      # - name: keycloak-ca-cert
+      #   configMap:
+      #     name: keycloak-ca-bundle
+      #     items:
+      #     - key: service-ca.crt
+      #       path: service-ca.crt
+
