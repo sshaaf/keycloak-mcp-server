@@ -32,16 +32,32 @@ spec:
             configMapKeyRef:
               name: keycloak-mcp-config
               key: keycloak-url
-        - name: KC_USER
+        - name: KC_REALM
+          valueFrom:
+            configMapKeyRef:
+              name: keycloak-mcp-config
+              key: keycloak-realm
+        - name: KC_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: keycloak-mcp-config
+              key: client-id
+        - name: KC_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
               name: keycloak-mcp-secret
-              key: username
-        - name: KC_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: keycloak-mcp-secret
-              key: password
+              key: client-secret
+        # Legacy credentials (deprecated - remove after migration)
+        # - name: KC_USER
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: keycloak-mcp-secret
+        #       key: username
+        # - name: KC_PASSWORD
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: keycloak-mcp-secret
+        #       key: password
         # TLS Configuration for HTTPS Keycloak
         # Uncomment and configure based on your setup
         # - name: JAVAX_NET_SSL_TRUSTSTORE
