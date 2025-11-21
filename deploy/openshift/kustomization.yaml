@@ -5,7 +5,6 @@ namespace: keycloak-mcp
 
 resources:
   - configmap.yaml
-  - secret.yaml
   - deployment.yaml
   - service.yaml
   - route.yaml

@@ -3,14 +3,14 @@ This guide provides detailed technical information for developers working on the
 
 ## Building from Source
 1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/keycloak-mcp-server.git
-   cd keycloak-mcp-server
-   ```
+ ```
+ git clone https://github.com/yourusername/keycloak-mcp-server.git
+ cd keycloak-mcp-server
+ ```
 2. Build the project:
-   ```
-   ./mvnw clean package
-   ```
+ ```
+ ./mvnw clean package
+ ```
 
 ## GitHub Actions Builds
 Keycloak MCP Server uses GitHub Actions to automatically build and test the project on every commit.
@@ -75,22 +75,22 @@ Each tool class follows a similar pattern:
 The project includes the following main components:
 
 - **Service Layer**: Handles the actual operations with Keycloak
-  - `UserService`: Manages user-related operations
-  - `RealmService`: Manages realm-related operations
-  - `ClientService`: Manages client-related operations
-  - `RoleService`: Manages role-related operations
-  - `GroupService`: Manages group-related operations
-  - `IdentityProviderService`: Manages identity provider-related operations
-  - `AuthenticationService`: Manages authentication flow-related operations
+ - `UserService`: Manages user-related operations
+ - `RealmService`: Manages realm-related operations
+ - `ClientService`: Manages client-related operations
+ - `RoleService`: Manages role-related operations
+ - `GroupService`: Manages group-related operations
+ - `IdentityProviderService`: Manages identity provider-related operations
+ - `AuthenticationService`: Manages authentication flow-related operations
 
 - **Tools Layer**: Exposes functionality through the MCP protocol
-  - `UserTool`: Exposes user-related operations
-  - `RealmTool`: Exposes realm-related operations
-  - `ClientTool`: Exposes client-related operations
-  - `RoleTool`: Exposes role-related operations
-  - `GroupTool`: Exposes group-related operations
-  - `IdentityProviderTool`: Exposes identity provider-related operations
-  - `AuthenticationTool`: Exposes authentication flow-related operations
+ - `UserTool`: Exposes user-related operations
+ - `RealmTool`: Exposes realm-related operations
+ - `ClientTool`: Exposes client-related operations
+ - `RoleTool`: Exposes role-related operations
+ - `GroupTool`: Exposes group-related operations
+ - `IdentityProviderTool`: Exposes identity provider-related operations
+ - `AuthenticationTool`: Exposes authentication flow-related operations
 
 ### Class Diagram
 
@@ -98,52 +98,52 @@ Below is a class diagram showing the structure of the tools package and its rela
 
 ```mermaid
 graph TD
-    subgraph "Goose CLI"
-        GooseCLI[Goose CLI]
-    end
+ subgraph "Goose CLI"
+ GooseCLI[Goose CLI]
+ end
 
-    subgraph "Tools Layer"
-        UserTool["UserTool"]
-        RealmTool["RealmTool"]
-        ClientTool["ClientTool"]
-        RoleTool["RoleTool"]
-        GroupTool["GroupTool"]
-    end
+ subgraph "Tools Layer"
+ UserTool["UserTool"]
+ RealmTool["RealmTool"]
+ ClientTool["ClientTool"]
+ RoleTool["RoleTool"]
+ GroupTool["GroupTool"]
+ end
 
-    subgraph "Service Layer"
-        UserService["UserService"]
-        RealmService["RealmService"]
-        ClientService["ClientService"]
-        RoleService["RoleService"]
-        GroupService["GroupService"]
-    end
+ subgraph "Service Layer"
+ UserService["UserService"]
+ RealmService["RealmService"]
+ ClientService["ClientService"]
+ RoleService["RoleService"]
+ GroupService["GroupService"]
+ end
 
-    subgraph "External Services"
-        Keycloak[("Keycloak")]
-    end
+ subgraph "External Services"
+ Keycloak[("Keycloak")]
+ end
 
-    %% Define Relationships
-    GooseCLI --> UserTool
-    GooseCLI --> RealmTool
-    GooseCLI --> ClientTool
-    GooseCLI --> RoleTool
-    GooseCLI --> GroupTool
+ %% Define Relationships
+ GooseCLI --> UserTool
+ GooseCLI --> RealmTool
+ GooseCLI --> ClientTool
+ GooseCLI --> RoleTool
+ GooseCLI --> GroupTool
 
-    UserTool --> UserService
-    RealmTool --> RealmService
-    ClientTool --> ClientService
-    RoleTool --> RoleService
-    GroupTool --> GroupService
+ UserTool --> UserService
+ RealmTool --> RealmService
+ ClientTool --> ClientService
+ RoleTool --> RoleService
+ GroupTool --> GroupService
 
-    UserService --> Keycloak
-    RealmService --> Keycloak
-    ClientService --> Keycloak
-    RoleService --> Keycloak
-    GroupService --> Keycloak
+ UserService --> Keycloak
+ RealmService --> Keycloak
+ ClientService --> Keycloak
+ RoleService --> Keycloak
+ GroupService --> Keycloak
 
-    %% Styling
-    style GooseCLI fill:#d4edda,stroke:#c3e6cb
-    style Keycloak fill:#f8d7da,stroke:#f5c6cb
+ %% Styling
+ style GooseCLI fill:#d4edda,stroke:#c3e6cb
+ style Keycloak fill:#f8d7da,stroke:#f5c6cb
 
 ```
 ## Architecture

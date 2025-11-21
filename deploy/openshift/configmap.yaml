@@ -6,16 +6,12 @@ metadata:
     app: keycloak-mcp-server
 data:
   # Keycloak HTTPS URL (production uses HTTPS only)
-  # Update with your actual Keycloak hostname
-  keycloak-url: "https://keycloak.apps.example.com"
+  keycloak-url: "https://keycloak.sso.apps.red.demoshift.com"
   
   # Keycloak realm for authentication
   keycloak-realm: "master"
   
-  # Service Account Client ID
-  # Create this client in Keycloak with service-account-enabled
+  # OIDC Client ID for JWT token validation
+  # Used to validate incoming user JWT tokens (no secret needed)
   client-id: "mcp-server"
-  
-  # Optional: Additional configuration
-  # log-level: "INFO"
 

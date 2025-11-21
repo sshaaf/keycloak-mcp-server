@@ -1,5 +1,6 @@
 package dev.shaaf.keycloak.mcp.server.user;
 
+import dev.shaaf.keycloak.mcp.server.KeycloakClientFactory;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -19,7 +20,7 @@ import java.util.List;
 public class UserService {
 
     @Inject
-    Keycloak keycloak;
+    KeycloakClientFactory clientFactory;
 
     /**
      * Get all users from a realm
@@ -27,6 +28,7 @@ public class UserService {
      * @return List of all user representations in the realm
      */
     public List<UserRepresentation> getUsers(String realm) {
+        Keycloak keycloak = clientFactory.createClient();
         return keycloak.realm(realm).users().list();
 
     }
@@ -42,6 +44,7 @@ public class UserService {
      * @return Success or error message
      */
     public String addUser(String realm, String username, String firstName, String lastName, String email, String password) {
+        Keycloak keycloak = clientFactory.createClient();
         UserRepresentation user = new UserRepresentation();
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -71,6 +74,7 @@ public class UserService {
      * @return Success or error message
      */
     public String deleteUser(String realm, String username) {
+        Keycloak keycloak = clientFactory.createClient();
         UserRepresentation user = getUserByUsername(realm, username);
         if (user != null) {
             Response response = keycloak.realm(realm).users().delete(user.getId());
@@ -91,6 +95,7 @@ public class UserService {
      * @return The user representation or null if not found
      */
     public UserRepresentation getUserByUsername(String realm, String username) {
+        Keycloak keycloak = clientFactory.createClient();
         return keycloak.realm(realm).users()
                 .search(username)
                 .stream()
@@ -106,6 +111,7 @@ public class UserService {
      * @return The user representation or null if not found
      */
     public UserRepresentation getUserById(String realm, String userId) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             return keycloak.realm(realm).users().get(userId).toRepresentation();
         } catch (NotFoundException e) {
@@ -125,6 +131,7 @@ public class UserService {
      * @return Success or error message
      */
     public String updateUser(String realm, String userId, UserRepresentation userRepresentation) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             UserResource userResource = keycloak.realm(realm).users().get(userId);
             userResource.update(userRepresentation);
@@ -144,6 +151,7 @@ public class UserService {
      * @return List of groups the user belongs to or empty list if not found
      */
     public List<GroupRepresentation> getUserGroups(String realm, String userId) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             return keycloak.realm(realm).users().get(userId).groups();
         } catch (NotFoundException e) {
@@ -163,6 +171,7 @@ public class UserService {
      * @return Success or error message
      */
     public String addUserToGroup(String realm, String userId, String groupId) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             keycloak.realm(realm).users().get(userId).joinGroup(groupId);
             return "Successfully added user to group: " + userId + " -> " + groupId;
@@ -182,6 +191,7 @@ public class UserService {
      * @return Success or error message
      */
     public String removeUserFromGroup(String realm, String userId, String groupId) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             keycloak.realm(realm).users().get(userId).leaveGroup(groupId);
             return "Successfully removed user from group: " + userId + " -> " + groupId;
@@ -200,6 +210,7 @@ public class UserService {
      * @return List of roles assigned to the user or empty list if not found
      */
     public List<RoleRepresentation> getUserRoles(String realm, String userId) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             // Get effective roles (realm + client roles)
             return keycloak.realm(realm).users().get(userId).roles().realmLevel().listEffective();
@@ -220,6 +231,7 @@ public class UserService {
      * @return Success or error message
      */
     public String addRoleToUser(String realm, String userId, String roleName) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             // Get the role representation
             RoleRepresentation role = keycloak.realm(realm).roles().get(roleName).toRepresentation();
@@ -244,6 +256,7 @@ public class UserService {
      * @return Success or error message
      */
     public String removeRoleFromUser(String realm, String userId, String roleName) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             // Get the role representation
             RoleRepresentation role = keycloak.realm(realm).roles().get(roleName).toRepresentation();
@@ -269,6 +282,7 @@ public class UserService {
      * @return Success or error message
      */
     public String resetPassword(String realm, String userId, String newPassword, boolean temporary) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             // Create credential representation
             CredentialRepresentation credential = new CredentialRepresentation();
@@ -295,6 +309,7 @@ public class UserService {
      * @return Success or error message
      */
     public String sendVerificationEmail(String realm, String userId) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             keycloak.realm(realm).users().get(userId).sendVerifyEmail();
             return "Successfully sent verification email to user: " + userId;
@@ -312,6 +327,7 @@ public class UserService {
      * @return The number of users in the realm
      */
     public int countUsers(String realm) {
+        Keycloak keycloak = clientFactory.createClient();
         try {
             return keycloak.realm(realm).users().count();
         } catch (Exception e) {

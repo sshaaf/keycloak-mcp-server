@@ -1,5 +1,6 @@
 package dev.shaaf.keycloak.mcp.server.realm;
 
+import dev.shaaf.keycloak.mcp.server.KeycloakClientFactory;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -15,13 +16,14 @@ import java.util.List;
 public class RealmService {
 
     @Inject
-    Keycloak keycloak;
+    KeycloakClientFactory clientFactory;
 
     /**
      * Get all realms
      * @return List of all realm representations
      */
     public List<RealmRepresentation> getRealms() {
+        Keycloak keycloak = clientFactory.createClient();
         return keycloak.realms().findAll();
     }
 
@@ -32,6 +34,7 @@ public class RealmService {
      */
     public RealmRepresentation getRealm(String realmName) {
         try {
+            Keycloak keycloak = clientFactory.createClient();
             return keycloak.realm(realmName).toRepresentation();
         } catch (NotFoundException e) {
             Log.error("Realm not found: " + realmName, e);
@@ -53,6 +56,7 @@ public class RealmService {
         realm.setEnabled(enabled);
         
         try {
+            Keycloak keycloak = clientFactory.createClient();
             keycloak.realms().create(realm);
             return "Successfully created realm: " + realmName;
         } catch (Exception e) {
@@ -69,6 +73,7 @@ public class RealmService {
      */
     public String updateRealm(String realmName, RealmRepresentation realmRepresentation) {
         try {
+            Keycloak keycloak = clientFactory.createClient();
             keycloak.realm(realmName).update(realmRepresentation);
             return "Successfully updated realm: " + realmName;
         } catch (Exception e) {
@@ -90,6 +95,7 @@ public class RealmService {
                 return "Realm not found: " + realmName;
             }
             
+            Keycloak keycloak = clientFactory.createClient();
             // The remove() method returns void, so we rely on exception handling
             keycloak.realms().realm(realmName).remove();
             return "Successfully deleted realm: " + realmName;
@@ -109,6 +115,7 @@ public class RealmService {
      */
     public String setRealmEnabled(String realmName, boolean enabled) {
         try {
+            Keycloak keycloak = clientFactory.createClient();
             RealmResource realmResource = keycloak.realm(realmName);
             RealmRepresentation realm = realmResource.toRepresentation();
             realm.setEnabled(enabled);
@@ -129,6 +136,7 @@ public class RealmService {
      */
     public RealmEventsConfigRepresentation getRealmEventsConfig(String realmName) {
         try {
+            Keycloak keycloak = clientFactory.createClient();
             return keycloak.realm(realmName).getRealmEventsConfig();
         } catch (NotFoundException e) {
             Log.error("Realm not found: " + realmName, e);
@@ -147,6 +155,7 @@ public class RealmService {
      */
     public String updateRealmEventsConfig(String realmName, RealmEventsConfigRepresentation eventsConfig) {
         try {
+            Keycloak keycloak = clientFactory.createClient();
             keycloak.realm(realmName).updateRealmEventsConfig(eventsConfig);
             return "Successfully updated realm events config: " + realmName;
         } catch (NotFoundException e) {

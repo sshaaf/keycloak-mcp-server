@@ -57,3 +57,7 @@ nb-configuration.xml
 
 # Ignore Gradle build output directory
 build
+
+# MkDocs
+site/
+.venv/

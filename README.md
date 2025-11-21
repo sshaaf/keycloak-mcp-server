@@ -6,215 +6,142 @@
   <b> An MCP Server for Keycloak </b>
 </h2>
 
-[![Java 21](https://img.shields.io/badge/Java-21-blue.svg)](https://openjdk.org/projects/jdk/21/)
-[![Maven 3](https://img.shields.io/badge/Maven-3-orange.svg)](https://maven.apache.org/)
-[![Quarkus 3](https://img.shields.io/badge/Quarkus-3-blue.svg)](https://quarkus.io/)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sshaaf/keycloak-mcp-server)
-[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+# Keycloak MCP Server
 
-This project provides tools for developers using Keycloak. It includes utilities for interacting with a Keycloak server, a search client for the official Keycloak Discourse community, and built-in Retrieval-Augmented Generation (RAG) capabilities.
+A Model Context Protocol (MCP) server that provides programmatic access to Keycloak administration functionality.
 
-The project is under active development. You can contribute by reporting issues, suggesting new features, or submitting pull requests.
+## Overview
 
-For more details on how to contribute, please see
-- [Developers guide](DEVELOPERS.md)
-- [Contributors guide](CONTRIBUTORS.md)
-- [Deepwiki docs](https://deepwiki.com/sshaaf/keycloak-mcp-server)
+The Keycloak MCP Server enables AI assistants and development tools to interact with Keycloak through the Model Context Protocol. It supports comprehensive Keycloak operations including user management, realm configuration, client administration, and authentication flow management.
 
-## Features
-- **MCP Standard**: Implements the Model-Context Protocol for efficient standard input/output server operations.
-- **Keycloak Integration**: Seamlessly integrates with Keycloak for authentication and authorization.
-- **Discourse Search**: Users can now ask about related issues in Keycloak discourse.
-- **Comprehensive API**: Provides tools for managing various Keycloak resources:
-```mermaid
-graph LR
-    subgraph Realm
-        U[Users]
-        C[Clients]
-        R[Roles]
-        G[Groups]
-    end
+## Key Features
 
-```
-- **Quarkus Framework**: Built using Quarkus to provide fast startup times and low memory footprint.
+* User JWT Token Authentication
+* Comprehensive Keycloak Operations (users, realms, clients, roles, groups, etc.)
+* SSE Transport for HTTP-based communication
+* Production-ready OpenShift/Kubernetes deployment
+* Multi-architecture container images
+* GraalVM native image support
 
-### Releases
-The Keycloak MCP server is available in the following formats:
-- **Uber JAR**: Available in regular releases and builds
-- **Native Binaries**: Available in regular releases and builds for MacOS, Linux, and Windows
-- 
-## Getting started - configuration
+## Quick Start
 
-### Cursor
-You can add the following in the config in the `~/.cursor/mcp.json`
-```yaml
-{
-  "mcpServers": {
-    "keycloak_mcp_server": {
-      "type": "stdio",
-      "command": "<full path> keycloak-mcp-server-0.1",
-      "args": [],
-      "env": {
-        "KC_URL": "http://localhost:8081",
-        "KC_USER": "admin",
-        "KC_PASSWORD": "admin"
-      }
-    }
-  }
-}
+### Using Docker
 
+```bash
+docker run -d \
+  --name keycloak-mcp-server \
+  -p 8080:8080 \
+  -e KC_URL=https://keycloak.example.com \
+  -e KC_REALM=master \
+  -e OIDC_CLIENT_ID=mcp-server \
+  quay.io/sshaaf/keycloak-mcp-server:latest
 ```
 
+### Authentication
 
-You can add the keycloak server by adding the following to `claude_desktop_config`.
-### Claude Code
-```yaml
+Users authenticate with their own JWT tokens from Keycloak:
+
+```bash
+# Get your token
+./scripts/get-mcp-token.sh \
+  --keycloak-url https://keycloak.example.com \
+  --username your-username \
+  --password your-password
+```
+
+Configure in your MCP client (`~/.cursor/mcp.json`):
+
+```json
 {
   "mcpServers": {
     "keycloak": {
-      "command": "<full path>/keycloak-mcp-server-0.1",
-      "args": [],
-      "env": {
-        "KC_URL": "http://localhost:8081",
-        "KC_USER": "admin",
-        "KC_PASSWORD": "admin"
+      "transport": "sse",
+      "url": "https://mcp-server.example.com/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer <your-jwt-token>"
       }
     }
   }
 }
 ```
-### VSCode
-You can add the keycloak MCP server tools into VS Code by adding the following to your `mcp.json`.
 
-```yaml
-  "keycloak_mcp_server": {
-    "type": "stdio",
-    "command": "<full path> keycloak-mcp-server-0.1",
-    "args": [],
-    "env": {
-      "KC_URL": "http://localhost:8081",
-      "KC_USER": "admin",
-      "KC_PASSWORD": "admin"
-    }
-```
+## Documentation
 
-### Goose CLI
+Complete documentation is available in the `docs` directory:
 
-```yaml
-extensions:
-  keycloak_mcp_server:
-    display_name: Keycloak MCP Server
-    enabled: true
-    name: keycloak-mcp-server
-    timeout: 300
-    type: stdio
-    cmd: "<full path>keycloak-mcp-server-0.1"
-    args: []
-    env_keys:
-      - "KC_URL"
-```
-You need to set an environment variable:
-e.g.
+* [Getting Started Guide](docs/getting-started.md) - Setup instructions
+* [Authentication Guide](docs/authentication.md) - User authentication
+* [OpenShift Deployment](docs/openshift-deployment.md) - Production deployment
+* [Developers Guide](docs/developers.md) - Development guide
+* [Full Documentation Index](docs/index.md) - Complete table of contents
+
+### Building Documentation
+
+This project uses MkDocs for documentation. To build and serve locally:
+
 ```bash
-export KC_URL=http://localhost:8081
+pip install mkdocs-material
+mkdocs serve
 ```
 
-Now you can run `goose session` and the extension should be loaded.
+Visit http://localhost:8000 to view the documentation.
 
-### Uber Jar
-The examples above are for native binaries. however you can also use the uber-jar
-If using the uber jar change the `cmd` and `args` as follows
-```yaml
-    cmd|command: "java"
-    args: ["-jar", "path to jar"]
+## Container Images
+
+Pre-built images are available on Quay.io:
+
+```bash
+docker pull quay.io/sshaaf/keycloak-mcp-server:latest
 ```
 
+Images are automatically built and pushed on commits to main and on releases.
 
+## Building
 
-## Example Usage
+### JAR
 
-Here are some examples of how to use the Keycloak MCP Server with Goose:
-
-```
-( O)> can I create a new user in keycloak?
-Yes, you can create a new user in Keycloak. To do this, you'll need to provide the following information about the user:
-
-- **Realm**: The name of the realm where the user will reside.
-- **Username**: The username for the new user.
-- **First Name**: The first name of the user.
-- **Last Name**: The last name of the user.
-- **Email**: The email address of the user.
-- **Password**: The password for the user's account.
-
-You can provide these details, and I can assist you with creating the user.
-
-
-----
-( O)> list all users in quarkus realm
-Here are the users in the "quarkus" realm:
-
-1. **admin**
-   - ID: `af134cab-f41c-4675-b141-205f975db679`
-
-2. **alice**
-   - ID: `eb4123a3-b722-4798-9af5-8957f823657a`
-
-3. **jdoe**
-   - ID: `1eed6a8e-a853-4597-b4c6-c4c2533546a0`
-
-----
-( O)> can you delete user sshaaf from realm quarkus
-
+```bash
+mvn clean package
+java -jar target/quarkus-app/quarkus-run.jar
 ```
 
-## List of tools (Generated by Goose)
-### Realm Management
-- **Get a specific realm by name:** Retrieve details about a specific realm.
-- **Get all realms from Keycloak:** List all available realms.
+### Native Image
 
-### User Management
-- **Create a new user in a Keycloak realm:** Add a user with mandatory fields like email, username, etc.
-- **Get all users from a Keycloak realm:** List users within a specified realm.
-- **Find a user by username in a Keycloak realm:** Search for a user using their username.
-- **Add a role to a user in a Keycloak realm:** Assign a role to a user.
-- **Remove a role from a user in a Keycloak realm:** Revoke a role from a user.
-- **Add a user to a group in a Keycloak realm:** Assign a user to a group.
-- **Remove a user from a group in a Keycloak realm:** Remove a user from a group.
-- **Find roles assigned to a user in a Keycloak realm:** List roles that are assigned to a specified user.
+```bash
+mvn clean package -Pnative
+./target/keycloak-mcp-server-runner
+```
 
-### Role Management
-- **Get all roles from a Keycloak realm:** List all roles available in a realm.
-- **Get a specific role from a Keycloak realm:** Retrieve details about a specific role.
+### Container Image
 
-### Group Management
-- **Get all groups from a Keycloak realm:** List all groups within a specified realm.
-- **Get group members from a Keycloak realm:** Retrieve members of a specified group.
+```bash
+mvn clean package -Dquarkus.container-image.build=true
+```
 
-### Client Management
-- **Create a new client in a Keycloak realm:** Add a client with specified details like clientId and redirect URI.
-- **Delete a client in a Keycloak realm:** Remove a specified client.
-- **Get a client by its ID in a Keycloak realm:** Retrieve details of a client using its ID.
-- **Get all clients from a Keycloak realm:** List all clients within a specified realm.
-- **Generate new client secret for a client in a Keycloak realm:** Create a new secret for a specified client.
+## Technology Stack
 
-### Client Role Management
-- **Create client role from a Keycloak realm:** Define a role for a client.
-- **Delete client role from a Keycloak realm:** Remove a client role.
-- **Get client roles in a Keycloak realm:** List roles specific to a client.
+* **Quarkus** - Cloud-native Java framework
+* **Keycloak Admin Client** - Official Keycloak Java client
+* **MCP Protocol** - Model Context Protocol for AI integration
+* **Jib** - Containerization without Docker daemon
+* **GraalVM** - Native image compilation support
 
-### Search Keycloak Community Discourse for Similar Issues**
-- **Description**: Searches the Keycloak community discourse for discussions related to a given query to help resolve issues by referencing similar community discussions.
+## License
 
-## References
-
-- [Keycloak](https://www.keycloak.org/) - Open Source Identity and Access Management
-- [Quarkus](https://quarkus.io/) - A Kubernetes Native Java stack
-- [Goose by Block](https://github.com/goose-ai/goose) - Command-line interface for AI assistants
-- [Model-Context Protocol (MCP)](https://github.com/goose-ai/mcp) - Protocol for efficient standard input/output server operations
+MIT License - see LICENSE file for details.
 
 ## Contributing
 
-Contributions are welcome! For more information please read the following documents. 
-- [Developers guide](DEVELOPERS.md)
-- [Contributors guide](CONTRIBUTORS.md)
-- [Release workflow](RELEASE_WORKFLOW.md)
+Contributions are welcome. See [Contributors Guide](docs/contributors.md) for details.
+
+## Support
+
+* Documentation: [docs/index.md](docs/index.md)
+* Issues: GitHub Issues
+* Community: [Keycloak Discourse](https://keycloak.discourse.group)
+
+---
+
+**Maintainer**: Shaaf Syed  
+**Repository**: https://github.com/sshaaf/keycloak-mcp-server  
+**Container Registry**: https://quay.io/repository/sshaaf/keycloak-mcp-server

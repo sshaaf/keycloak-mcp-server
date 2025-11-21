@@ -23,6 +23,7 @@ import java.util.Optional;
 
 @ApplicationScoped
 public class ClientService {
+        Keycloak keycloak = clientFactory.createClient();
 
     @Inject
     KeycloakClientFactory clientFactory;

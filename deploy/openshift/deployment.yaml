@@ -27,6 +27,7 @@ spec:
           protocol: TCP
           name: http
         env:
+        # Keycloak connection
         - name: KC_URL
           valueFrom:
             configMapKeyRef:
@@ -37,42 +38,18 @@ spec:
             configMapKeyRef:
               name: keycloak-mcp-config
               key: keycloak-realm
-        - name: KC_CLIENT_ID
+        
+        # OIDC token validation (no secret needed for public discovery)
+        - name: OIDC_CLIENT_ID
           valueFrom:
             configMapKeyRef:
               name: keycloak-mcp-config
               key: client-id
-        - name: KC_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: keycloak-mcp-secret
-              key: client-secret
-        # Legacy credentials (deprecated - remove after migration)
-        # - name: KC_USER
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: keycloak-mcp-secret
-        #       key: username
-        # - name: KC_PASSWORD
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: keycloak-mcp-secret
-        #       key: password
-        # TLS Configuration for HTTPS Keycloak
-        # Uncomment and configure based on your setup
-        # - name: JAVAX_NET_SSL_TRUSTSTORE
-        #   value: /certs/truststore.jks
-        # - name: JAVAX_NET_SSL_TRUSTSTOREPASSWORD
-        #   valueFrom:
-        #     secretKeyRef:
-        #       name: keycloak-mcp-secret
-        #       key: truststore-password
         volumeMounts:
         # Mount CA certificate for HTTPS Keycloak
-        # Uncomment if using custom CA or self-signed certificates
-        # - name: keycloak-ca-cert
-        #   mountPath: /certs
-        #   readOnly: true
+        - name: keycloak-ca-cert
+          mountPath: /certs
+          readOnly: true
         resources:
           requests:
             memory: "256Mi"
@@ -108,27 +85,11 @@ spec:
           timeoutSeconds: 3
           failureThreshold: 30
       volumes:
-      # Volume for Keycloak CA certificate
-      # Uncomment and configure based on your certificate source
-      # Option 1: From ConfigMap (for CA certificates)
-      # - name: keycloak-ca-cert
-      #   configMap:
-      #     name: keycloak-ca-bundle
-      #     items:
-      #     - key: ca.crt
-      #       path: ca.crt
-      # Option 2: From Secret (for truststore)
-      # - name: keycloak-ca-cert
-      #   secret:
-      #     secretName: keycloak-tls-secret
-      #     items:
-      #     - key: truststore.jks
-      #       path: truststore.jks
-      # Option 3: Use OpenShift's service-ca (automatically injected)
-      # - name: keycloak-ca-cert
-      #   configMap:
-      #     name: keycloak-ca-bundle
-      #     items:
-      #     - key: service-ca.crt
-      #       path: service-ca.crt
+      # Volume for Keycloak CA certificate from ConfigMap
+      - name: keycloak-ca-cert
+        configMap:
+          name: keycloak-ca-bundle
+          items:
+          - key: ca.crt
+            path: ca.crt
 

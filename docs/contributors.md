@@ -10,10 +10,10 @@ Please be respectful and considerate of others when contributing to this project
 If you find a bug or have a suggestion for improving Keycloak MCP Server:
 1. Check if the issue already exists in the GitHub Issues
 2. If not, create a new issue with a descriptive title and detailed information about:
-   - What you expected to happen
-   - What actually happened
-   - Steps to reproduce the issue
-   - Your environment (OS, Java version, Keycloak version, etc.)
+ - What you expected to happen
+ - What actually happened
+ - Steps to reproduce the issue
+ - Your environment (OS, Java version, Keycloak version, etc.)
 
 ### Pull Requests
 Pull requests are welcomed for bug fixes, improvements, and new features:
@@ -33,7 +33,7 @@ Pull requests are welcomed for bug fixes, improvements, and new features:
 
 ## Development Workflow
 1. Clone your fork of the repository
-2. Set up the development environment as described in the DEVELOPERS.md file
+2. Set up the development environment as described in the developers.md file
 3. Make your changes in a new git branch
 4. Test your changes thoroughly
 5. Push your branch to GitHub and submit a pull request
