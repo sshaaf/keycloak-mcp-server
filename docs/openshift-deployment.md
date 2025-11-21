@@ -16,7 +16,7 @@ This guide explains how to deploy the Keycloak MCP Server container to OpenShift
 
 ** NEW: The MCP Server uses JWT Bearer tokens - each user authenticates with their OWN credentials!**
 
- **See [AUTHENTICATION.md](AUTHENTICATION.md) for complete authentication guide**
+ **See [authentication.md](authentication.md) for complete authentication guide**
 
 **How it works:**
 ```
@@ -52,7 +52,7 @@ Keycloak → Enforces user's permissions
 
 ** Production Keycloak always uses HTTPS.** Before deploying, configure TLS trust:
 
- **See [keycloak-tls-setup.md](deploy/openshift/keycloak-tls-setup.md) for complete TLS configuration guide**
+ **See [keycloak-tls-setup.md](keycloak-tls-setup.md) for complete TLS configuration guide**
 
 Quick summary:
 - **Trusted CA**: No additional configuration needed
@@ -500,7 +500,7 @@ data:
  ```bash
  oc create configmap keycloak-ca-bundle --from-file=ca.crt=external-keycloak-ca.crt
  ```
-3. Update deployment to mount the certificate (see [keycloak-tls-setup.md](deploy/openshift/keycloak-tls-setup.md))
+3. Update deployment to mount the certificate (see [keycloak-tls-setup.md](keycloak-tls-setup.md))
 
 **If using Keycloak Operator** (recommended approach from [this tutorial](https://shaaf.dev/post/2023-09-08-install-keycloak-operator-kubernetes-basic-tutorial/)):
 
@@ -718,12 +718,12 @@ spec:
 | `configmap.yaml` | Keycloak URL and OIDC client configuration |
 | `ca-configmap.yaml` | CA certificate for self-signed Keycloak TLS |
 | `kustomization.yaml` | Kustomize configuration |
-| **[keycloak-tls-setup.md](deploy/openshift/keycloak-tls-setup.md)** | **Complete TLS/HTTPS configuration guide** |
+| **[keycloak-tls-setup.md](keycloak-tls-setup.md)** | **Complete TLS/HTTPS configuration guide** |
 
 ## Important Notes
 
  **Production Keycloak uses HTTPS only** - Configure TLS trust before deploying
- **Read [keycloak-tls-setup.md](deploy/openshift/keycloak-tls-setup.md)** for TLS configuration
+ **Read [keycloak-tls-setup.md](keycloak-tls-setup.md)** for TLS configuration
  **Keycloak Operator**: See [installation tutorial](https://shaaf.dev/post/2023-09-08-install-keycloak-operator-kubernetes-basic-tutorial/)
  **Use specific image tags** in production (not `latest`)
 
@@ -733,6 +733,6 @@ spec:
 
 For issues or questions:
 - Check logs: `oc logs -f deployment/keycloak-mcp-server`
-- TLS issues: See [keycloak-tls-setup.md](deploy/openshift/keycloak-tls-setup.md)
+- TLS issues: See [keycloak-tls-setup.md](keycloak-tls-setup.md)
 - Keycloak setup: [Tutorial](https://shaaf.dev/post/2023-09-08-install-keycloak-operator-kubernetes-basic-tutorial/)
 

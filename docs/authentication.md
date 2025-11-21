@@ -436,7 +436,7 @@ Dev mode automatically:
 
 **For more information:**
 - [getting-started.md](getting-started.md) - Setup instructions
-- [scripts/get-mcp-token.sh](scripts/get-mcp-token.sh) - Token helper script
+- [get-mcp-token.sh](https://github.com/sshaaf/keycloak-mcp-server/blob/main/scripts/get-mcp-token.sh) - Token helper script
 - [openshift-deployment.md](openshift-deployment.md) - Production deployment guide
 
 **Happy Keycloak management! **

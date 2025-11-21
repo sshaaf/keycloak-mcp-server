@@ -212,8 +212,8 @@ Configure your MCP client (Goose, Claude Desktop, etc.) and try:
 | migration-guide.md | Migration instructions | [Link](migration-guide.md) |
 | architecture-diagram.md | Visual architecture | [Link](architecture-diagram.md) |
 | implementation-summary.md | High-level overview | [Link](implementation-summary.md) |
-| KeycloakToolExample.java | Code examples | [Link](src/main/java/dev/shaaf/keycloak/mcp/server/examples/KeycloakToolExample.java) |
-| README.md | Main documentation | [Link](README.md) |
+| KeycloakToolExample.java | Code examples (deleted) | N/A |
+| index.md | Main documentation | [Link](index.md) |
 
 ---
 

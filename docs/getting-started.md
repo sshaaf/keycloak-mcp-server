@@ -828,7 +828,7 @@ The Keycloak MCP Server supports the following operations:
 2. **For OpenShift (Production):**
  - Ensure CA certificate ConfigMap is created
  - Verify volume mount in deployment
- - See [keycloak-tls-setup.md](deploy/openshift/keycloak-tls-setup.md)
+ - See [keycloak-tls-setup.md](keycloak-tls-setup.md)
 
 3. **For Native Binary:**
  ```bash
@@ -995,10 +995,10 @@ If you are still experiencing issues:
  ```
 
 3. **Check documentation:**
- - [README.md](README.md)
+ - [index.md](index.md)
  - [authentication.md](authentication.md)
  - [openshift-deployment.md](openshift-deployment.md)
- - [keycloak-tls-setup.md](deploy/openshift/keycloak-tls-setup.md)
+ - [keycloak-tls-setup.md](keycloak-tls-setup.md)
 
 4. **Open an issue:**
  - [GitHub Issues](https://github.com/sshaaf/keycloak-mcp-server/issues)
@@ -1022,10 +1022,10 @@ Once you have the MCP server running:
 
 ## Additional Resources
 
-- **Documentation**: [README.md](README.md)
+- **Documentation**: [index.md](index.md)
 - **Authentication Guide**: [authentication.md](authentication.md)
 - **OpenShift Deployment**: [openshift-deployment.md](openshift-deployment.md)
-- **TLS Configuration**: [keycloak-tls-setup.md](deploy/openshift/keycloak-tls-setup.md)
+- **TLS Configuration**: [keycloak-tls-setup.md](keycloak-tls-setup.md)
 - **GitHub Repository**: [https://github.com/sshaaf/keycloak-mcp-server](https://github.com/sshaaf/keycloak-mcp-server)
 - **Keycloak Documentation**: [https://www.keycloak.org/documentation](https://www.keycloak.org/documentation)
 

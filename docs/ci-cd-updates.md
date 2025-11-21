@@ -285,7 +285,7 @@ docker run --rm quay.io/sshaaf/keycloak-mcp-server:latest
 - [github-actions-setup.md](github-actions-setup.md) - Complete setup guide
 - [git-commit-tagging.md](git-commit-tagging.md) - Git SHA tagging details
 - [jib-container-guide.md](jib-container-guide.md) - Jib configuration
-- [README.md](README.md) - Main project documentation
+- [index.md](index.md) - Main project documentation
 
 ---
 

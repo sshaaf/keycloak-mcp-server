@@ -341,5 +341,5 @@ Your GitHub Actions will always use the version from `pom.xml` automatically.
 
 - [github-actions-setup.md](github-actions-setup.md) - CI/CD setup guide
 - [git-commit-tagging.md](git-commit-tagging.md) - Git SHA tagging
-- [CI_CD_UPDATES.md](CI_CD_UPDATES.md) - All CI/CD changes
+- [ci-cd-updates.md](ci-cd-updates.md) - All CI/CD changes
 

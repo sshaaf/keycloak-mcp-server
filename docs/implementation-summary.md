@@ -355,8 +355,8 @@ This implementation serves as a reference for applying the Parametric Collapse p
 
 - [parametric-collapse.md](parametric-collapse.md) - Detailed pattern documentation
 - [migration-guide.md](migration-guide.md) - Migration from old tools
-- [KeycloakToolExample.java](src/main/java/dev/shaaf/keycloak/mcp/server/examples/KeycloakToolExample.java) - Code examples
-- [README.md](README.md) - Updated project documentation
+- KeycloakToolExample.java (deleted) - Code examples
+- [index.md](index.md) - Updated project documentation
 
 ---
 

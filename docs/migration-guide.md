@@ -358,7 +358,7 @@ keycloakTool.executeKeycloakOperation(
 
 For questions or issues during migration:
 - Check [parametric-collapse.md](parametric-collapse.md) for detailed examples
-- See [KeycloakToolExample.java](src/main/java/dev/shaaf/keycloak/mcp/server/examples/KeycloakToolExample.java) for code samples
+- See KeycloakTool.java for code samples
 - Open an issue on GitHub
 
 ---

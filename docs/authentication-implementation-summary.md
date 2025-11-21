@@ -320,7 +320,7 @@ Keycloak logs show:
 
 ### New Documentation Created
 
-1. **AUTHENTICATION.md** - Complete authentication guide
+1. **authentication.md** - Complete authentication guide
 2. **AUTHENTICATION_implementation-summary.md** - This document
 3. **Updated getting-started.md** - JWT authentication instructions
 4. **Updated openshift-deployment.md** - Simplified deployment (no secrets)
