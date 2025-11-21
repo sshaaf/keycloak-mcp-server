@@ -18,6 +18,7 @@ import java.util.List;
  */
 @ApplicationScoped
 public class AuthenticationService {
+        Keycloak keycloak = clientFactory.createClient();
 
     @Inject
     KeycloakClientFactory clientFactory;

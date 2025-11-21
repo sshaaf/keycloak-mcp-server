@@ -1,0 +1,20 @@
+# ConfigMap for Keycloak CA Certificate
+# Use this if Keycloak uses self-signed certificates or custom CA
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-ca-bundle
+  labels:
+    app: keycloak-mcp-server
+  # Uncomment for automatic injection of OpenShift service CA
+  # annotations:
+  #   service.beta.openshift.io/inject-cabundle: "true"
+data:
+  # Add your Keycloak CA certificate here
+  # Get it from: kubectl get secret <keycloak-tls-secret> -o jsonpath='{.data.ca\.crt}' | base64 -d
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    # Replace with your actual CA certificate
+    # MIIDXTCCAkWgAwIBAgIJAKL0UG+mRKz...
+    -----END CERTIFICATE-----
+

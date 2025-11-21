@@ -1,0 +1,93 @@
+site_name: Keycloak MCP Server
+site_description: Model Context Protocol server for Keycloak administration
+site_author: Shaaf Syed
+site_url: https://github.com/sshaaf/keycloak-mcp-server
+
+repo_name: sshaaf/keycloak-mcp-server
+repo_url: https://github.com/sshaaf/keycloak-mcp-server
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  
+  - Getting Started:
+    - Quick Start: getting-started.md
+    - Authentication: authentication.md
+  
+  - Deployment:
+    - OpenShift Deployment: openshift-deployment.md
+    - Keycloak TLS Setup: keycloak-tls-setup.md
+    - Container Guide: jib-container-guide.md
+  
+  - Configuration:
+    - Port Configuration: port-configuration.md
+    - Git Commit Tagging: git-commit-tagging.md
+    - Version Automation: version-automation.md
+  
+  - CI/CD:
+    - GitHub Actions Setup: github-actions-setup.md
+    - CI/CD Updates: ci-cd-updates.md
+  
+  - Migration Guides:
+    - SSE Migration: sse-migration-guide.md
+    - Tool Migration: migration-guide.md
+  
+  - Technical Documentation:
+    - Parametric Collapse: parametric-collapse.md
+    - Architecture: architecture-diagram.md
+    - Implementation: implementation-summary.md
+    - Authentication Implementation: authentication-implementation-summary.md
+  
+  - Development:
+    - Developers Guide: developers.md
+    - Contributors Guide: contributors.md
+    - Scripts Guide: scripts-guide.md
+  
+  - Release Information:
+    - Changelog v0.3.0: changelog-v0.3.0.md
+    - Completion Checklist: completion-checklist.md
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/sshaaf/keycloak-mcp-server
+

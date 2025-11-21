@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-mcp-config
+  labels:
+    app: keycloak-mcp-server
+data:
+  # Keycloak HTTPS URL (production uses HTTPS only)
+  keycloak-url: "https://keycloak.sso.apps.red.demoshift.com"
+  
+  # Keycloak realm for authentication
+  keycloak-realm: "master"
+  
+  # OIDC Client ID for JWT token validation
+  # Used to validate incoming user JWT tokens (no secret needed)
+  client-id: "mcp-server"
+

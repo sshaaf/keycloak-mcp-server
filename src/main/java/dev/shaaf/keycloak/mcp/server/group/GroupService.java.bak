@@ -20,6 +20,7 @@ import java.util.List;
  */
 @ApplicationScoped
 public class GroupService {
+        Keycloak keycloak = clientFactory.createClient();
 
     @Inject
     KeycloakClientFactory clientFactory;

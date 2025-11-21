@@ -19,6 +19,7 @@ import java.util.List;
  */
 @ApplicationScoped
 public class IdentityProviderService {
+        Keycloak keycloak = clientFactory.createClient();
 
     @Inject
     KeycloakClientFactory clientFactory;
