@@ -1,0 +1,4333 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Model Context Protocol server for Keycloak administration">
+      
+      
+        <meta name="author" content="Shaaf Syed">
+      
+      
+        <link rel="canonical" href="https://github.com/sshaaf/keycloak-mcp-server/getting-started/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../authentication/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Quick Start - Keycloak MCP Server</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#getting-started-with-keycloak-mcp-server" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Keycloak MCP Server" class="md-header__button md-logo" aria-label="Keycloak MCP Server" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Keycloak MCP Server
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Quick Start
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/sshaaf/keycloak-mcp-server" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    sshaaf/keycloak-mcp-server
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../openshift-deployment/" class="md-tabs__link">
+          
+  
+  
+  Deployment
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../port-configuration/" class="md-tabs__link">
+          
+  
+  
+  Configuration
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../github-actions-setup/" class="md-tabs__link">
+          
+  
+  
+  CI/CD
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../sse-migration-guide/" class="md-tabs__link">
+          
+  
+  
+  Migration Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../parametric-collapse/" class="md-tabs__link">
+          
+  
+  
+  Technical Documentation
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../developers/" class="md-tabs__link">
+          
+  
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../changelog-v0.3.0/" class="md-tabs__link">
+          
+  
+  
+  Release Information
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Keycloak MCP Server" class="md-nav__button md-logo" aria-label="Keycloak MCP Server" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Keycloak MCP Server
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/sshaaf/keycloak-mcp-server" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    sshaaf/keycloak-mcp-server
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-all-deployment-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For All Deployment Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-development-mode-legacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Development Mode (Legacy)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Options
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-1-docker-container-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Docker Container (Local)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option 1: Docker Container (Local)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-pull-the-container-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Pull the Container Image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-configure-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Configure Keycloak Client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-run-the-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Run the Container
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-verify-the-container-is-running" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Verify the Container is Running
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-configure-cursor-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Configure Cursor MCP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-reload-mcp-servers-in-cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Reload MCP Servers in Cursor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-test-the-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Test the Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-2-openshift-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: OpenShift Deployment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option 2: OpenShift Deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-get-the-route-url" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Get the Route URL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-verify-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Verify Deployment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-configure-cursor-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Configure Cursor MCP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-reload-mcp-servers-in-cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Reload MCP Servers in Cursor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-test-the-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Test the Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-3-native-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 3: Native Binary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option 3: Native Binary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-download-the-native-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Download the Native Binary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-set-up-keycloak-service-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Set Up Keycloak Service Account
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-environment-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Create Environment Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-run-the-native-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Run the Native Binary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-verify-the-service-is-running" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Verify the Service is Running
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-configure-cursor-mcp_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Configure Cursor MCP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-reload-mcp-servers-in-cursor_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Reload MCP Servers in Cursor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-test-the-connection_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Test the Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-4-development-mode-usernamepassword" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 4: Development Mode (Username/Password)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option 4: Development Mode (Username/Password)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-clone-and-build-the-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Clone and Build the Project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-configure-application-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Configure Application Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-run-in-development-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Run in Development Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-verify-the-server-is-running" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Verify the Server is Running
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-configure-cursor-mcp_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Configure Cursor MCP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-reload-mcp-servers-in-cursor_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Reload MCP Servers in Cursor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-test-the-connection_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Test the Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-making-changes-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Making Changes (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-cursor-ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuring Cursor IDE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring Cursor IDE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mcp-configuration-file-location" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCP Configuration File Location
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single MCP Server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-mcp-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiple MCP Servers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#with-additional-mcp-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With Additional MCP Servers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reloading-mcp-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reloading MCP Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-your-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Your Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Your Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quick-test-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Test Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Test Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-1-list-realms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 1: List Realms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-2-count-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 2: Count Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-3-list-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 3: List Clients
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-4-search-discourse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 4: Search Discourse
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#health-check-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health Check Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#user-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#realm-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Realm Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#role-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Group Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identity-provider-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity Provider Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication-flow-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Flow Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discourse-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discourse Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-usage-in-cursor-chat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Usage in Cursor Chat
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue-mcp-server-not-connecting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: MCP Server Not Connecting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-ssltls-certificate-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: SSL/TLS Certificate Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-authentication-failures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Authentication Failures
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-connection-refused-network-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Connection Refused / Network Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-mcp-tools-not-appearing-in-cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: MCP Tools Not Appearing in Cursor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-slow-response-times" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Slow Response Times
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Help
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../openshift-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenShift Deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../keycloak-tls-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keycloak TLS Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jib-container-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Container Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Configuration
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../port-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Port Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../git-commit-tagging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git Commit Tagging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../version-automation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Version Automation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CI/CD
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../github-actions-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GitHub Actions Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ci-cd-updates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI/CD Updates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migration Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Migration Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sse-migration-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SSE Migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../migration-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tool Migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Technical Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Technical Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../parametric-collapse/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parametric Collapse
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture-diagram/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../implementation-summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication-implementation-summary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Authentication Implementation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developers Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributors Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scripts-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scripts Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release Information
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Release Information
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../changelog-v0.3.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog v0.3.0
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../completion-checklist/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Completion Checklist
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-all-deployment-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For All Deployment Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Authentication
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-development-mode-legacy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Development Mode (Legacy)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Options
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-1-docker-container-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Docker Container (Local)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option 1: Docker Container (Local)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-pull-the-container-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Pull the Container Image
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-configure-keycloak-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Configure Keycloak Client
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-run-the-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Run the Container
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-verify-the-container-is-running" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Verify the Container is Running
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-configure-cursor-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Configure Cursor MCP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-reload-mcp-servers-in-cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Reload MCP Servers in Cursor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-test-the-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Test the Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-2-openshift-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: OpenShift Deployment
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option 2: OpenShift Deployment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-get-the-route-url" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Get the Route URL
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-verify-deployment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Verify Deployment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-configure-cursor-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Configure Cursor MCP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-reload-mcp-servers-in-cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Reload MCP Servers in Cursor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-test-the-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Test the Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-3-native-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 3: Native Binary
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option 3: Native Binary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-download-the-native-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Download the Native Binary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-set-up-keycloak-service-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Set Up Keycloak Service Account
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-environment-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Create Environment Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-run-the-native-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Run the Native Binary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-verify-the-service-is-running" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Verify the Service is Running
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-configure-cursor-mcp_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Configure Cursor MCP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-reload-mcp-servers-in-cursor_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Reload MCP Servers in Cursor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-test-the-connection_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Test the Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#option-4-development-mode-usernamepassword" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 4: Development Mode (Username/Password)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Option 4: Development Mode (Username/Password)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-clone-and-build-the-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Clone and Build the Project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-configure-application-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Configure Application Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-run-in-development-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Run in Development Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-verify-the-server-is-running" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Verify the Server is Running
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-configure-cursor-mcp_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Configure Cursor MCP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-reload-mcp-servers-in-cursor_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Reload MCP Servers in Cursor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-test-the-connection_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Test the Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-making-changes-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Making Changes (Optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuring-cursor-ide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuring Cursor IDE
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring Cursor IDE">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mcp-configuration-file-location" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MCP Configuration File Location
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#single-mcp-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Single MCP Server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-mcp-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiple MCP Servers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#with-additional-mcp-servers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With Additional MCP Servers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reloading-mcp-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reloading MCP Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-your-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Your Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Your Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quick-test-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Test Commands
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Test Commands">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-1-list-realms" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 1: List Realms
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-2-count-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 2: Count Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-3-list-clients" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 3: List Clients
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-4-search-discourse" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 4: Search Discourse
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#health-check-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Health Check Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#available-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Available Operations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Available Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#user-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#realm-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Realm Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#role-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Role Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Group Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#identity-provider-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Identity Provider Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication-flow-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Flow Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#discourse-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discourse Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-usage-in-cursor-chat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Usage in Cursor Chat
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue-mcp-server-not-connecting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: MCP Server Not Connecting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-ssltls-certificate-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: SSL/TLS Certificate Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-authentication-failures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Authentication Failures
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-connection-refused-network-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Connection Refused / Network Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-mcp-tools-not-appearing-in-cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: MCP Tools Not Appearing in Cursor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-slow-response-times" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Slow Response Times
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Help
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Additional Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="getting-started-with-keycloak-mcp-server">Getting Started with Keycloak MCP Server<a class="headerlink" href="#getting-started-with-keycloak-mcp-server" title="Permanent link">&para;</a></h1>
+<p>This guide will help you get started with the Keycloak MCP Server using different deployment methods.</p>
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#deployment-options">Deployment Options</a></li>
+<li><a href="#option-1-docker-container-local">Option 1: Docker Container (Local)</a></li>
+<li><a href="#option-2-openshift-deployment">Option 2: OpenShift Deployment</a></li>
+<li><a href="#option-3-native-binary">Option 3: Native Binary</a></li>
+<li><a href="#option-4-development-mode-usernamepassword">Option 4: Development Mode (Username/Password)</a></li>
+<li><a href="#configuring-cursor-ide">Configuring Cursor IDE</a></li>
+<li><a href="#testing-your-setup">Testing Your Setup</a></li>
+<li><a href="#available-operations">Available Operations</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+</ol>
+<hr />
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<h3 id="for-all-deployment-methods">For All Deployment Methods<a class="headerlink" href="#for-all-deployment-methods" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Keycloak Instance</strong>: A running Keycloak server (v22.0+)</li>
+<li>Local: <code>http://localhost:8180</code> or <code>https://localhost:8543</code></li>
+<li>Production: <code>https://keycloak.example.com</code></li>
+<li><strong>Cursor IDE</strong>: Latest version with MCP support</li>
+</ul>
+<h3 id="for-authentication">For Authentication<a class="headerlink" href="#for-authentication" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Keycloak instance running (v20.0 or later)</li>
+<li>Keycloak user account with appropriate permissions</li>
+<li>Access to obtain JWT tokens from Keycloak</li>
+</ul>
+<h3 id="for-development-mode-legacy">For Development Mode (Legacy)<a class="headerlink" href="#for-development-mode-legacy" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Keycloak admin username and password</li>
+</ul>
+<hr />
+<h2 id="deployment-options">Deployment Options<a class="headerlink" href="#deployment-options" title="Permanent link">&para;</a></h2>
+<h2 id="option-1-docker-container-local">Option 1: Docker Container (Local)<a class="headerlink" href="#option-1-docker-container-local" title="Permanent link">&para;</a></h2>
+<h3 id="step-1-pull-the-container-image">Step 1: Pull the Container Image<a class="headerlink" href="#step-1-pull-the-container-image" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker<span class="w"> </span>pull<span class="w"> </span>quay.io/sshaaf/keycloak-mcp-server:latest
+</code></pre></div>
+<h3 id="step-2-configure-keycloak-client">Step 2: Configure Keycloak Client<a class="headerlink" href="#step-2-configure-keycloak-client" title="Permanent link">&para;</a></h3>
+<p><strong>Note</strong>: The MCP server validates JWT tokens using OIDC discovery. No client secret is required.</p>
+<ol>
+<li>(Optional) Create a client in Keycloak for OIDC validation:</li>
+<li>Client ID: <code>mcp-server</code></li>
+<li>Client authentication: <strong>OFF</strong> (public client)</li>
+<li>Standard flow: <strong>ON</strong></li>
+<li>
+<p>Direct access grants: <strong>ON</strong></p>
+</li>
+<li>
+<p>Users authenticate with their own Keycloak credentials to obtain JWT tokens</p>
+</li>
+</ol>
+<h3 id="step-3-run-the-container">Step 3: Run the Container<a class="headerlink" href="#step-3-run-the-container" title="Permanent link">&para;</a></h3>
+<p><strong>Production/Remote Keycloak:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w"> </span>--name<span class="w"> </span>keycloak-mcp-server<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w"> </span>-p<span class="w"> </span><span class="m">8080</span>:8080<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w"> </span>-e<span class="w"> </span><span class="nv">KC_URL</span><span class="o">=</span>https://keycloak.example.com<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w"> </span>-e<span class="w"> </span><span class="nv">KC_REALM</span><span class="o">=</span>master<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w"> </span>-e<span class="w"> </span><span class="nv">OIDC_CLIENT_ID</span><span class="o">=</span>mcp-server<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w"> </span>quay.io/sshaaf/keycloak-mcp-server:latest
+</code></pre></div>
+<p><strong>Local Keycloak (macOS/Windows):</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w"> </span>--name<span class="w"> </span>keycloak-mcp-server<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w"> </span>-p<span class="w"> </span><span class="m">8080</span>:8080<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w"> </span>-e<span class="w"> </span><span class="nv">KC_URL</span><span class="o">=</span>http://host.docker.internal:8180<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w"> </span>-e<span class="w"> </span><span class="nv">KC_REALM</span><span class="o">=</span>master<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w"> </span>-e<span class="w"> </span><span class="nv">OIDC_CLIENT_ID</span><span class="o">=</span>mcp-server<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w"> </span>quay.io/sshaaf/keycloak-mcp-server:latest
+</code></pre></div>
+<p><strong>Note:</strong> Use <code>host.docker.internal</code> instead of <code>localhost</code> to access services running on your host</p>
+<p><strong>Local Keycloak (Linux):</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w"> </span>--name<span class="w"> </span>keycloak-mcp-server<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w"> </span>--network<span class="w"> </span>host<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w"> </span>-e<span class="w"> </span><span class="nv">KC_URL</span><span class="o">=</span>http://localhost:8180<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w"> </span>-e<span class="w"> </span><span class="nv">KC_REALM</span><span class="o">=</span>master<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w"> </span>-e<span class="w"> </span><span class="nv">OIDC_CLIENT_ID</span><span class="o">=</span>mcp-server<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w"> </span>quay.io/sshaaf/keycloak-mcp-server:latest
+</code></pre></div>
+<h3 id="step-4-verify-the-container-is-running">Step 4: Verify the Container is Running<a class="headerlink" href="#step-4-verify-the-container-is-running" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Check container status</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>docker<span class="w"> </span>ps<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>keycloak-mcp-server
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Check logs</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>docker<span class="w"> </span>logs<span class="w"> </span>keycloak-mcp-server
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># Test health endpoint</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>curl<span class="w"> </span>http://localhost:8080/q/health
+</code></pre></div>
+<h3 id="step-5-configure-cursor-mcp">Step 5: Configure Cursor MCP<a class="headerlink" href="#step-5-configure-cursor-mcp" title="Permanent link">&para;</a></h3>
+<p>Edit <code>~/.cursor/mcp.json</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="p">{</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w"> </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w"> </span><span class="nt">&quot;keycloak&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w"> </span><span class="nt">&quot;transport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sse&quot;</span><span class="p">,</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w"> </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/mcp/sse&quot;</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="step-6-reload-mcp-servers-in-cursor">Step 6: Reload MCP Servers in Cursor<a class="headerlink" href="#step-6-reload-mcp-servers-in-cursor" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Press <code>Cmd+Shift+P</code> (macOS) or <code>Ctrl+Shift+P</code> (Windows/Linux)</li>
+<li>Type: <strong>"Reload MCP Servers"</strong></li>
+<li>Select it</li>
+</ol>
+<h3 id="step-7-test-the-connection">Step 7: Test the Connection<a class="headerlink" href="#step-7-test-the-connection" title="Permanent link">&para;</a></h3>
+<p>In Cursor chat, ask:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>List all Keycloak realms
+</code></pre></div>
+<p><strong>Expected result:</strong> You should see a list of all realms from your Keycloak instance.</p>
+<hr />
+<h2 id="option-2-openshift-deployment">Option 2: OpenShift Deployment<a class="headerlink" href="#option-2-openshift-deployment" title="Permanent link">&para;</a></h2>
+<h3 id="step-1-prerequisites">Step 1: Prerequisites<a class="headerlink" href="#step-1-prerequisites" title="Permanent link">&para;</a></h3>
+<ul>
+<li>OpenShift cluster access (v4.x or later)</li>
+<li><code>oc</code> CLI installed and configured</li>
+<li>Keycloak instance deployed in OpenShift with HTTPS enabled</li>
+</ul>
+<p>./setup-service-account.sh \
+ --keycloak-url https://keycloak.apps.example.com \
+ --admin-user admin \
+ --admin-password your-admin-password \
+ --client-id mcp-server \
+ --realm master
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Or follow the manual steps in [authentication.md](authentication.md).
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>### Step 3: Deploy MCP Server
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>1. **Create a new project (or use existing):**
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>```bash
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>oc new-project keycloak-mcp-server
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a># Or use existing project
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a># oc project your-project
+</code></pre></div></p>
+<ol>
+<li><strong>Create ConfigMap:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>oc<span class="w"> </span>create<span class="w"> </span>configmap<span class="w"> </span>keycloak-mcp-config<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w"> </span>--from-literal<span class="o">=</span>keycloak-url<span class="o">=</span>https://keycloak.apps.example.com<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w"> </span>--from-literal<span class="o">=</span>keycloak-realm<span class="o">=</span>master<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w"> </span>--from-literal<span class="o">=</span>client-id<span class="o">=</span>mcp-server
+</code></pre></div>
+<ol>
+<li><strong>Create Secret with Client Credentials:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Replace with your actual client secret from Step 2</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>oc<span class="w"> </span>create<span class="w"> </span>secret<span class="w"> </span>generic<span class="w"> </span>keycloak-mcp-secret<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w"> </span>--from-literal<span class="o">=</span>client-secret<span class="o">=</span>your-client-secret-from-keycloak
+</code></pre></div>
+<ol>
+<li><strong>Extract Keycloak CA Certificate (if using self-signed certs):</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Find the TLS secret name</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nv">KC_TLS_SECRET</span><span class="o">=</span><span class="k">$(</span>oc<span class="w"> </span>get<span class="w"> </span>keycloak<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.items[0].spec.http.tlsSecret}&#39;</span><span class="w"> </span>-n<span class="w"> </span>keycloak<span class="k">)</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Extract and create CA bundle</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>oc<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span><span class="nv">$KC_TLS_SECRET</span><span class="w"> </span>-n<span class="w"> </span>keycloak<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.data.tls\.crt}&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w"> </span>base64<span class="w"> </span>-d<span class="w"> </span>&gt;<span class="w"> </span>/tmp/keycloak-ca.crt
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>oc<span class="w"> </span>create<span class="w"> </span>configmap<span class="w"> </span>keycloak-ca-bundle<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="w"> </span>--from-file<span class="o">=</span>ca.crt<span class="o">=</span>/tmp/keycloak-ca.crt
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>rm<span class="w"> </span>/tmp/keycloak-ca.crt
+</code></pre></div>
+<ol>
+<li><strong>Deploy the MCP Server:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Clone the repository</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/sshaaf/keycloak-mcp-server.git
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="nb">cd</span><span class="w"> </span>keycloak-mcp-server
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1"># Apply deployment manifests</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>deploy/openshift/deployment.yaml
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>deploy/openshift/service.yaml
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>oc<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>deploy/openshift/route.yaml
+</code></pre></div>
+<p>Or use the automated deployment script:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">cd</span><span class="w"> </span>keycloak-mcp-server/deploy/openshift
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>chmod<span class="w"> </span>+x<span class="w"> </span>deploy.sh
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>./deploy.sh
+</code></pre></div>
+<h3 id="step-4-get-the-route-url">Step 4: Get the Route URL<a class="headerlink" href="#step-4-get-the-route-url" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>oc<span class="w"> </span>get<span class="w"> </span>route<span class="w"> </span>keycloak-mcp-server<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.host}&#39;</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="c1"># Example output: keycloak-mcp-server-your-project.apps.example.com</span>
+</code></pre></div>
+<h3 id="step-5-verify-deployment">Step 5: Verify Deployment<a class="headerlink" href="#step-5-verify-deployment" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Check pod status</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>oc<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>keycloak-mcp-server
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># Check logs</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>oc<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>deployment/keycloak-mcp-server
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1"># Test health endpoint</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="nv">ROUTE_URL</span><span class="o">=</span><span class="k">$(</span>oc<span class="w"> </span>get<span class="w"> </span>route<span class="w"> </span>keycloak-mcp-server<span class="w"> </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.spec.host}&#39;</span><span class="k">)</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>curl<span class="w"> </span>https://<span class="nv">$ROUTE_URL</span>/q/health
+</code></pre></div>
+<h3 id="step-6-configure-cursor-mcp">Step 6: Configure Cursor MCP<a class="headerlink" href="#step-6-configure-cursor-mcp" title="Permanent link">&para;</a></h3>
+<p>Edit <code>~/.cursor/mcp.json</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p">{</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w"> </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w"> </span><span class="nt">&quot;keycloak&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w"> </span><span class="nt">&quot;transport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sse&quot;</span><span class="p">,</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w"> </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://keycloak-mcp-server-your-project.apps.example.com/mcp/sse&quot;</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="p">}</span>
+</code></pre></div>
+<p><strong>Replace</strong> <code>keycloak-mcp-server-your-project.apps.example.com</code> with your actual route URL from Step 4.</p>
+<h3 id="step-7-reload-mcp-servers-in-cursor">Step 7: Reload MCP Servers in Cursor<a class="headerlink" href="#step-7-reload-mcp-servers-in-cursor" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Press <code>Cmd+Shift+P</code> (macOS) or <code>Ctrl+Shift+P</code> (Windows/Linux)</li>
+<li>Type: <strong>"Reload MCP Servers"</strong></li>
+<li>Select it</li>
+</ol>
+<h3 id="step-8-test-the-connection">Step 8: Test the Connection<a class="headerlink" href="#step-8-test-the-connection" title="Permanent link">&para;</a></h3>
+<p>In Cursor chat, ask:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>List all users from the master realm
+</code></pre></div>
+<p><strong>Expected result:</strong> You should see a list of users from your Keycloak master realm.</p>
+<hr />
+<h2 id="option-3-native-binary">Option 3: Native Binary<a class="headerlink" href="#option-3-native-binary" title="Permanent link">&para;</a></h2>
+<h3 id="step-1-download-the-native-binary">Step 1: Download the Native Binary<a class="headerlink" href="#step-1-download-the-native-binary" title="Permanent link">&para;</a></h3>
+<p>Download the latest native binary for your platform from the <a href="https://github.com/sshaaf/keycloak-mcp-server/releases">releases page</a>:</p>
+<p><strong>Linux (x64):</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>wget<span class="w"> </span>https://github.com/sshaaf/keycloak-mcp-server/releases/download/v0.3.0/keycloak-mcp-server-linux-x64
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>chmod<span class="w"> </span>+x<span class="w"> </span>keycloak-mcp-server-linux-x64
+</code></pre></div></p>
+<p><strong>macOS (x64):</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>wget<span class="w"> </span>https://github.com/sshaaf/keycloak-mcp-server/releases/download/v0.3.0/keycloak-mcp-server-darwin-x64
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>chmod<span class="w"> </span>+x<span class="w"> </span>keycloak-mcp-server-darwin-x64
+</code></pre></div></p>
+<p><strong>macOS (ARM64):</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>wget<span class="w"> </span>https://github.com/sshaaf/keycloak-mcp-server/releases/download/v0.3.0/keycloak-mcp-server-darwin-arm64
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>chmod<span class="w"> </span>+x<span class="w"> </span>keycloak-mcp-server-darwin-arm64
+</code></pre></div></p>
+<p>Or build from source:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/sshaaf/keycloak-mcp-server.git
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="nb">cd</span><span class="w"> </span>keycloak-mcp-server
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>mvn<span class="w"> </span>clean<span class="w"> </span>package<span class="w"> </span>-Dnative<span class="w"> </span>-DskipTests
+</code></pre></div>
+<h3 id="step-2-set-up-keycloak-service-account">Step 2: Set Up Keycloak Service Account<a class="headerlink" href="#step-2-set-up-keycloak-service-account" title="Permanent link">&para;</a></h3>
+<p>Follow the steps in <a href="../authentication/">authentication.md</a> to create a OIDC client in Keycloak.</p>
+<h3 id="step-3-create-environment-configuration">Step 3: Create Environment Configuration<a class="headerlink" href="#step-3-create-environment-configuration" title="Permanent link">&para;</a></h3>
+<p>Create a <code>.env</code> file:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>keycloak-mcp.env<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="s">KC_URL=https://keycloak.example.com</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="s">KC_REALM=master</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="s">OIDC_CLIENT_ID=mcp-server</span>
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="s">QUARKUS_HTTP_PORT=8080</span>
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="s">EOF</span>
+</code></pre></div>
+<h3 id="step-4-run-the-native-binary">Step 4: Run the Native Binary<a class="headerlink" href="#step-4-run-the-native-binary" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># Load environment variables</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="nb">export</span><span class="w"> </span><span class="k">$(</span>cat<span class="w"> </span>keycloak-mcp.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="k">)</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1"># Run the native binary</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>./keycloak-mcp-server-linux-x64
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a><span class="c1"># Or for macOS: ./keycloak-mcp-server-darwin-arm64</span>
+</code></pre></div>
+<p><strong>Run as Background Service (Linux/macOS):</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Create systemd service (Linux)</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>sudo<span class="w"> </span>tee<span class="w"> </span>/etc/systemd/system/keycloak-mcp-server.service<span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="s">[Unit]</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="s">Description=Keycloak MCP Server</span>
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="s">After=network.target</span>
+<a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>
+<a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a><span class="s">[Service]</span>
+<a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="s">Type=simple</span>
+<a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="s">User=mcp-server</span>
+<a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a><span class="s">EnvironmentFile=/opt/keycloak-mcp/keycloak-mcp.env</span>
+<a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="s">ExecStart=/opt/keycloak-mcp/keycloak-mcp-server-linux-x64</span>
+<a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="s">Restart=always</span>
+<a id="__codelineno-23-13" name="__codelineno-23-13" href="#__codelineno-23-13"></a>
+<a id="__codelineno-23-14" name="__codelineno-23-14" href="#__codelineno-23-14"></a><span class="s">[Install]</span>
+<a id="__codelineno-23-15" name="__codelineno-23-15" href="#__codelineno-23-15"></a><span class="s">WantedBy=multi-user.target</span>
+<a id="__codelineno-23-16" name="__codelineno-23-16" href="#__codelineno-23-16"></a><span class="s">EOF</span>
+<a id="__codelineno-23-17" name="__codelineno-23-17" href="#__codelineno-23-17"></a>
+<a id="__codelineno-23-18" name="__codelineno-23-18" href="#__codelineno-23-18"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
+<a id="__codelineno-23-19" name="__codelineno-23-19" href="#__codelineno-23-19"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>keycloak-mcp-server
+<a id="__codelineno-23-20" name="__codelineno-23-20" href="#__codelineno-23-20"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>keycloak-mcp-server
+</code></pre></div>
+<h3 id="step-5-verify-the-service-is-running">Step 5: Verify the Service is Running<a class="headerlink" href="#step-5-verify-the-service-is-running" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># Check if port is listening</span>
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>lsof<span class="w"> </span>-i<span class="w"> </span>:8080
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="c1"># Or: netstat -tuln | grep 8080</span>
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="c1"># Test health endpoint</span>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>curl<span class="w"> </span>http://localhost:8080/q/health
+</code></pre></div>
+<h3 id="step-6-configure-cursor-mcp_1">Step 6: Configure Cursor MCP<a class="headerlink" href="#step-6-configure-cursor-mcp_1" title="Permanent link">&para;</a></h3>
+<p>Edit <code>~/.cursor/mcp.json</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="p">{</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="w"> </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="w"> </span><span class="nt">&quot;keycloak&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="w"> </span><span class="nt">&quot;transport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sse&quot;</span><span class="p">,</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="w"> </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/mcp/sse&quot;</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="step-7-reload-mcp-servers-in-cursor_1">Step 7: Reload MCP Servers in Cursor<a class="headerlink" href="#step-7-reload-mcp-servers-in-cursor_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Press <code>Cmd+Shift+P</code> (macOS) or <code>Ctrl+Shift+P</code> (Windows/Linux)</li>
+<li>Type: <strong>"Reload MCP Servers"</strong></li>
+<li>Select it</li>
+</ol>
+<h3 id="step-8-test-the-connection_1">Step 8: Test the Connection<a class="headerlink" href="#step-8-test-the-connection_1" title="Permanent link">&para;</a></h3>
+<p>In Cursor chat, ask:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>List all authentication flows from the master realm
+</code></pre></div>
+<p><strong>Expected result:</strong> You should see a list of authentication flows from your Keycloak master realm.</p>
+<hr />
+<h2 id="option-4-development-mode-usernamepassword">Option 4: Development Mode (Username/Password)<a class="headerlink" href="#option-4-development-mode-usernamepassword" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p><strong>Warning</strong>: This method is for <strong>development only</strong>. Use user authentication authentication for production.</p>
+</blockquote>
+<h3 id="step-1-clone-and-build-the-project">Step 1: Clone and Build the Project<a class="headerlink" href="#step-1-clone-and-build-the-project" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/sshaaf/keycloak-mcp-server.git
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="nb">cd</span><span class="w"> </span>keycloak-mcp-server
+</code></pre></div>
+<h3 id="step-2-configure-application-properties">Step 2: Configure Application Properties<a class="headerlink" href="#step-2-configure-application-properties" title="Permanent link">&para;</a></h3>
+<p>Edit <code>src/main/resources/application.properties</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="c1"># Keycloak Connection (Development Mode)</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="na">quarkus.keycloak.admin-client.server-url</span><span class="o">=</span><span class="s">http://localhost:8180</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a><span class="na">quarkus.keycloak.admin-client.username</span><span class="o">=</span><span class="s">admin</span>
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="na">quarkus.keycloak.admin-client.password</span><span class="o">=</span><span class="s">admin</span>
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="c1"># Dev services disabled (using external Keycloak)</span>
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a><span class="na">quarkus.keycloak.devservices.enabled</span><span class="o">=</span><span class="s">false</span>
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a>
+<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="c1"># HTTP Configuration</span>
+<a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a><span class="na">quarkus.http.port</span><span class="o">=</span><span class="s">8080</span>
+<a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="na">quarkus.http.host</span><span class="o">=</span><span class="s">0.0.0.0</span>
+</code></pre></div>
+<p>Or use environment variables:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">KC_URL</span><span class="o">=</span>http://localhost:8180
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">KC_REALM</span><span class="o">=</span>master
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">OIDC_CLIENT_ID</span><span class="o">=</span>mcp-server
+</code></pre></div>
+<p><strong>Note</strong>: Development mode disables authentication for convenience. No credentials are required.</p>
+<h3 id="step-3-run-in-development-mode">Step 3: Run in Development Mode<a class="headerlink" href="#step-3-run-in-development-mode" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>mvn<span class="w"> </span>quarkus:dev
+</code></pre></div>
+<p>The server will start on <code>http://localhost:8080</code> with hot-reload enabled.</p>
+<p><strong>Features in Dev Mode:</strong>
+- Hot reload (code changes apply automatically)
+- Dev UI available at <code>http://localhost:8080/q/dev</code>
+- Detailed error messages
+- Continuous testing mode</p>
+<h3 id="step-4-verify-the-server-is-running">Step 4: Verify the Server is Running<a class="headerlink" href="#step-4-verify-the-server-is-running" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="c1"># Test health endpoint</span>
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>curl<span class="w"> </span>http://localhost:8080/q/health
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="c1"># Access Dev UI</span>
+<a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>open<span class="w"> </span>http://localhost:8080/q/dev
+</code></pre></div>
+<h3 id="step-5-configure-cursor-mcp_1">Step 5: Configure Cursor MCP<a class="headerlink" href="#step-5-configure-cursor-mcp_1" title="Permanent link">&para;</a></h3>
+<p>Edit <code>~/.cursor/mcp.json</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="p">{</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="w"> </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a><span class="w"> </span><span class="nt">&quot;keycloak-dev&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="w"> </span><span class="nt">&quot;transport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sse&quot;</span><span class="p">,</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="w"> </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/mcp/sse&quot;</span>
+<a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="step-6-reload-mcp-servers-in-cursor_1">Step 6: Reload MCP Servers in Cursor<a class="headerlink" href="#step-6-reload-mcp-servers-in-cursor_1" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Press <code>Cmd+Shift+P</code> (macOS) or <code>Ctrl+Shift+P</code> (Windows/Linux)</li>
+<li>Type: <strong>"Reload MCP Servers"</strong></li>
+<li>Select it</li>
+</ol>
+<h3 id="step-7-test-the-connection_1">Step 7: Test the Connection<a class="headerlink" href="#step-7-test-the-connection_1" title="Permanent link">&para;</a></h3>
+<p>In Cursor chat, ask:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>Count all users in Keycloak
+</code></pre></div>
+<p><strong>Expected result:</strong> You should see the total count of users across all realms.</p>
+<h3 id="step-8-making-changes-optional">Step 8: Making Changes (Optional)<a class="headerlink" href="#step-8-making-changes-optional" title="Permanent link">&para;</a></h3>
+<p>Since you are in development mode, you can make code changes:</p>
+<ol>
+<li>Edit any Java file in <code>src/main/java/</code></li>
+<li>Save the file</li>
+<li>Quarkus will automatically reload</li>
+<li>Reload MCP servers in Cursor to see changes</li>
+</ol>
+<hr />
+<h2 id="configuring-cursor-ide">Configuring Cursor IDE<a class="headerlink" href="#configuring-cursor-ide" title="Permanent link">&para;</a></h2>
+<h3 id="mcp-configuration-file-location">MCP Configuration File Location<a class="headerlink" href="#mcp-configuration-file-location" title="Permanent link">&para;</a></h3>
+<p><strong>macOS/Linux:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a>~/.cursor/mcp.json
+</code></pre></div></p>
+<p><strong>Windows:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>%USERPROFILE%<span class="se">\.</span>cursor<span class="se">\m</span>cp.json
+</code></pre></div></p>
+<h3 id="configuration-examples">Configuration Examples<a class="headerlink" href="#configuration-examples" title="Permanent link">&para;</a></h3>
+<h4 id="single-mcp-server">Single MCP Server<a class="headerlink" href="#single-mcp-server" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="p">{</span>
+<a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a><span class="w"> </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a><span class="w"> </span><span class="nt">&quot;keycloak&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="w"> </span><span class="nt">&quot;transport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sse&quot;</span><span class="p">,</span>
+<a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="w"> </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/mcp/sse&quot;</span>
+<a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-36-8" name="__codelineno-36-8" href="#__codelineno-36-8"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="multiple-mcp-servers">Multiple MCP Servers<a class="headerlink" href="#multiple-mcp-servers" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="p">{</span>
+<a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a><span class="w"> </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a><span class="w"> </span><span class="nt">&quot;keycloak-prod&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="w"> </span><span class="nt">&quot;transport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sse&quot;</span><span class="p">,</span>
+<a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="w"> </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://keycloak-mcp-server.apps.example.com/mcp/sse&quot;</span>
+<a id="__codelineno-37-6" name="__codelineno-37-6" href="#__codelineno-37-6"></a><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-37-7" name="__codelineno-37-7" href="#__codelineno-37-7"></a><span class="w"> </span><span class="nt">&quot;keycloak-dev&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-37-8" name="__codelineno-37-8" href="#__codelineno-37-8"></a><span class="w"> </span><span class="nt">&quot;transport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sse&quot;</span><span class="p">,</span>
+<a id="__codelineno-37-9" name="__codelineno-37-9" href="#__codelineno-37-9"></a><span class="w"> </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/mcp/sse&quot;</span>
+<a id="__codelineno-37-10" name="__codelineno-37-10" href="#__codelineno-37-10"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-37-11" name="__codelineno-37-11" href="#__codelineno-37-11"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-37-12" name="__codelineno-37-12" href="#__codelineno-37-12"></a><span class="p">}</span>
+</code></pre></div>
+<h4 id="with-additional-mcp-servers">With Additional MCP Servers<a class="headerlink" href="#with-additional-mcp-servers" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a><span class="p">{</span>
+<a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a><span class="w"> </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a><span class="w"> </span><span class="nt">&quot;keycloak&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a><span class="w"> </span><span class="nt">&quot;transport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sse&quot;</span><span class="p">,</span>
+<a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a><span class="w"> </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:8080/mcp/sse&quot;</span>
+<a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a><span class="w"> </span><span class="p">},</span>
+<a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a><span class="w"> </span><span class="nt">&quot;context7&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a><span class="w"> </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://mcp.context7.com/mcp&quot;</span><span class="p">,</span>
+<a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a><span class="w"> </span><span class="nt">&quot;headers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a><span class="w"> </span><span class="p">}</span>
+<a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="reloading-mcp-configuration">Reloading MCP Configuration<a class="headerlink" href="#reloading-mcp-configuration" title="Permanent link">&para;</a></h3>
+<p>After editing <code>mcp.json</code>:</p>
+<ol>
+<li><strong>Command Palette Method:</strong></li>
+<li>Press <code>Cmd+Shift+P</code> (macOS) or <code>Ctrl+Shift+P</code> (Windows/Linux)</li>
+<li>Type: "Reload MCP Servers"</li>
+<li>
+<p>Press Enter</p>
+</li>
+<li>
+<p><strong>Restart Cursor:</strong></p>
+</li>
+<li>Close and reopen Cursor</li>
+</ol>
+<hr />
+<h2 id="testing-your-setup">Testing Your Setup<a class="headerlink" href="#testing-your-setup" title="Permanent link">&para;</a></h2>
+<h3 id="quick-test-commands">Quick Test Commands<a class="headerlink" href="#quick-test-commands" title="Permanent link">&para;</a></h3>
+<p>Try these commands in Cursor chat to verify everything is working:</p>
+<h4 id="test-1-list-realms">Test 1: List Realms<a class="headerlink" href="#test-1-list-realms" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a>List all Keycloak realms
+</code></pre></div>
+<p><strong>Expected Output:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>Found 3 realms:
+<a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>1. master - Red Hat build of Keycloak (Enabled)
+<a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>2. quarkus (Enabled)
+<a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>3. test (Enabled)
+</code></pre></div></p>
+<h4 id="test-2-count-users">Test 2: Count Users<a class="headerlink" href="#test-2-count-users" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a>How many users are in the master realm?
+</code></pre></div>
+<p><strong>Expected Output:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a>There are X users in the master realm.
+</code></pre></div></p>
+<h4 id="test-3-list-clients">Test 3: List Clients<a class="headerlink" href="#test-3-list-clients" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a>Show me all clients in the master realm
+</code></pre></div>
+<p><strong>Expected Output:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a>Found X clients:
+<a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>- account
+<a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>- admin-cli
+<a id="__codelineno-44-4" name="__codelineno-44-4" href="#__codelineno-44-4"></a>- broker
+<a id="__codelineno-44-5" name="__codelineno-44-5" href="#__codelineno-44-5"></a>- master-realm
+<a id="__codelineno-44-6" name="__codelineno-44-6" href="#__codelineno-44-6"></a>- mcp-server
+<a id="__codelineno-44-7" name="__codelineno-44-7" href="#__codelineno-44-7"></a>- ...
+</code></pre></div></p>
+<h4 id="test-4-search-discourse">Test 4: Search Discourse<a class="headerlink" href="#test-4-search-discourse" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>Search Keycloak Discourse for &quot;LDAP integration&quot;
+</code></pre></div>
+<p><strong>Expected Output:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a>Found X topics related to &quot;LDAP integration&quot;:
+<a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a>1. [Topic Title] - https://keycloak.discourse.group/...
+<a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a>2. ...
+</code></pre></div></p>
+<h3 id="health-check-endpoints">Health Check Endpoints<a class="headerlink" href="#health-check-endpoints" title="Permanent link">&para;</a></h3>
+<p>Test the MCP server directly:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a><span class="c1"># Health check</span>
+<a id="__codelineno-47-2" name="__codelineno-47-2" href="#__codelineno-47-2"></a>curl<span class="w"> </span>http://localhost:8080/q/health
+<a id="__codelineno-47-3" name="__codelineno-47-3" href="#__codelineno-47-3"></a>
+<a id="__codelineno-47-4" name="__codelineno-47-4" href="#__codelineno-47-4"></a><span class="c1"># Liveness probe</span>
+<a id="__codelineno-47-5" name="__codelineno-47-5" href="#__codelineno-47-5"></a>curl<span class="w"> </span>http://localhost:8080/q/health/live
+<a id="__codelineno-47-6" name="__codelineno-47-6" href="#__codelineno-47-6"></a>
+<a id="__codelineno-47-7" name="__codelineno-47-7" href="#__codelineno-47-7"></a><span class="c1"># Readiness probe</span>
+<a id="__codelineno-47-8" name="__codelineno-47-8" href="#__codelineno-47-8"></a>curl<span class="w"> </span>http://localhost:8080/q/health/ready
+<a id="__codelineno-47-9" name="__codelineno-47-9" href="#__codelineno-47-9"></a>
+<a id="__codelineno-47-10" name="__codelineno-47-10" href="#__codelineno-47-10"></a><span class="c1"># MCP SSE endpoint</span>
+<a id="__codelineno-47-11" name="__codelineno-47-11" href="#__codelineno-47-11"></a>curl<span class="w"> </span>-N<span class="w"> </span>http://localhost:8080/mcp/sse
+</code></pre></div>
+<hr />
+<h2 id="available-operations">Available Operations<a class="headerlink" href="#available-operations" title="Permanent link">&para;</a></h2>
+<p>The Keycloak MCP Server supports the following operations:</p>
+<h3 id="user-operations">User Operations<a class="headerlink" href="#user-operations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>GET_USERS</code> - List all users</li>
+<li><code>GET_USER_BY_USERNAME</code> - Get user by username</li>
+<li><code>GET_USER_BY_ID</code> - Get user by ID</li>
+<li><code>CREATE_USER</code> - Create a new user</li>
+<li><code>DELETE_USER</code> - Delete a user</li>
+<li><code>UPDATE_USER</code> - Update user details</li>
+<li><code>GET_USER_GROUPS</code> - Get user's groups</li>
+<li><code>GET_USER_ROLES</code> - Get user's roles</li>
+<li><code>ADD_USER_TO_GROUP</code> - Add user to group</li>
+<li><code>REMOVE_USER_FROM_GROUP</code> - Remove user from group</li>
+<li><code>ADD_ROLE_TO_USER</code> - Assign role to user</li>
+<li><code>REMOVE_ROLE_FROM_USER</code> - Remove role from user</li>
+<li><code>RESET_PASSWORD</code> - Reset user password</li>
+<li><code>SEND_VERIFICATION_EMAIL</code> - Send verification email</li>
+<li><code>COUNT_USERS</code> - Count users in realm</li>
+</ul>
+<h3 id="realm-operations">Realm Operations<a class="headerlink" href="#realm-operations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>GET_REALMS</code> - List all realms</li>
+<li><code>GET_REALM</code> - Get realm details</li>
+<li><code>CREATE_REALM</code> - Create a new realm</li>
+</ul>
+<h3 id="client-operations">Client Operations<a class="headerlink" href="#client-operations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>GET_CLIENTS</code> - List all clients</li>
+<li><code>GET_CLIENT</code> - Get client details</li>
+<li><code>CREATE_CLIENT</code> - Create a new client</li>
+<li><code>DELETE_CLIENT</code> - Delete a client</li>
+<li><code>GENERATE_CLIENT_SECRET</code> - Generate new client secret</li>
+<li><code>GET_CLIENT_ROLES</code> - Get client roles</li>
+<li><code>CREATE_CLIENT_ROLE</code> - Create client role</li>
+<li><code>DELETE_CLIENT_ROLE</code> - Delete client role</li>
+</ul>
+<h3 id="role-operations">Role Operations<a class="headerlink" href="#role-operations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>GET_REALM_ROLES</code> - List realm roles</li>
+<li><code>GET_REALM_ROLE</code> - Get realm role details</li>
+</ul>
+<h3 id="group-operations">Group Operations<a class="headerlink" href="#group-operations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>GET_GROUPS</code> - List all groups</li>
+<li><code>GET_GROUP_MEMBERS</code> - Get group members</li>
+<li><code>CREATE_GROUP</code> - Create a group</li>
+<li><code>UPDATE_GROUP</code> - Update group details</li>
+<li><code>DELETE_GROUP</code> - Delete a group</li>
+<li><code>CREATE_SUBGROUP</code> - Create a subgroup</li>
+</ul>
+<h3 id="identity-provider-operations">Identity Provider Operations<a class="headerlink" href="#identity-provider-operations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>GET_IDENTITY_PROVIDERS</code> - List identity providers</li>
+<li><code>GET_IDENTITY_PROVIDER</code> - Get identity provider details</li>
+<li><code>GET_IDENTITY_PROVIDER_MAPPERS</code> - Get identity provider mappers</li>
+</ul>
+<h3 id="authentication-flow-operations">Authentication Flow Operations<a class="headerlink" href="#authentication-flow-operations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>GET_AUTHENTICATION_FLOWS</code> - List authentication flows</li>
+<li><code>GET_AUTHENTICATION_FLOW</code> - Get flow details</li>
+<li><code>CREATE_AUTHENTICATION_FLOW</code> - Create a flow</li>
+<li><code>DELETE_AUTHENTICATION_FLOW</code> - Delete a flow</li>
+<li><code>GET_FLOW_EXECUTIONS</code> - Get flow executions</li>
+<li><code>UPDATE_FLOW_EXECUTION</code> - Update flow execution</li>
+</ul>
+<h3 id="discourse-operations">Discourse Operations<a class="headerlink" href="#discourse-operations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>SEARCH_DISCOURSE</code> - Search Keycloak community forum</li>
+</ul>
+<h3 id="example-usage-in-cursor-chat">Example Usage in Cursor Chat<a class="headerlink" href="#example-usage-in-cursor-chat" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a># User management
+<a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a>&quot;Create a user named john.doe with email john@example.com in the master realm&quot;
+<a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a>&quot;List all users in the quarkus realm&quot;
+<a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a>&quot;Add user alice to the admin group&quot;
+<a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a>
+<a id="__codelineno-48-6" name="__codelineno-48-6" href="#__codelineno-48-6"></a># Client management
+<a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a>&quot;Show me all clients in the master realm&quot;
+<a id="__codelineno-48-8" name="__codelineno-48-8" href="#__codelineno-48-8"></a>&quot;Create a new confidential client named my-app&quot;
+<a id="__codelineno-48-9" name="__codelineno-48-9" href="#__codelineno-48-9"></a>&quot;Generate a new secret for the my-app client&quot;
+<a id="__codelineno-48-10" name="__codelineno-48-10" href="#__codelineno-48-10"></a>
+<a id="__codelineno-48-11" name="__codelineno-48-11" href="#__codelineno-48-11"></a># Realm management
+<a id="__codelineno-48-12" name="__codelineno-48-12" href="#__codelineno-48-12"></a>&quot;List all realms&quot;
+<a id="__codelineno-48-13" name="__codelineno-48-13" href="#__codelineno-48-13"></a>&quot;Show me the details of the quarkus realm&quot;
+<a id="__codelineno-48-14" name="__codelineno-48-14" href="#__codelineno-48-14"></a>&quot;Create a new realm named production&quot;
+<a id="__codelineno-48-15" name="__codelineno-48-15" href="#__codelineno-48-15"></a>
+<a id="__codelineno-48-16" name="__codelineno-48-16" href="#__codelineno-48-16"></a># Authentication flows
+<a id="__codelineno-48-17" name="__codelineno-48-17" href="#__codelineno-48-17"></a>&quot;List all authentication flows in the master realm&quot;
+<a id="__codelineno-48-18" name="__codelineno-48-18" href="#__codelineno-48-18"></a>&quot;Show me the browser authentication flow&quot;
+<a id="__codelineno-48-19" name="__codelineno-48-19" href="#__codelineno-48-19"></a>
+<a id="__codelineno-48-20" name="__codelineno-48-20" href="#__codelineno-48-20"></a># Discourse search
+<a id="__codelineno-48-21" name="__codelineno-48-21" href="#__codelineno-48-21"></a>&quot;Search Keycloak Discourse for &#39;SAML configuration&#39;&quot;
+<a id="__codelineno-48-22" name="__codelineno-48-22" href="#__codelineno-48-22"></a>&quot;Find topics about user federation&quot;
+</code></pre></div>
+<hr />
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="issue-mcp-server-not-connecting">Issue: MCP Server Not Connecting<a class="headerlink" href="#issue-mcp-server-not-connecting" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms:</strong>
+- Cursor shows "MCP server not responding"
+- Tools not available in chat</p>
+<p><strong>Solutions:</strong></p>
+<ol>
+<li>
+<p><strong>Check if the server is running:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a><span class="c1"># For Docker</span>
+<a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a>docker<span class="w"> </span>ps<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>keycloak-mcp-server
+<a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a>docker<span class="w"> </span>logs<span class="w"> </span>keycloak-mcp-server
+<a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a>
+<a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a><span class="c1"># For OpenShift</span>
+<a id="__codelineno-49-6" name="__codelineno-49-6" href="#__codelineno-49-6"></a>oc<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-l<span class="w"> </span><span class="nv">app</span><span class="o">=</span>keycloak-mcp-server
+<a id="__codelineno-49-7" name="__codelineno-49-7" href="#__codelineno-49-7"></a>oc<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>deployment/keycloak-mcp-server
+<a id="__codelineno-49-8" name="__codelineno-49-8" href="#__codelineno-49-8"></a>
+<a id="__codelineno-49-9" name="__codelineno-49-9" href="#__codelineno-49-9"></a><span class="c1"># For native binary</span>
+<a id="__codelineno-49-10" name="__codelineno-49-10" href="#__codelineno-49-10"></a>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>keycloak-mcp-server
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Test the health endpoint:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a>curl<span class="w"> </span>http://localhost:8080/q/health
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Check the MCP SSE endpoint:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>curl<span class="w"> </span>-N<span class="w"> </span>http://localhost:8080/mcp/sse
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify mcp.json configuration:</strong></p>
+</li>
+<li>Check the URL is correct</li>
+<li>Ensure no trailing slashes</li>
+<li>
+<p>Verify the port number</p>
+</li>
+<li>
+<p><strong>Reload MCP servers in Cursor:</strong></p>
+</li>
+<li><code>Cmd+Shift+P</code> → "Reload MCP Servers"</li>
+</ol>
+<hr />
+<h3 id="issue-ssltls-certificate-errors">Issue: SSL/TLS Certificate Errors<a class="headerlink" href="#issue-ssltls-certificate-errors" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms:</strong>
+- <code>SSLHandshakeException: Failed to create SSL connection</code>
+- Certificate validation errors in logs</p>
+<p><strong>Solutions:</strong></p>
+<ol>
+<li>
+<p><strong>For Docker (Development):</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>-e<span class="w"> </span><span class="nv">QUARKUS_TLS_TRUST_ALL</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>-e<span class="w"> </span><span class="nv">QUARKUS_REST_CLIENT_TRUST_ALL</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a>...
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>For OpenShift (Production):</strong></p>
+</li>
+<li>Ensure CA certificate ConfigMap is created</li>
+<li>Verify volume mount in deployment</li>
+<li>
+<p>See <a href="../keycloak-tls-setup/">keycloak-tls-setup.md</a></p>
+</li>
+<li>
+<p><strong>For Native Binary:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">QUARKUS_TLS_TRUST_ALL</span><span class="o">=</span><span class="nb">true</span>
+<a id="__codelineno-53-2" name="__codelineno-53-2" href="#__codelineno-53-2"></a>./keycloak-mcp-server-linux-x64
+</code></pre></div></p>
+</li>
+</ol>
+<hr />
+<h3 id="issue-authentication-failures">Issue: Authentication Failures<a class="headerlink" href="#issue-authentication-failures" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms:</strong>
+- <code>401 Unauthorized</code> errors
+- <code>403 Forbidden</code> errors
+- "Invalid credentials" in logs</p>
+<p><strong>Solutions:</strong></p>
+<ol>
+<li>
+<p><strong>Verify Keycloak URL:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a>curl<span class="w"> </span>-I<span class="w"> </span>https://keycloak.example.com
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>For JWT Authentication:</strong></p>
+</li>
+<li>Verify OIDC client exists in Keycloak (mcp-server)</li>
+<li>Ensure user has proper roles and permissions</li>
+<li>
+<p>Test user token:
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://keycloak.example.com/realms/master/protocol/openid-connect/token<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a>-d<span class="w"> </span><span class="s1">&#39;grant_type=password&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>-d<span class="w"> </span><span class="s1">&#39;client_id=admin-cli&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a>-d<span class="w"> </span><span class="s1">&#39;username=your-username&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-55-5" name="__codelineno-55-5" href="#__codelineno-55-5"></a>-d<span class="w"> </span><span class="s1">&#39;client_secret=your-secret&#39;</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>For Username/Password:</strong></p>
+</li>
+<li>Verify admin username and password</li>
+<li>Check user has admin privileges</li>
+<li>Test login:
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>https://keycloak.example.com/realms/master/protocol/openid-connect/token<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a>-d<span class="w"> </span><span class="s1">&#39;grant_type=password&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a>-d<span class="w"> </span><span class="s1">&#39;client_id=admin-cli&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a>-d<span class="w"> </span><span class="s1">&#39;username=admin&#39;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-56-5" name="__codelineno-56-5" href="#__codelineno-56-5"></a>-d<span class="w"> </span><span class="s1">&#39;password=admin&#39;</span>
+</code></pre></div></li>
+</ol>
+<hr />
+<h3 id="issue-connection-refused-network-errors">Issue: Connection Refused / Network Errors<a class="headerlink" href="#issue-connection-refused-network-errors" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms:</strong>
+- <code>Connection refused</code> errors
+- <code>No route to host</code> errors</p>
+<p><strong>Solutions:</strong></p>
+<ol>
+<li>
+<p><strong>Check Keycloak is running:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>curl<span class="w"> </span>http://localhost:8180
+<a id="__codelineno-57-2" name="__codelineno-57-2" href="#__codelineno-57-2"></a><span class="c1"># Or for HTTPS</span>
+<a id="__codelineno-57-3" name="__codelineno-57-3" href="#__codelineno-57-3"></a>curl<span class="w"> </span>-k<span class="w"> </span>https://localhost:8543
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>For Docker on macOS/Windows:</strong></p>
+</li>
+<li>
+<p>Use <code>host.docker.internal</code> instead of <code>localhost</code></p>
+</li>
+<li>
+<p><strong>For Docker on Linux:</strong></p>
+</li>
+<li>
+<p>Use <code>--network host</code> or configure bridge networking</p>
+</li>
+<li>
+<p><strong>Check firewall rules:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="c1"># Linux</span>
+<a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a>sudo<span class="w"> </span>firewall-cmd<span class="w"> </span>--list-all
+<a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a>
+<a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a><span class="c1"># macOS</span>
+<a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a>sudo<span class="w"> </span>pfctl<span class="w"> </span>-sr
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Verify port is not in use:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>lsof<span class="w"> </span>-i<span class="w"> </span>:8080
+</code></pre></div></p>
+</li>
+</ol>
+<hr />
+<h3 id="issue-mcp-tools-not-appearing-in-cursor">Issue: MCP Tools Not Appearing in Cursor<a class="headerlink" href="#issue-mcp-tools-not-appearing-in-cursor" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms:</strong>
+- No Keycloak operations available
+- Can't execute Keycloak commands</p>
+<p><strong>Solutions:</strong></p>
+<ol>
+<li><strong>Verify MCP server is initialized:</strong></li>
+<li>Look for initialization message in server logs</li>
+<li>
+<p>Check Cursor's developer console (Help → Toggle Developer Tools)</p>
+</li>
+<li>
+<p><strong>Reload MCP servers:</strong></p>
+</li>
+<li>
+<p><code>Cmd+Shift+P</code> → "Reload MCP Servers"</p>
+</li>
+<li>
+<p><strong>Restart Cursor completely</strong></p>
+</li>
+<li>
+<p><strong>Check mcp.json syntax:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-60-1" name="__codelineno-60-1" href="#__codelineno-60-1"></a><span class="c1"># Validate JSON</span>
+<a id="__codelineno-60-2" name="__codelineno-60-2" href="#__codelineno-60-2"></a>cat<span class="w"> </span>~/.cursor/mcp.json<span class="w"> </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
+</code></pre></div></p>
+</li>
+</ol>
+<hr />
+<h3 id="issue-slow-response-times">Issue: Slow Response Times<a class="headerlink" href="#issue-slow-response-times" title="Permanent link">&para;</a></h3>
+<p><strong>Symptoms:</strong>
+- Operations take a long time
+- Timeouts in Cursor</p>
+<p><strong>Solutions:</strong></p>
+<ol>
+<li><strong>Check Keycloak performance:</strong></li>
+<li>Database connections</li>
+<li>Memory usage</li>
+<li>
+<p>Network latency</p>
+</li>
+<li>
+<p><strong>Increase container resources:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-61-1" name="__codelineno-61-1" href="#__codelineno-61-1"></a><span class="c1"># Docker</span>
+<a id="__codelineno-61-2" name="__codelineno-61-2" href="#__codelineno-61-2"></a>docker<span class="w"> </span>update<span class="w"> </span>--memory<span class="w"> </span>1g<span class="w"> </span>--cpus<span class="w"> </span><span class="m">2</span><span class="w"> </span>keycloak-mcp-server
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>For OpenShift, adjust resource limits:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-62-1" name="__codelineno-62-1" href="#__codelineno-62-1"></a><span class="nt">resources</span><span class="p">:</span>
+<a id="__codelineno-62-2" name="__codelineno-62-2" href="#__codelineno-62-2"></a><span class="nt">requests</span><span class="p">:</span>
+<a id="__codelineno-62-3" name="__codelineno-62-3" href="#__codelineno-62-3"></a><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;512Mi&quot;</span>
+<a id="__codelineno-62-4" name="__codelineno-62-4" href="#__codelineno-62-4"></a><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;250m&quot;</span>
+<a id="__codelineno-62-5" name="__codelineno-62-5" href="#__codelineno-62-5"></a><span class="nt">limits</span><span class="p">:</span>
+<a id="__codelineno-62-6" name="__codelineno-62-6" href="#__codelineno-62-6"></a><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1Gi&quot;</span>
+<a id="__codelineno-62-7" name="__codelineno-62-7" href="#__codelineno-62-7"></a><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1000m&quot;</span>
+</code></pre></div></p>
+</li>
+</ol>
+<hr />
+<h3 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h3>
+<p>If you are still experiencing issues:</p>
+<ol>
+<li>
+<p><strong>Check the logs:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-63-1" name="__codelineno-63-1" href="#__codelineno-63-1"></a><span class="c1"># Docker</span>
+<a id="__codelineno-63-2" name="__codelineno-63-2" href="#__codelineno-63-2"></a>docker<span class="w"> </span>logs<span class="w"> </span>keycloak-mcp-server<span class="w"> </span>--tail<span class="w"> </span><span class="m">100</span>
+<a id="__codelineno-63-3" name="__codelineno-63-3" href="#__codelineno-63-3"></a>
+<a id="__codelineno-63-4" name="__codelineno-63-4" href="#__codelineno-63-4"></a><span class="c1"># OpenShift</span>
+<a id="__codelineno-63-5" name="__codelineno-63-5" href="#__codelineno-63-5"></a>oc<span class="w"> </span>logs<span class="w"> </span>deployment/keycloak-mcp-server<span class="w"> </span>--tail<span class="w"> </span><span class="m">100</span>
+<a id="__codelineno-63-6" name="__codelineno-63-6" href="#__codelineno-63-6"></a>
+<a id="__codelineno-63-7" name="__codelineno-63-7" href="#__codelineno-63-7"></a><span class="c1"># Development mode</span>
+<a id="__codelineno-63-8" name="__codelineno-63-8" href="#__codelineno-63-8"></a><span class="c1"># Logs appear in terminal</span>
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Enable debug logging:</strong>
+ <div class="highlight"><pre><span></span><code><a id="__codelineno-64-1" name="__codelineno-64-1" href="#__codelineno-64-1"></a><span class="c1"># Add to environment</span>
+<a id="__codelineno-64-2" name="__codelineno-64-2" href="#__codelineno-64-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">QUARKUS_LOG_LEVEL</span><span class="o">=</span>DEBUG
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Check documentation:</strong></p>
+</li>
+<li><a href="../">index.md</a></li>
+<li><a href="../authentication/">authentication.md</a></li>
+<li><a href="../openshift-deployment/">openshift-deployment.md</a></li>
+<li>
+<p><a href="../keycloak-tls-setup/">keycloak-tls-setup.md</a></p>
+</li>
+<li>
+<p><strong>Open an issue:</strong></p>
+</li>
+<li><a href="https://github.com/sshaaf/keycloak-mcp-server/issues">GitHub Issues</a></li>
+<li>
+<p>Include logs, configuration, and error messages</p>
+</li>
+<li>
+<p><strong>Community support:</strong></p>
+</li>
+<li><a href="https://keycloak.discourse.group">Keycloak Discourse</a></li>
+<li><a href="https://quarkus.io/community/">Quarkus Discord</a></li>
+</ol>
+<hr />
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<p>Once you have the MCP server running:</p>
+<ol>
+<li><strong>Explore Available Operations</strong>: Try different Keycloak management commands</li>
+<li><strong>Automate Tasks</strong>: Use the MCP server to automate user provisioning, client setup, etc.</li>
+<li><strong>Secure Your Setup</strong>: Migrate to user authentication authentication if using username/password</li>
+<li><strong>Monitor Performance</strong>: Set up logging and monitoring</li>
+<li><strong>Deploy to Production</strong>: Follow the OpenShift deployment guide for production setup</li>
+</ol>
+<h2 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Documentation</strong>: <a href="../">index.md</a></li>
+<li><strong>Authentication Guide</strong>: <a href="../authentication/">authentication.md</a></li>
+<li><strong>OpenShift Deployment</strong>: <a href="../openshift-deployment/">openshift-deployment.md</a></li>
+<li><strong>TLS Configuration</strong>: <a href="../keycloak-tls-setup/">keycloak-tls-setup.md</a></li>
+<li><strong>GitHub Repository</strong>: <a href="https://github.com/sshaaf/keycloak-mcp-server">https://github.com/sshaaf/keycloak-mcp-server</a></li>
+<li><strong>Keycloak Documentation</strong>: <a href="https://www.keycloak.org/documentation">https://www.keycloak.org/documentation</a></li>
+</ul>
+<hr />
+<p>**Happy Keycloak management with MCP! **</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/sshaaf/keycloak-mcp-server" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
