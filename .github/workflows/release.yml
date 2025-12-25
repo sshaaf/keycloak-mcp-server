@@ -8,6 +8,12 @@ env:
 
 on:
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (no actual releases or pushes)'
+        required: false
+        default: false
+        type: boolean
   push:
     tags:
       - 'v*' # Trigger on version tags like v1.0.0, v0.3.1, etc.
@@ -193,12 +199,20 @@ jobs:
 
       - name: Build and Push Container Image with Version Tag
         run: |
-          mvn -B clean package -DskipTests \
-            -Dquarkus.container-image.build=true \
-            -Dquarkus.container-image.push=true \
-            -Dquarkus.container-image.additional-tags=${{ steps.get-version.outputs.version }},latest \
-            -Dquarkus.container-image.username=${{ secrets.QUAY_USERNAME }} \
-            -Dquarkus.container-image.password=${{ secrets.QUAY_PASSWORD }}
+          if [ "${{ inputs.dry_run }}" == "true" ]; then
+            echo "🔍 DRY-RUN: Building container image without pushing..."
+            mvn -B clean package -DskipTests \
+              -Dquarkus.container-image.build=true \
+              -Dquarkus.container-image.push=false \
+              -Dquarkus.container-image.additional-tags=${{ steps.get-version.outputs.version }},latest
+          else
+            mvn -B clean package -DskipTests \
+              -Dquarkus.container-image.build=true \
+              -Dquarkus.container-image.push=true \
+              -Dquarkus.container-image.additional-tags=${{ steps.get-version.outputs.version }},latest \
+              -Dquarkus.container-image.username=${{ secrets.QUAY_USERNAME }} \
+              -Dquarkus.container-image.password=${{ secrets.QUAY_PASSWORD }}
+          fi
         env:
           QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
           QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
@@ -299,7 +313,13 @@ jobs:
       - name: Run Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: |
+          if [ "${{ inputs.dry_run }}" == "true" ]; then
+            echo "🔍 DRY-RUN: Running semantic-release in dry-run mode..."
+            npx semantic-release --dry-run
+          else
+            npx semantic-release
+          fi
 
   deploy-docs:
     name: Deploy Documentation to GitHub Pages
@@ -330,4 +350,10 @@ jobs:
         run: mkdocs build --strict
 
       - name: Deploy to GitHub Pages
-        run: mkdocs gh-deploy --force
+        run: |
+          if [ "${{ inputs.dry_run }}" == "true" ]; then
+            echo "🔍 DRY-RUN: Skipping GitHub Pages deployment"
+            echo "Documentation build was successful - would deploy here in actual run"
+          else
+            mkdocs gh-deploy --force
+          fi
