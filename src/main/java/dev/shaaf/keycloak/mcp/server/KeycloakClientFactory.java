@@ -3,6 +3,7 @@ package dev.shaaf.keycloak.mcp.server;
 import io.quarkus.logging.Log;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.keycloak.admin.client.Keycloak;
@@ -14,11 +15,15 @@ import org.keycloak.admin.client.KeycloakBuilder;
  * This factory creates a request-scoped Keycloak admin client that uses the
  * authenticated user's JWT token to call the Keycloak Admin API.
  * 
- * Benefits:
+ * Production Mode (OIDC enabled):
+ * - Uses authenticated user's JWT token
  * - Each user has their own permissions (no shared admin access)
  * - Keycloak enforces its native permission system (realm access, roles, etc.)
  * - Full audit trail by user
- * - No service account or shared credentials needed
+ * 
+ * Development Mode (OIDC disabled):
+ * - Falls back to KC_DEV_USER and KC_DEV_PASSWORD environment variables
+ * - Allows local testing without JWT token setup
  */
 @RequestScoped
 public class KeycloakClientFactory {
@@ -27,7 +32,7 @@ public class KeycloakClientFactory {
     SecurityIdentity securityIdentity;
     
     @Inject
-    JsonWebToken jwt;
+    Instance<JsonWebToken> jwt;
 
     /**
      * Creates a Keycloak admin client using the authenticated user's JWT token.
@@ -43,9 +48,9 @@ public class KeycloakClientFactory {
         String serverUrl = System.getenv().getOrDefault("KC_URL", "http://localhost:8180");
         String realm = System.getenv().getOrDefault("KC_REALM", "master");
         
-        // Use authenticated user's token
-        if (!securityIdentity.isAnonymous() && jwt != null) {
-            String userToken = jwt.getRawToken();
+        // Use authenticated user's token (production mode with OIDC enabled)
+        if (!securityIdentity.isAnonymous() && jwt.isResolvable()) {
+            String userToken = jwt.get().getRawToken();
             Log.infof("Creating Keycloak client with user token for: %s", 
                      securityIdentity.getPrincipal().getName());
             
@@ -53,6 +58,23 @@ public class KeycloakClientFactory {
                     .serverUrl(serverUrl)
                     .realm(realm)
                     .authorization("Bearer " + userToken)
+                    .build();
+        }
+        
+        // Development mode fallback (when OIDC is disabled)
+        // Use environment variables for dev credentials
+        String username = System.getenv("KC_DEV_USER");
+        String password = System.getenv("KC_DEV_PASSWORD");
+        
+        if (username != null && password != null) {
+            Log.warnf("Creating Keycloak client with dev credentials for user: %s (DEV MODE ONLY)", username);
+            
+            return KeycloakBuilder.builder()
+                    .serverUrl(serverUrl)
+                    .realm(realm)
+                    .username(username)
+                    .password(password)
+                    .clientId("admin-cli")
                     .build();
         }
         
@@ -65,7 +87,8 @@ public class KeycloakClientFactory {
             "    -d client_id=admin-cli \\\n" +
             "    -d username=<your-username> \\\n" +
             "    -d password=<your-password>\n" +
-            "Or use the helper script: ./scripts/get-mcp-token.sh"
+            "Or use the helper script: ./scripts/get-mcp-token.sh\n\n" +
+            "For development mode, set KC_DEV_USER and KC_DEV_PASSWORD environment variables."
         );
     }
     
@@ -87,7 +110,7 @@ public class KeycloakClientFactory {
      * @return true if user is authenticated, false otherwise
      */
     public boolean isUserAuthenticated() {
-        return !securityIdentity.isAnonymous() && jwt != null;
+        return !securityIdentity.isAnonymous() && jwt.isResolvable();
     }
 }
 
