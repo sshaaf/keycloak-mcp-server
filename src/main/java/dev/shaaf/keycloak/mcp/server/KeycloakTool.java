@@ -149,7 +149,16 @@ public class KeycloakTool {
         
         try {
             JsonNode paramsNode = mapper.readTree(params);
-            
+
+            /**
+             * Notes:
+             * how about we put the ops in a hashMap<OP, Class.ExecutionCall>; An OpsFactory that can register all annotations?
+             * Op Interface should have the getOpName, execute(paramsNode) with a return of String.
+             * How should I register the ops. 1. Annotation, means CDI injection, but might have problems with the native build.
+             * Also which service should be injected. Do I need a context object? or maybe create a ServiceFactory a Singleton
+             * that can give access to all components that want to use the service.
+             * */
+
             switch (operation) {
                 // ========== USER OPERATIONS ==========
                 case GET_USERS:
