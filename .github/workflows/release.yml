@@ -8,6 +8,12 @@ env:
 
 on:
   workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (no actual releases or pushes)'
+        required: false
+        default: false
+        type: boolean
   push:
     tags:
       - 'v*' # Trigger on version tags like v1.0.0, v0.3.1, etc.
@@ -193,12 +199,20 @@ jobs:
 
       - name: Build and Push Container Image with Version Tag
         run: |
-          mvn -B clean package -DskipTests \
-            -Dquarkus.container-image.build=true \
-            -Dquarkus.container-image.push=true \
-            -Dquarkus.container-image.additional-tags=${{ steps.get-version.outputs.version }},latest \
-            -Dquarkus.container-image.username=${{ secrets.QUAY_USERNAME }} \
-            -Dquarkus.container-image.password=${{ secrets.QUAY_PASSWORD }}
+          if [ "${{ inputs.dry_run }}" == "true" ]; then
+            echo "🔍 DRY-RUN: Building container image without pushing..."
+            mvn -B clean package -DskipTests \
+              -Dquarkus.container-image.build=true \
+              -Dquarkus.container-image.push=false \
+              -Dquarkus.container-image.additional-tags=${{ steps.get-version.outputs.version }},latest
+          else
+            mvn -B clean package -DskipTests \
+              -Dquarkus.container-image.build=true \
+              -Dquarkus.container-image.push=true \
+              -Dquarkus.container-image.additional-tags=${{ steps.get-version.outputs.version }},latest \
+              -Dquarkus.container-image.username=${{ secrets.QUAY_USERNAME }} \
+              -Dquarkus.container-image.password=${{ secrets.QUAY_PASSWORD }}
+          fi
         env:
           QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
           QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
@@ -288,18 +302,25 @@ jobs:
           echo "--- Prepared Release Assets ---"
           ls -R release-assets/
           echo "-------------------------------"
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - name: Create GitHub Release
+        if: ${{ inputs.dry_run != true }}
+        uses: softprops/action-gh-release@v2
         with:
-          node-version: '20'
-
-      - name: Install semantic-release and plugins
-        run: npm install semantic-release @semantic-release/git @semantic-release/github @semantic-release/commit-analyzer @semantic-release/release-notes-generator
-
-      - name: Run Semantic Release
+          tag_name: v${{ steps.get-version.outputs.version }}
+          name: Release v${{ steps.get-version.outputs.version }}
+          generate_release_notes: true
+          files: |
+            release-assets/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+
+      - name: Dry Run Summary
+        if: ${{ inputs.dry_run == true }}
+        run: |
+          echo "🔍 DRY-RUN: Would create GitHub Release v${{ steps.get-version.outputs.version }}"
+          echo ""
+          echo "Assets that would be uploaded:"
+          ls -la release-assets/
 
   deploy-docs:
     name: Deploy Documentation to GitHub Pages
@@ -330,4 +351,10 @@ jobs:
         run: mkdocs build --strict
 
       - name: Deploy to GitHub Pages
-        run: mkdocs gh-deploy --force
+        run: |
+          if [ "${{ inputs.dry_run }}" == "true" ]; then
+            echo "🔍 DRY-RUN: Skipping GitHub Pages deployment"
+            echo "Documentation build was successful - would deploy here in actual run"
+          else
+            mkdocs gh-deploy --force
+          fi
