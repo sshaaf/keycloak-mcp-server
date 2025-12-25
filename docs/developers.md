@@ -1,194 +1,249 @@
-# Keycloak MCP Server Developer Guide
-This guide provides detailed technical information for developers working on the Keycloak MCP Server project.
+# Developer Guide
+
+Technical documentation for developers building, extending, or contributing to the Keycloak MCP Server.
+
+## Prerequisites
+
+- Java 21+
+- Maven 3.6+
+- Docker (for container builds)
+- Keycloak instance (for testing)
 
 ## Building from Source
-1. Clone the repository:
- ```
- git clone https://github.com/yourusername/keycloak-mcp-server.git
- cd keycloak-mcp-server
- ```
-2. Build the project:
- ```
- ./mvnw clean package
- ```
 
-## GitHub Actions Builds
-Keycloak MCP Server uses GitHub Actions to automatically build and test the project on every commit.
+```bash
+git clone https://github.com/sshaaf/keycloak-mcp-server.git
+cd keycloak-mcp-server
 
-### Accessing Built Artifacts
-1. Go to the Actions tab in the GitHub repository.
-2. Click on the latest workflow run.
-3. Scroll down to the "Artifacts" section to download the built artifacts.
+# Build JAR
+./mvnw clean package
 
-### Releases
-Official releases are created when changes are pushed to the main branch. You can find the latest release with all artifacts on the Releases page.
+# Build uber JAR
+./mvnw package -Dquarkus.package.jar.type=uber-jar
 
-## Running the Application
-The Keycloak MCP Server is built using Quarkus, which provides fast startup times and a low memory footprint.
+# Build native binary (requires GraalVM)
+./mvnw package -Pnative
+```
 
-### Prerequisites
-- Java 21 or higher
-- Maven 3.6 or higher
-- Keycloak server (for integration)
+## Running Locally
 
-### Running in Development Mode
-To run the application in development mode:
+### Development Mode
+
 ```bash
 ./mvnw quarkus:dev
 ```
 
-This enables hot deployment with background compilation, allowing you to make changes to the code and automatically reload the application.
+Features:
+- Hot reload on code changes
+- Dev UI at `http://localhost:8080/q/dev`
+- Authentication disabled for convenience
 
-### Configuration
-The application can be configured using the `application.properties` file located in `src/main/resources/`. Key configuration properties include:
-
-- `quarkus.keycloak.url`: The URL of the Keycloak server
-
-An example docker-compose file is provided for local development.
-
-## Testing
-Keycloak MCP Server includes a comprehensive test suite to ensure code quality and prevent regressions.
-
-### Running Tests
-To run the tests locally:
-```bash
-./mvnw test
-```
-
-This will execute all tests and generate a report in `build/reports/tests/test/index.html`.
-
-### Continuous Integration
-The GitHub Actions workflow automatically runs all tests for:
-- Every push to the main branch
-- Every pull request targeting the main branch
-
-This ensures that all code changes pass tests before being merged, maintaining code quality and preventing regressions.
-
-## Project Architecture
-Follows a layered architecture with tool classes that expose functionality through the MCP protocol and service classes that handle the actual operations with Keycloak.
-Each tool class follows a similar pattern:
-- Injects a corresponding service class that handles the actual operations with Keycloak
-- Injects an ObjectMapper for JSON serialization/deserialization
-- Exposes methods with @Tool annotations that delegate to the service class
-
-### Class Structure
-The project includes the following main components:
-
-- **Service Layer**: Handles the actual operations with Keycloak
- - `UserService`: Manages user-related operations
- - `RealmService`: Manages realm-related operations
- - `ClientService`: Manages client-related operations
- - `RoleService`: Manages role-related operations
- - `GroupService`: Manages group-related operations
- - `IdentityProviderService`: Manages identity provider-related operations
- - `AuthenticationService`: Manages authentication flow-related operations
-
-- **Tools Layer**: Exposes functionality through the MCP protocol
- - `UserTool`: Exposes user-related operations
- - `RealmTool`: Exposes realm-related operations
- - `ClientTool`: Exposes client-related operations
- - `RoleTool`: Exposes role-related operations
- - `GroupTool`: Exposes group-related operations
- - `IdentityProviderTool`: Exposes identity provider-related operations
- - `AuthenticationTool`: Exposes authentication flow-related operations
-
-### Class Diagram
-
-Below is a class diagram showing the structure of the tools package and its relationships with the service layer:
-
-```mermaid
-graph TD
- subgraph "Goose CLI"
- GooseCLI[Goose CLI]
- end
-
- subgraph "Tools Layer"
- UserTool["UserTool"]
- RealmTool["RealmTool"]
- ClientTool["ClientTool"]
- RoleTool["RoleTool"]
- GroupTool["GroupTool"]
- end
-
- subgraph "Service Layer"
- UserService["UserService"]
- RealmService["RealmService"]
- ClientService["ClientService"]
- RoleService["RoleService"]
- GroupService["GroupService"]
- end
-
- subgraph "External Services"
- Keycloak[("Keycloak")]
- end
-
- %% Define Relationships
- GooseCLI --> UserTool
- GooseCLI --> RealmTool
- GooseCLI --> ClientTool
- GooseCLI --> RoleTool
- GooseCLI --> GroupTool
-
- UserTool --> UserService
- RealmTool --> RealmService
- ClientTool --> ClientService
- RoleTool --> RoleService
- GroupTool --> GroupService
-
- UserService --> Keycloak
- RealmService --> Keycloak
- ClientService --> Keycloak
- RoleService --> Keycloak
- GroupService --> Keycloak
-
- %% Styling
- style GooseCLI fill:#d4edda,stroke:#c3e6cb
- style Keycloak fill:#f8d7da,stroke:#f5c6cb
-
-```
-## Architecture
-
-The project follows a layered architecture with tool classes that expose functionality through the MCP protocol and service classes that handle the actual operations with Keycloak.
-
-### Tools Package Explanation
-
-The tools package contains classes that expose Keycloak functionality through the MCP protocol:
-
-1. **UserTool**: Manages Keycloak users, including creation, deletion, updating user information, and managing user roles and groups.
-
-2. **RealmTool**: Manages Keycloak realms, including creation, deletion, updating realm settings, and managing realm events configuration.
-
-3. **ClientTool**: Manages Keycloak clients, including creation, deletion, updating client settings, managing client secrets, and client roles.
-
-4. **RoleTool**: Manages Keycloak roles, including creation, deletion, updating role settings, and managing role composites.
-
-5. **GroupTool**: Manages Keycloak groups, including creation, deletion, updating group settings, managing group members, and group roles.
-
-
-Each tool class follows a similar pattern:
-- Injects a corresponding service class that handles the actual operations with Keycloak
-- Injects an ObjectMapper for JSON serialization/deserialization
-- Exposes methods with @Tool annotations that delegate to the service class
-- Handles exceptions and provides meaningful error messages
-
-### Building via source and running locally
-
-You can start a local Keycloak instance using Docker Compose:
+### With Docker Compose
 
 ```bash
 docker-compose -f deploy/docker-compose.yml up
 ```
 
-### Building the Application
+Starts Keycloak and the MCP server together.
 
-To build the application using Maven:
+## Architecture
 
-```bash
-./mvnw clean package
+### Unified Tool Design (Parametric Collapse)
+
+The project consolidates 45+ operations into a single `KeycloakTool` class:
+
+```
+┌─────────────────────────────────────────┐
+│           KeycloakTool                  │
+│  executeKeycloakOperation(op, params)   │
+└────────────────┬────────────────────────┘
+                 │ Routes via switch
+    ┌────────────┼────────────┐
+    ▼            ▼            ▼
+┌────────┐  ┌────────┐  ┌────────┐
+│UserSvc │  │RealmSvc│  │ClientSvc│ ...
+└────────┘  └────────┘  └────────┘
 ```
 
-To build an uber jar:
+**Benefits:**
+- 1 MCP tool instead of 37+ individual tools
+- Centralized error handling
+- Type-safe operation selection via enum
+- Easier to maintain and extend
+
+### Project Structure
+
+```
+src/main/java/dev/shaaf/keycloak/mcp/server/
+├── KeycloakTool.java           # Unified tool (45+ operations)
+├── KeycloakClientFactory.java  # Request-scoped client creation
+├── user/
+│   └── UserService.java
+├── realm/
+│   └── RealmService.java
+├── client/
+│   └── ClientService.java
+├── role/
+│   └── RoleService.java
+├── group/
+│   └── GroupService.java
+├── idp/
+│   └── IdentityProviderService.java
+└── authentication/
+    └── AuthenticationService.java
+```
+
+### Adding a New Operation
+
+1. **Add enum value:**
+
+```java
+public enum KeycloakOperation {
+    // ... existing operations
+    MY_NEW_OPERATION
+}
+```
+
+2. **Add switch case in `executeKeycloakOperation()`:**
+
+```java
+case MY_NEW_OPERATION:
+    return myService.myNewMethod(
+        paramsNode.get("param1").asText(),
+        paramsNode.get("param2").asInt()
+    );
+```
+
+3. **Update tool description** with the new operation name.
+
+## Building Container Images
+
+Container images are built using Jib (no Docker daemon required):
 
 ```bash
-./mvnw clean package -Dquarkus.package.type=uber-jar
+# Build without pushing
+./mvnw package -Dquarkus.container-image.build=true
+
+# Build and push to Quay.io
+./mvnw package \
+  -Dquarkus.container-image.build=true \
+  -Dquarkus.container-image.push=true \
+  -Dquarkus.container-image.username=$QUAY_USERNAME \
+  -Dquarkus.container-image.password=$QUAY_PASSWORD
+
+# Build for specific platform
+./mvnw package -Dquarkus.jib.platforms=linux/arm64
 ```
+
+Images are automatically tagged with:
+- Git commit SHA (primary): `49ff54e`
+- Latest: `latest`
+
+## CI/CD
+
+GitHub Actions automatically:
+- Builds JAR and native binaries on every push
+- Pushes container images on `main` branch pushes
+- Creates releases with version tags
+
+### Required GitHub Secrets
+
+| Secret | Description |
+|--------|-------------|
+| `QUAY_USERNAME` | Quay.io username or robot account |
+| `QUAY_PASSWORD` | Quay.io password or robot token |
+
+### Version Management
+
+Version is automatically extracted from `pom.xml`:
+
+```bash
+mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+```
+
+No hardcoded versions in workflows.
+
+## Testing
+
+```bash
+# Run tests
+./mvnw test
+
+# Run with coverage
+./mvnw verify
+```
+
+### Manual Testing
+
+1. Start Keycloak: `docker-compose -f deploy/docker-compose.yml up keycloak`
+2. Start MCP server: `./mvnw quarkus:dev`
+3. Configure MCP client
+4. Test operations in chat
+
+## Contributing
+
+### Pull Request Process
+
+1. Fork the repository
+2. Create a feature branch
+3. Make changes with tests
+4. Ensure `./mvnw test` passes
+5. Submit pull request
+
+### Commit Message Format
+
+Use conventional commits for automatic versioning:
+
+- `fix: ...` - Bug fixes (PATCH release)
+- `feat: ...` - New features (MINOR release)
+- `feat!: ...` or `BREAKING CHANGE:` - Breaking changes (MAJOR release)
+
+### Code Style
+
+- Follow existing patterns
+- Write clear, readable code
+- Include comments where necessary
+- Test new functionality
+
+## Troubleshooting Development
+
+### "Address already in use"
+
+```bash
+# Find process
+lsof -i :8080
+
+# Kill it
+kill -9 <pid>
+
+# Or use random port (default in dev)
+```
+
+### Keycloak connection fails
+
+```bash
+# Check Keycloak is running
+curl http://localhost:8180
+
+# Check environment variables
+echo $KC_URL
+```
+
+### Native build fails
+
+Ensure GraalVM is installed:
+
+```bash
+# Install via SDKMAN
+sdk install java 21.0.1-graalce
+
+# Or use container build
+./mvnw package -Pnative -Dquarkus.native.container-build=true
+```
+
+## Resources
+
+- [Quarkus Documentation](https://quarkus.io/guides/)
+- [Keycloak Admin Client](https://www.keycloak.org/docs/latest/server_development/#admin-rest-api)
+- [MCP Protocol](https://github.com/anthropics/model-context-protocol)
+- [Jib Documentation](https://github.com/GoogleContainerTools/jib)

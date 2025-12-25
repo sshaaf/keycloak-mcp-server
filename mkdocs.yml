@@ -45,43 +45,11 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  
-  - Getting Started:
-    - Quick Start: getting-started.md
-    - Authentication: authentication.md
-  
-  - Deployment:
-    - OpenShift Deployment: openshift-deployment.md
-    - Keycloak TLS Setup: keycloak-tls-setup.md
-    - Container Guide: jib-container-guide.md
-  
-  - Configuration:
-    - Port Configuration: port-configuration.md
-    - Git Commit Tagging: git-commit-tagging.md
-    - Version Automation: version-automation.md
-  
-  - CI/CD:
-    - GitHub Actions Setup: github-actions-setup.md
-    - CI/CD Updates: ci-cd-updates.md
-  
-  - Migration Guides:
-    - SSE Migration: sse-migration-guide.md
-    - Tool Migration: migration-guide.md
-  
-  - Technical Documentation:
-    - Parametric Collapse: parametric-collapse.md
-    - Architecture: architecture-diagram.md
-    - Implementation: implementation-summary.md
-    - Authentication Implementation: authentication-implementation-summary.md
-  
-  - Development:
-    - Developers Guide: developers.md
-    - Contributors Guide: contributors.md
-    - Scripts Guide: scripts-guide.md
-  
-  - Release Information:
-    - Changelog v0.3.0: changelog-v0.3.0.md
-    - Completion Checklist: completion-checklist.md
+  - Getting Started: getting-started.md
+  - Authentication: authentication.md
+  - Configuration: configuration.md
+  - Developers: developers.md
+  - Scripts: scripts-guide.md
 
 plugins:
   - search
@@ -90,4 +58,3 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/sshaaf/keycloak-mcp-server
-
