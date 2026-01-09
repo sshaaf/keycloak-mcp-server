@@ -5,9 +5,12 @@ import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
+
+import java.util.Optional;
 
 /**
  * Factory for creating Keycloak admin clients with user JWT token authentication.
@@ -21,8 +24,9 @@ import org.keycloak.admin.client.KeycloakBuilder;
  * - Keycloak enforces its native permission system (realm access, roles, etc.)
  * - Full audit trail by user
  * 
- * Development Mode (OIDC disabled):
- * - Falls back to KC_DEV_USER and KC_DEV_PASSWORD environment variables
+ * Development/Test Mode (OIDC disabled):
+ * - Falls back to kc.dev.user and kc.dev.password config properties
+ * - Or KC_DEV_USER and KC_DEV_PASSWORD environment variables
  * - Allows local testing without JWT token setup
  */
 @RequestScoped
@@ -33,6 +37,18 @@ public class KeycloakClientFactory {
     
     @Inject
     Instance<JsonWebToken> jwt;
+
+    @ConfigProperty(name = "kc.dev.user")
+    Optional<String> devUserConfig;
+
+    @ConfigProperty(name = "kc.dev.password")
+    Optional<String> devPasswordConfig;
+
+    @ConfigProperty(name = "quarkus.keycloak.admin-client.server-url")
+    Optional<String> serverUrlConfig;
+
+    @ConfigProperty(name = "kc.dev.realm", defaultValue = "master")
+    String devRealm;
 
     /**
      * Creates a Keycloak admin client using the authenticated user's JWT token.
@@ -45,8 +61,11 @@ public class KeycloakClientFactory {
      * @throws IllegalStateException if user is not authenticated
      */
     public Keycloak createClient() {
-        String serverUrl = System.getenv().getOrDefault("KC_URL", "http://localhost:8180");
-        String realm = System.getenv().getOrDefault("KC_REALM", "master");
+        // Use config property first (for TestContainers), then env var, then default
+        String serverUrl = serverUrlConfig.orElse(
+            System.getenv().getOrDefault("KC_URL", "http://localhost:8180")
+        );
+        String realm = System.getenv().getOrDefault("KC_REALM", devRealm);
         
         // Use authenticated user's token (production mode with OIDC enabled)
         if (!securityIdentity.isAnonymous() && jwt.isResolvable()) {
@@ -61,13 +80,13 @@ public class KeycloakClientFactory {
                     .build();
         }
         
-        // Development mode fallback (when OIDC is disabled)
-        // Use environment variables for dev credentials
-        String username = System.getenv("KC_DEV_USER");
-        String password = System.getenv("KC_DEV_PASSWORD");
+        // Development/Test mode fallback (when OIDC is disabled)
+        // Use config properties first, then environment variables
+        String username = devUserConfig.orElse(System.getenv("KC_DEV_USER"));
+        String password = devPasswordConfig.orElse(System.getenv("KC_DEV_PASSWORD"));
         
         if (username != null && password != null) {
-            Log.warnf("Creating Keycloak client with dev credentials for user: %s (DEV MODE ONLY)", username);
+            Log.warnf("Creating Keycloak client with dev credentials for user: %s (DEV/TEST MODE)", username);
             
             return KeycloakBuilder.builder()
                     .serverUrl(serverUrl)
