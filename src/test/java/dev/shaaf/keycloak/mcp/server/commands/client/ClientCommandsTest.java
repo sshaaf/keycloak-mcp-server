@@ -53,6 +53,27 @@ public class ClientCommandsTest {
 
     @Test
     @Order(3)
+    public void testGetClientSecretPhase1() {
+        String result = keycloakTool.executeKeycloakOperation(
+                KeycloakOperation.GET_CLIENT_SECRET,
+                "{\"realm\": \"" + REALM + "\", \"clientId\": \"backend-service\"}"
+        );
+        assertNotNull(result);
+    }
+
+    @Test
+    @Order(4)
+    public void testGetClientProtocolMappersPhase1() {
+        String result = keycloakTool.executeKeycloakOperation(
+                KeycloakOperation.GET_CLIENT_PROTOCOL_MAPPERS,
+                "{\"realm\": \"" + REALM + "\", \"clientId\": \"backend-service\"}"
+        );
+        assertNotNull(result);
+        assertTrue(result.startsWith("["));
+    }
+
+    @Test
+    @Order(5)
     public void testCreateClient() {
         String result = keycloakTool.executeKeycloakOperation(
                 KeycloakOperation.CREATE_CLIENT,
@@ -70,7 +91,7 @@ public class ClientCommandsTest {
     }
 
     @Test
-    @Order(4)
+    @Order(6)
     public void testGetCreatedClient() {
         String result = keycloakTool.executeKeycloakOperation(
                 KeycloakOperation.GET_CLIENT,
@@ -82,7 +103,7 @@ public class ClientCommandsTest {
     }
 
     @Test
-    @Order(5)
+    @Order(7)
     public void testGenerateClientSecret() {
         String result = keycloakTool.executeKeycloakOperation(
                 KeycloakOperation.GENERATE_CLIENT_SECRET,
@@ -95,7 +116,7 @@ public class ClientCommandsTest {
     }
 
     @Test
-    @Order(6)
+    @Order(8)
     public void testGetClientRoles() {
         String result = keycloakTool.executeKeycloakOperation(
                 KeycloakOperation.GET_CLIENT_ROLES,
@@ -107,7 +128,7 @@ public class ClientCommandsTest {
     }
 
     @Test
-    @Order(7)
+    @Order(9)
     public void testCreateClientRole() {
         String result = keycloakTool.executeKeycloakOperation(
                 KeycloakOperation.CREATE_CLIENT_ROLE,
@@ -126,7 +147,7 @@ public class ClientCommandsTest {
     }
 
     @Test
-    @Order(8)
+    @Order(10)
     public void testDeleteClientRole() {
         String result = keycloakTool.executeKeycloakOperation(
                 KeycloakOperation.DELETE_CLIENT_ROLE,

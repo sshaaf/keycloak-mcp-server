@@ -45,18 +45,12 @@ public class KeycloakTool {
      * @param params    JSON string containing the parameters for the operation
      * @return JSON string result from the operation
      */
-    @Tool(description = "Execute Keycloak administration operations. " +
-            "Supports user, realm, client, role, group, identity provider, authentication management, and discourse search. " +
-            "Pass the operation type and parameters as JSON. " +
-            "Available operations: " +
-            "User ops: GET_USERS, GET_USER_BY_USERNAME, CREATE_USER, DELETE_USER, UPDATE_USER, GET_USER_BY_ID, GET_USER_GROUPS, ADD_USER_TO_GROUP, REMOVE_USER_FROM_GROUP, GET_USER_ROLES, ADD_ROLE_TO_USER, REMOVE_ROLE_FROM_USER, RESET_PASSWORD, SEND_VERIFICATION_EMAIL, COUNT_USERS; " +
-            "Realm ops: GET_REALMS, GET_REALM, CREATE_REALM; " +
-            "Client ops: GET_CLIENTS, GET_CLIENT, CREATE_CLIENT, DELETE_CLIENT, GENERATE_CLIENT_SECRET, GET_CLIENT_ROLES, CREATE_CLIENT_ROLE, DELETE_CLIENT_ROLE; " +
-            "Role ops: GET_REALM_ROLES, GET_REALM_ROLE; " +
-            "Group ops: GET_GROUPS, GET_GROUP_MEMBERS, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP, CREATE_SUBGROUP; " +
-            "IDP ops: GET_IDENTITY_PROVIDERS, GET_IDENTITY_PROVIDER, GET_IDENTITY_PROVIDER_MAPPERS; " +
-            "Auth ops: GET_AUTHENTICATION_FLOWS, GET_AUTHENTICATION_FLOW, CREATE_AUTHENTICATION_FLOW, DELETE_AUTHENTICATION_FLOW, GET_FLOW_EXECUTIONS, UPDATE_FLOW_EXECUTION; " +
-            "Discourse ops: SEARCH_DISCOURSE")
+    @Tool(description = "Execute Keycloak administration via a single parametric tool. " +
+            "Set operation to a value from the KeycloakOperation enum (178 operations across users, realms, clients, " +
+            "client scopes, roles, groups, IDPs, auth flows, sessions, events, components, UMA, organizations, " +
+            "localization, and more). Parameters are a JSON object; required fields depend on the operation. " +
+            "Enable or disable specific operations in application properties (keycloak.mcp.commands.*). " +
+            "At startup, available operations are listed in the server log when log-on-startup is enabled.")
     public String executeKeycloakOperation(
             @ToolArg(description = "The operation to perform (e.g., GET_USERS, CREATE_USER, GET_REALMS, etc.)") 
             KeycloakOperation operation,

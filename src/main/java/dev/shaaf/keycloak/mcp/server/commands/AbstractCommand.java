@@ -1,9 +1,13 @@
 package dev.shaaf.keycloak.mcp.server.commands;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.quarkiverse.mcp.server.ToolCallException;
 import jakarta.inject.Inject;
+import org.keycloak.representations.idm.RoleRepresentation;
+
+import java.util.List;
 
 /**
  * Base class for commands with common utilities.
@@ -28,6 +32,20 @@ public abstract class AbstractCommand implements KeycloakCommand {
             throw new ToolCallException("Missing required parameter: " + field);
         }
         return node.asText();
+    }
+
+    /**
+     * Safely extract a required boolean parameter.
+     */
+    protected boolean requireBoolean(JsonNode params, String field) {
+        JsonNode node = params.get(field);
+        if (node == null || node.isNull()) {
+            throw new ToolCallException("Missing required parameter: " + field);
+        }
+        if (!node.isBoolean() && !node.isNumber() && !node.isTextual()) {
+            throw new ToolCallException("Parameter must be a boolean: " + field);
+        }
+        return node.asBoolean();
     }
 
     /**
@@ -96,6 +114,17 @@ public abstract class AbstractCommand implements KeycloakCommand {
             throw new ToolCallException("Missing required parameter: " + field);
         }
         return mapper.treeToValue(node, clazz);
+    }
+
+    /**
+     * JSON array of {@link RoleRepresentation} (id and/or name typically required for mappings).
+     */
+    protected List<RoleRepresentation> requireRoleList(JsonNode params, String field) throws Exception {
+        JsonNode node = params.get(field);
+        if (node == null || !node.isArray()) {
+            throw new ToolCallException("Missing or invalid array parameter: " + field);
+        }
+        return mapper.convertValue(node, new TypeReference<List<RoleRepresentation>>() { });
     }
 }
 

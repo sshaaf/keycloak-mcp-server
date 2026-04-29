@@ -157,4 +157,17 @@ public class SessionService {
             return "Error clearing all login failures: " + realm + " - " + e.getMessage();
         }
     }
+
+    /**
+     * Brute-force / temporary lockout status for a user.
+     */
+    public Map<String, Object> getBruteForceUserStatus(String realm, String userId) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            return keycloak.realm(realm).attackDetection().bruteForceUserStatus(userId);
+        } catch (Exception e) {
+            Log.error("Failed to get brute-force status: " + userId, e);
+            return Collections.emptyMap();
+        }
+    }
 }

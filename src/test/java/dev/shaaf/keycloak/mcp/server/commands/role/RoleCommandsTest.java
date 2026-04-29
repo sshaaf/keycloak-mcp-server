@@ -43,5 +43,28 @@ public class RoleCommandsTest {
         assertNotNull(result);
         assertTrue(result.contains("admin"));
     }
+
+    @Test
+    public void testCreateAndDeleteRealmRolePhase1() {
+        String role = "mcp-phase1-temp-role";
+        String create = keycloakTool.executeKeycloakOperation(
+                KeycloakOperation.CREATE_REALM_ROLE,
+                """
+                {
+                    "realm": "%s",
+                    "roleName": "%s",
+                    "description": "Phase 1 test"
+                }
+                """.formatted(REALM, role)
+        );
+        assertNotNull(create);
+        assertTrue(create.toLowerCase().contains("success") || create.toLowerCase().contains("created"), create);
+
+        String del = keycloakTool.executeKeycloakOperation(
+                KeycloakOperation.DELETE_REALM_ROLE,
+                "{\"realm\": \"" + REALM + "\", \"roleName\": \"" + role + "\"}"
+        );
+        assertNotNull(del);
+    }
 }
 

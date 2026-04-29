@@ -109,14 +109,88 @@ public class CommandRegistry {
 
     private String getCategory(KeycloakOperation op) {
         String name = op.name();
-        if (name.contains("USER") || name.contains("PASSWORD") || name.contains("EMAIL")) return "User";
-        if (name.contains("REALM")) return "Realm";
-        if (name.contains("CLIENT")) return "Client";
-        if (name.contains("ROLE")) return "Role";
-        if (name.contains("GROUP") || name.contains("SUBGROUP")) return "Group";
-        if (name.contains("IDENTITY") || name.contains("IDP")) return "Identity Provider";
-        if (name.contains("AUTH") || name.contains("FLOW")) return "Authentication";
-        if (name.contains("DISCOURSE")) return "Discourse";
+        if (name.contains("USER_PROFILE") || name.contains("PROFILE_CONFIG")) {
+            return "User profile";
+        }
+        if (name.contains("LOCALIZATION") || name.equals("GET_REALM_LOCALES")
+                || name.equals("GET_LOCALIZATION_TEXTS") || name.equals("DELETE_LOCALIZATION_TEXTS")
+                || name.equals("DELETE_LOCALIZATION_TEXT") || name.equals("SAVE_LOCALIZATION_TEXT")
+                || name.equals("CREATE_OR_UPDATE_LOCALIZATION_TEXTS")) {
+            return "Localization";
+        }
+        if (name.contains("ORGANIZATION")) {
+            return "Organization";
+        }
+        if (name.contains("AUTHZ")) {
+            return "Authorization (UMA)";
+        }
+        if (name.contains("REQUIRED_") || name.equals("EXECUTE_ACTIONS_EMAIL")) {
+            return "Required actions";
+        }
+        if (name.contains("EVENT") && !name.contains("EVENTS_CONFIG")) {
+            return "Events";
+        }
+        if (name.contains("COMPONENT") || name.equals("GET_SUB_COMPONENTS")) {
+            return "Component";
+        }
+        if (name.equals("GET_REALM_KEYS")) {
+            return "Keys";
+        }
+        if (name.contains("CREDENTIAL")) {
+            return "Credentials";
+        }
+        if (name.contains("USER") && (name.contains("BRUTE") || name.contains("SESSION")
+                || name.contains("CONSENT") || name.equals("LOGOUT_USER"))) {
+            return "Sessions";
+        }
+        if (name.equals("PUSH_REALM_REVOCATION") || name.equals("LOGOUT_ALL_USERS")
+                || name.equals("SYNC_USER_STORAGE") || name.equals("TEST_LDAP_CONNECTION")
+                || (name.contains("CLIENT_POLIC") || name.contains("CLIENT_PROFIL")
+                || name.equals("GET_CLIENT_REGISTRATION_PROVIDERS"))) {
+            return "Realm";
+        }
+        if (name.equals("ADD_CLIENT_ROLE_TO_USER") || name.equals("REMOVE_CLIENT_ROLE_FROM_USER")
+                || name.contains("GET_USER_") && name.contains("CLIENT")) {
+            return "User";
+        }
+        if (name.equals("ADD_CLIENT_ROLE_TO_GROUP") || name.equals("REMOVE_CLIENT_ROLE_FROM_GROUP")
+                || (name.contains("GET_GROUP_") && name.contains("CLIENT"))) {
+            return "Group";
+        }
+        if (name.contains("CLIENT_SCOPE_SCOPE") || name.contains("MAPPED_REALM")
+                || name.contains("MAPPED_CLIENT")) {
+            return "Client scope";
+        }
+        if (name.contains("USER") || name.contains("PASSWORD") || name.contains("EMAIL")) {
+            return "User";
+        }
+        if (name.contains("REALM") || name.equals("PUSH_REALM_REVOCATION")) {
+            return "Realm";
+        }
+        if (name.contains("CLIENT") && !name.contains("IDENTITY") && !name.contains("IDP")
+                && !name.contains("CLIENT_SCOPE")) {
+            return "Client";
+        }
+        if (name.contains("ROLE")) {
+            return "Role";
+        }
+        if (name.contains("GROUP") || name.contains("SUBGROUP")) {
+            return "Group";
+        }
+        if (name.contains("IDENTITY") || name.contains("IDP")) {
+            return "Identity Provider";
+        }
+        if (name.contains("AUTH") || name.contains("FLOW")) {
+            return "Authentication";
+        }
+        if (name.contains("DISCOURSE")) {
+            return "Discourse";
+        }
+        if (name.contains("SESSION") || name.contains("CONSENT")
+                || name.contains("LOGOUT_") || name.contains("OFFLINE")
+                || name.contains("BRUTE") || name.contains("LOGIN_FAILURE")) {
+            return "Sessions";
+        }
         return "Other";
     }
 

@@ -76,5 +76,31 @@ public class RealmCommandsTest {
         assertNotNull(result);
         assertTrue(result.contains("test-realm") || result.contains("Test Realm"));
     }
+
+    @Test
+    @Order(5)
+    public void testGetRealmEventsConfigPhase1() {
+        String result = keycloakTool.executeKeycloakOperation(
+                KeycloakOperation.GET_REALM_EVENTS_CONFIG,
+                "{\"realmName\": \"quarkus\"}"
+        );
+        assertNotNull(result);
+    }
+
+    @Test
+    @Order(6)
+    public void testSetRealmEnabledPhase1() {
+        String result = keycloakTool.executeKeycloakOperation(
+                KeycloakOperation.SET_REALM_ENABLED,
+                "{\"realmName\": \"test-realm\", \"enabled\": true}"
+        );
+        assertNotNull(result);
+        assertTrue(
+                result.toLowerCase().contains("success")
+                        || result.toLowerCase().contains("enable")
+                        || result.toLowerCase().contains("update"),
+                result
+        );
+    }
 }
 

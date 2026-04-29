@@ -130,6 +130,8 @@ public class GroupService {
         }
     }
 
+    // --- List operations scoped to a single group (by groupId) ---
+
     /**
      * Get group members
      * @param realm The realm where the group resides
@@ -145,6 +147,27 @@ public class GroupService {
             return Collections.emptyList();
         } catch (Exception e) {
             Log.error("Failed to get group members: " + groupId, e);
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Lists direct subgroups of the group identified by {@code groupId} (immediate children only).
+     *
+     * @param realm The realm where the group resides
+     * @param groupId The ID of the parent group
+     * @return Direct child groups, or an empty list if the group is missing, on error, or there are no subgroups
+     */
+    public List<GroupRepresentation> getSubGroups(String realm, String groupId) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            return keycloak.realm(realm).groups().group(groupId)
+                    .getSubGroups(0, Integer.MAX_VALUE, false);
+        } catch (NotFoundException e) {
+            Log.error("Group not found: " + groupId, e);
+            return Collections.emptyList();
+        } catch (Exception e) {
+            Log.error("Failed to get subgroups for group: " + groupId, e);
             return Collections.emptyList();
         }
     }
@@ -244,6 +267,60 @@ public class GroupService {
         } catch (Exception e) {
             Log.error("Failed to create subgroup: " + parentGroupId + " -> " + subGroupName, e);
             return "Error creating subgroup: " + parentGroupId + " -> " + subGroupName + " - " + e.getMessage();
+        }
+    }
+
+    public List<RoleRepresentation> getGroupClientRoles(String realm, String groupId, String clientInternalId) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            return keycloak.realm(realm).groups().group(groupId).roles().clientLevel(clientInternalId).listAll();
+        } catch (NotFoundException e) {
+            return Collections.emptyList();
+        } catch (Exception e) {
+            Log.error("Failed to get group client roles: " + groupId, e);
+            return Collections.emptyList();
+        }
+    }
+
+    public List<RoleRepresentation> getGroupAvailableClientRoles(String realm, String groupId, String clientInternalId) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            return keycloak.realm(realm).groups().group(groupId).roles().clientLevel(clientInternalId).listAvailable();
+        } catch (NotFoundException e) {
+            return Collections.emptyList();
+        } catch (Exception e) {
+            Log.error("Failed to get available client roles for group: " + groupId, e);
+            return Collections.emptyList();
+        }
+    }
+
+    public String addClientRoleToGroup(String realm, String groupId, String clientInternalId, String roleName) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            RoleRepresentation role = keycloak.realm(realm).clients().get(clientInternalId).roles().get(roleName)
+                    .toRepresentation();
+            keycloak.realm(realm).groups().group(groupId).roles().clientLevel(clientInternalId).add(List.of(role));
+            return "Successfully added client role to group: " + groupId + " -> " + roleName;
+        } catch (NotFoundException e) {
+            return "Group, client, or role not found: " + groupId + " / " + roleName;
+        } catch (Exception e) {
+            Log.error("Failed to add client role to group: " + groupId, e);
+            return "Error adding client role: " + e.getMessage();
+        }
+    }
+
+    public String removeClientRoleFromGroup(String realm, String groupId, String clientInternalId, String roleName) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            RoleRepresentation role = keycloak.realm(realm).clients().get(clientInternalId).roles().get(roleName)
+                    .toRepresentation();
+            keycloak.realm(realm).groups().group(groupId).roles().clientLevel(clientInternalId).remove(List.of(role));
+            return "Successfully removed client role from group: " + groupId + " -> " + roleName;
+        } catch (NotFoundException e) {
+            return "Group, client, or role not found: " + groupId + " / " + roleName;
+        } catch (Exception e) {
+            Log.error("Failed to remove client role from group: " + groupId, e);
+            return "Error removing client role: " + e.getMessage();
         }
     }
 }
