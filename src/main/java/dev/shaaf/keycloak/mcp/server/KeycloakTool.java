@@ -100,6 +100,7 @@ public class KeycloakTool {
         // Group Operations
         GET_GROUPS,
         GET_GROUP_MEMBERS,
+        GET_SUBGROUPS,
         CREATE_GROUP,
         UPDATE_GROUP,
         DELETE_GROUP,
@@ -136,7 +137,7 @@ public class KeycloakTool {
             "Realm ops: GET_REALMS, GET_REALM, CREATE_REALM; " +
             "Client ops: GET_CLIENTS, GET_CLIENT, CREATE_CLIENT, DELETE_CLIENT, GENERATE_CLIENT_SECRET, GET_CLIENT_ROLES, CREATE_CLIENT_ROLE, DELETE_CLIENT_ROLE; " +
             "Role ops: GET_REALM_ROLES, GET_REALM_ROLE; " +
-            "Group ops: GET_GROUPS, GET_GROUP_MEMBERS, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP, CREATE_SUBGROUP; " +
+            "Group ops: GET_GROUPS, GET_GROUP_MEMBERS, GET_SUBGROUPS, CREATE_GROUP, UPDATE_GROUP, DELETE_GROUP, CREATE_SUBGROUP; " +
             "IDP ops: GET_IDENTITY_PROVIDERS, GET_IDENTITY_PROVIDER, GET_IDENTITY_PROVIDER_MAPPERS; " +
             "Auth ops: GET_AUTHENTICATION_FLOWS, GET_AUTHENTICATION_FLOW, CREATE_AUTHENTICATION_FLOW, DELETE_AUTHENTICATION_FLOW, GET_FLOW_EXECUTIONS, UPDATE_FLOW_EXECUTION; " +
             "Discourse ops: SEARCH_DISCOURSE")
@@ -365,7 +366,15 @@ public class KeycloakTool {
                                     paramsNode.get("groupId").asText()
                             )
                     );
-                
+
+                case GET_SUBGROUPS:
+                    return mapper.writeValueAsString(
+                            groupService.getSubGroups(
+                                    paramsNode.get("realm").asText(),
+                                    paramsNode.get("groupId").asText()
+                            )
+                    );
+
                 case CREATE_GROUP:
                     return groupService.createGroup(
                             paramsNode.get("realm").asText(),
