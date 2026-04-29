@@ -12,13 +12,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.29.4</quarkus.platform.version>
-        <quarkus-plugin.version>3.29.4</quarkus-plugin.version>
+        <quarkus.platform.version>3.34.6</quarkus.platform.version>
+        <quarkus-plugin.version>3.34.6</quarkus-plugin.version>
         <quarkus-plugin-artifact-id>quarkus-maven-plugin</quarkus-plugin-artifact-id>
         <quarkus-plugin-group-id>io.quarkus</quarkus-plugin-group-id>
-        <compiler-plugin.version>3.11.0</compiler-plugin.version>
+        <compiler-plugin.version>3.14.1</compiler-plugin.version>
         <maven.compiler.release>21</maven.compiler.release>
-        <surefire-plugin.version>3.2.5</surefire-plugin.version>
+        <surefire-plugin.version>3.5.4</surefire-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>io.quarkiverse.mcp</groupId>
             <artifactId>quarkus-mcp-server-sse</artifactId>
-            <version>1.4.0</version>
+            <version>1.12.0</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -110,7 +110,7 @@
             <plugin>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
-                <version>3.29.4</version>
+                <version>${quarkus-plugin.version}</version>
                 <extensions>true</extensions>
                 <executions>
                     <execution>
