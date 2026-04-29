@@ -1,0 +1,716 @@
+# Keycloak MCP — copy/paste prompts for `executeKeycloakOperation`
+# Regenerate: python3 scripts/generate-prompts-txt.py
+# Use: operation = <NAME>, params = JSON object (see required keys).
+
+## GET_USERS
+Prompt: List all users in a realm
+Required JSON keys: "realm"
+
+## GET_USER_BY_USERNAME
+Prompt: Get a user by their username
+Required JSON keys: "realm", "username"
+
+## CREATE_USER
+Prompt: Create a new user in a realm
+Required JSON keys: "realm", "username", "email", "password"
+
+## DELETE_USER
+Prompt: Delete a user from a realm
+Required JSON keys: "realm", "username"
+
+## UPDATE_USER
+Prompt: Update an existing user
+Required JSON keys: "realm", "userId", "userRepresentation"
+
+## GET_USER_BY_ID
+Prompt: Get a user by their ID
+Required JSON keys: "realm", "userId"
+
+## GET_USER_GROUPS
+Prompt: Get groups a user belongs to
+Required JSON keys: "realm", "userId"
+
+## ADD_USER_TO_GROUP
+Prompt: Add a user to a group
+Required JSON keys: "realm", "userId", "groupId"
+
+## REMOVE_USER_FROM_GROUP
+Prompt: Remove a user from a group
+Required JSON keys: "realm", "userId", "groupId"
+
+## GET_USER_ROLES
+Prompt: Get roles assigned to a user
+Required JSON keys: "realm", "userId"
+
+## ADD_ROLE_TO_USER
+Prompt: Add a realm role to a user
+Required JSON keys: "realm", "userId", "roleName"
+
+## REMOVE_ROLE_FROM_USER
+Prompt: Remove a realm role from a user
+Required JSON keys: "realm", "userId", "roleName"
+
+## RESET_PASSWORD
+Prompt: Reset a user's password
+Required JSON keys: "realm", "userId", "newPassword"
+
+## SEND_VERIFICATION_EMAIL
+Prompt: Send email verification to a user
+Required JSON keys: "realm", "userId"
+
+## COUNT_USERS
+Prompt: Count users in a realm
+Required JSON keys: "realm"
+
+## GET_REALMS
+Prompt: List all realms accessible to the user
+Required JSON keys: (no required keys; see server validation)
+
+## GET_REALM
+Prompt: Get details of a specific realm
+Required JSON keys: "realmName"
+
+## CREATE_REALM
+Prompt: Create a new realm
+Required JSON keys: "realmName", "displayName"
+
+## DELETE_REALM
+Prompt: Delete a realm
+Required JSON keys: "realmName"
+
+## UPDATE_REALM
+Prompt: Update an existing realm
+Required JSON keys: "realmName", "realmRepresentation"
+
+## SET_REALM_ENABLED
+Prompt: Enable or disable a realm
+Required JSON keys: "realmName", "enabled"
+
+## GET_REALM_EVENTS_CONFIG
+Prompt: Get realm events configuration
+Required JSON keys: "realmName"
+
+## UPDATE_REALM_EVENTS_CONFIG
+Prompt: Update realm events configuration
+Required JSON keys: "realmName", "eventsConfig"
+
+## GET_CLIENTS
+Prompt: List all clients in a realm
+Required JSON keys: "realm"
+
+## GET_CLIENT
+Prompt: Get a specific client by client ID
+Required JSON keys: "realm", "clientId"
+
+## CREATE_CLIENT
+Prompt: Create a new client in a realm
+Required JSON keys: "realm", "clientId", "redirectUris"
+
+## UPDATE_CLIENT
+Prompt: Update an existing client
+Required JSON keys: "realm", "clientId", "clientRepresentation"
+
+## DELETE_CLIENT
+Prompt: Delete a client from a realm
+Required JSON keys: "realm", "clientId"
+
+## GENERATE_CLIENT_SECRET
+Prompt: Generate a new client secret
+Required JSON keys: "realm", "clientId"
+
+## GET_CLIENT_SECRET
+Prompt: Get client secret
+Required JSON keys: "realm", "clientId"
+
+## GET_CLIENT_ROLES
+Prompt: Get roles defined for a client
+Required JSON keys: "realm", "clientId"
+
+## GET_CLIENT_PROTOCOL_MAPPERS
+Prompt: Get protocol mappers for a client
+Required JSON keys: "realm", "clientId"
+
+## ADD_PROTOCOL_MAPPER_TO_CLIENT
+Prompt: Add protocol mapper to a client
+Required JSON keys: "realm", "clientId", "mapper"
+
+## GET_SERVICE_ACCOUNT_USER
+Prompt: Get service account user for a client
+Required JSON keys: "realm", "clientId"
+
+## CREATE_CLIENT_ROLE
+Prompt: Create a new role for a client
+Required JSON keys: "realm", "clientId", "roleName", "description"
+
+## DELETE_CLIENT_ROLE
+Prompt: Delete a role from a client
+Required JSON keys: "realm", "clientId", "roleName"
+
+## GET_CLIENT_SCOPES
+Prompt: Get all client scopes in a realm
+Required JSON keys: "realm"
+
+## GET_CLIENT_SCOPE
+Prompt: Get a specific client scope
+Required JSON keys: "realm", "clientScopeId"
+
+## CREATE_CLIENT_SCOPE
+Prompt: Create a new client scope
+Required JSON keys: "realm", "clientScope"
+
+## UPDATE_CLIENT_SCOPE
+Prompt: Update an existing client scope
+Required JSON keys: "realm", "clientScopeId", "clientScope"
+
+## DELETE_CLIENT_SCOPE
+Prompt: Delete a client scope
+Required JSON keys: "realm", "clientScopeId"
+
+## GET_DEFAULT_CLIENT_SCOPES
+Prompt: Get all default client scopes for realm
+Required JSON keys: "realm"
+
+## GET_OPTIONAL_CLIENT_SCOPES
+Prompt: Get all optional client scopes for realm
+Required JSON keys: "realm"
+
+## ADD_DEFAULT_CLIENT_SCOPE
+Prompt: Add a client scope as default for realm
+Required JSON keys: "realm", "clientScopeId"
+
+## ADD_OPTIONAL_CLIENT_SCOPE
+Prompt: Add a client scope as optional for realm
+Required JSON keys: "realm", "clientScopeId"
+
+## REMOVE_DEFAULT_CLIENT_SCOPE
+Prompt: Remove a default client scope from realm
+Required JSON keys: "realm", "clientScopeId"
+
+## REMOVE_OPTIONAL_CLIENT_SCOPE
+Prompt: Remove an optional client scope from realm
+Required JSON keys: "realm", "clientScopeId"
+
+## GET_CLIENT_SCOPE_PROTOCOL_MAPPERS
+Prompt: Get protocol mappers for a client scope
+Required JSON keys: "realm", "clientScopeId"
+
+## ADD_PROTOCOL_MAPPER_TO_CLIENT_SCOPE
+Prompt: Add a protocol mapper to a client scope
+Required JSON keys: "realm", "clientScopeId", "mapper"
+
+## UPDATE_CLIENT_SCOPE_PROTOCOL_MAPPER
+Prompt: Update a protocol mapper in a client scope
+Required JSON keys: "realm", "clientScopeId", "mapperId", "mapper"
+
+## DELETE_CLIENT_SCOPE_PROTOCOL_MAPPER
+Prompt: Delete a protocol mapper from a client scope
+Required JSON keys: "realm", "clientScopeId", "mapperId"
+
+## GET_REALM_ROLES
+Prompt: Get all realm-level roles
+Required JSON keys: "realm"
+
+## GET_REALM_ROLE
+Prompt: Get a specific realm role by name
+Required JSON keys: "realm", "roleName"
+
+## CREATE_REALM_ROLE
+Prompt: Create a new realm role
+Required JSON keys: "realm", "roleName"
+
+## UPDATE_REALM_ROLE
+Prompt: Update an existing realm role
+Required JSON keys: "realm", "roleName", "roleRepresentation"
+
+## DELETE_REALM_ROLE
+Prompt: Delete a realm role
+Required JSON keys: "realm", "roleName"
+
+## GET_ROLE_COMPOSITES
+Prompt: Get composite roles for a realm role
+Required JSON keys: "realm", "roleName"
+
+## ADD_COMPOSITE_TO_ROLE
+Prompt: Add a composite role to a realm role
+Required JSON keys: "realm", "roleName", "compositeRoleName"
+
+## REMOVE_COMPOSITE_FROM_ROLE
+Prompt: Remove a composite role from a realm role
+Required JSON keys: "realm", "roleName", "compositeRoleName"
+
+## GET_GROUPS
+Prompt: Get all groups in a realm
+Required JSON keys: "realm"
+
+## GET_GROUP
+Prompt: Get details of a specific group
+Required JSON keys: "realm", "groupId"
+
+## GET_GROUP_MEMBERS
+Prompt: Get members of a group
+Required JSON keys: "realm", "groupId"
+
+## GET_SUBGROUPS
+Prompt: List direct subgroups of a group (one level)
+Required JSON keys: "realm", "groupId"
+
+## GET_GROUP_ROLES
+Prompt: Get roles assigned to a group
+Required JSON keys: "realm", "groupId"
+
+## CREATE_GROUP
+Prompt: Create a new group in a realm
+Required JSON keys: "realm", "groupName"
+
+## UPDATE_GROUP
+Prompt: Update an existing group
+Required JSON keys: "realm", "groupId", "groupRepresentation"
+
+## DELETE_GROUP
+Prompt: Delete a group from a realm
+Required JSON keys: "realm", "groupId"
+
+## CREATE_SUBGROUP
+Prompt: Create a subgroup under a parent group
+Required JSON keys: "realm", "parentGroupId", "subGroupName"
+
+## ADD_ROLE_TO_GROUP
+Prompt: Add a role to a group
+Required JSON keys: "realm", "groupId", "roleName"
+
+## REMOVE_ROLE_FROM_GROUP
+Prompt: Remove a role from a group
+Required JSON keys: "realm", "groupId", "roleName"
+
+## GET_IDENTITY_PROVIDERS
+Prompt: Get all identity providers in a realm
+Required JSON keys: "realm"
+
+## GET_IDENTITY_PROVIDER
+Prompt: Get a specific identity provider by alias
+Required JSON keys: "realm", "alias"
+
+## CREATE_IDENTITY_PROVIDER
+Prompt: Create a new identity provider
+Required JSON keys: "realm", "identityProvider"
+
+## UPDATE_IDENTITY_PROVIDER
+Prompt: Update an existing identity provider
+Required JSON keys: "realm", "alias", "identityProvider"
+
+## DELETE_IDENTITY_PROVIDER
+Prompt: Delete an identity provider
+Required JSON keys: "realm", "alias"
+
+## GET_IDENTITY_PROVIDER_MAPPERS
+Prompt: Get mappers for an identity provider
+Required JSON keys: "realm", "alias"
+
+## CREATE_IDENTITY_PROVIDER_MAPPER
+Prompt: Create an identity provider mapper
+Required JSON keys: "realm", "alias", "mapper"
+
+## GET_AUTHENTICATION_FLOWS
+Prompt: Get all authentication flows in a realm
+Required JSON keys: "realm"
+
+## GET_AUTHENTICATION_FLOW
+Prompt: Get a specific authentication flow by ID
+Required JSON keys: "realm", "flowId"
+
+## CREATE_AUTHENTICATION_FLOW
+Prompt: Create a copy of an existing authentication flow
+Required JSON keys: "realm", "authFlowNameId"
+
+## DELETE_AUTHENTICATION_FLOW
+Prompt: Delete an authentication flow
+Required JSON keys: "realm", "flowId"
+
+## GET_FLOW_EXECUTIONS
+Prompt: Get executions for an authentication flow
+Required JSON keys: "realm", "flowAlias"
+
+## UPDATE_FLOW_EXECUTION
+Prompt: Update an execution in an authentication flow
+Required JSON keys: "realm", "flowAlias", "executionRepresentation"
+
+## GET_USER_SESSIONS
+Prompt: Get user sessions
+Required JSON keys: "realm", "userId"
+
+## GET_USER_CONSENTS
+Prompt: Get user consents
+Required JSON keys: "realm", "userId"
+
+## REVOKE_USER_CONSENT
+Prompt: Revoke user consent for a client
+Required JSON keys: "realm", "userId", "clientId"
+
+## LOGOUT_USER
+Prompt: Logout a user from all sessions
+Required JSON keys: "realm", "userId"
+
+## GET_OFFLINE_SESSIONS
+Prompt: Get offline sessions for a user
+Required JSON keys: "realm", "userId", "clientId"
+
+## GET_CLIENT_USER_SESSIONS
+Prompt: Get user sessions for a client
+Required JSON keys: "realm", "clientId"
+
+## GET_CLIENT_OFFLINE_SESSIONS
+Prompt: Get offline sessions for a client
+Required JSON keys: "realm", "clientId"
+
+## CLEAR_USER_LOGIN_FAILURES
+Prompt: Clear login failures for a user
+Required JSON keys: "realm", "userId"
+
+## CLEAR_ALL_LOGIN_FAILURES
+Prompt: Clear all login failures in a realm
+Required JSON keys: "realm"
+
+## GET_USER_BRUTE_FORCE_STATUS
+Prompt: Get brute-force / lockout status for a user (attack detection)
+Required JSON keys: "realm", "userId"
+
+## GET_ADMIN_EVENTS
+Prompt: List stored admin events for the realm
+Required JSON keys: "realm"
+
+## GET_USER_EVENTS
+Prompt: List stored user login events for the realm
+Required JSON keys: "realm"
+
+## CLEAR_ADMIN_EVENTS
+Prompt: Clear the admin event store for the realm
+Required JSON keys: "realm"
+
+## CLEAR_USER_EVENTS
+Prompt: Clear the user event store for the realm
+Required JSON keys: "realm"
+
+## GET_COMPONENTS
+Prompt: List all components in the realm (user storage, keys, etc.)
+Required JSON keys: "realm"
+
+## GET_COMPONENT
+Prompt: Get a component by id
+Required JSON keys: "realm", "componentId"
+
+## CREATE_COMPONENT
+Prompt: Create a realm component (e.g. LDAP user federation)
+Required JSON keys: "realm", "component"
+
+## UPDATE_COMPONENT
+Prompt: Update a realm component
+Required JSON keys: "realm", "componentId", "component"
+
+## DELETE_COMPONENT
+Prompt: Delete a realm component
+Required JSON keys: "realm", "componentId"
+
+## GET_SUB_COMPONENTS
+Prompt: List sub-components of a parent component and provider type
+Required JSON keys: "realm", "parentId", "type"
+
+## GET_REALM_KEYS
+Prompt: Get realm key metadata (signing, encryption, etc.)
+Required JSON keys: "realm"
+
+## GET_REQUIRED_ACTIONS
+Prompt: List required actions for the realm
+Required JSON keys: "realm"
+
+## GET_REQUIRED_ACTION
+Prompt: Get a required action by provider alias
+Required JSON keys: "realm", "alias"
+
+## UPDATE_REQUIRED_ACTION
+Prompt: Update a required action (enabled, name, etc.)
+Required JSON keys: "realm", "alias", "requiredAction"
+
+## EXECUTE_ACTIONS_EMAIL
+Prompt: Send email to the user to execute the listed required actions
+Required JSON keys: "realm", "userId", "actions"
+
+## GET_CLIENT_SCOPE_SCOPE_MAPPINGS
+Prompt: Get combined client-scope scope mappings (realm and client role assignments)
+Required JSON keys: "realm", "clientScopeId"
+
+## GET_CLIENT_SCOPE_MAPPED_REALM_ROLES
+Prompt: Get realm role mappings for a client scope
+Required JSON keys: "realm", "clientScopeId"
+
+## ADD_CLIENT_SCOPE_MAPPED_REALM_ROLES
+Prompt: Add realm roles to a client scope's scope mapping
+Required JSON keys: "realm", "clientScopeId", "roles"
+
+## REMOVE_CLIENT_SCOPE_MAPPED_REALM_ROLES
+Prompt: Remove realm roles from a client scope's scope mapping
+Required JSON keys: "realm", "clientScopeId", "roles"
+
+## GET_CLIENT_SCOPE_MAPPED_CLIENT_ROLES
+Prompt: Get target-client role mappings for a client scope (internal client id)
+Required JSON keys: "realm", "clientScopeId", "targetClientId"
+
+## ADD_CLIENT_SCOPE_MAPPED_CLIENT_ROLES
+Prompt: Add target-client roles to a client scope's scope mapping
+Required JSON keys: "realm", "clientScopeId", "targetClientId", "roles"
+
+## REMOVE_CLIENT_SCOPE_MAPPED_CLIENT_ROLES
+Prompt: Remove target-client roles from a client scope's scope mapping
+Required JSON keys: "realm", "clientScopeId", "targetClientId", "roles"
+
+## GET_USER_CREDENTIALS
+Prompt: List credentials (password, OTP, webauthn, etc.) for a user
+Required JSON keys: "realm", "userId"
+
+## DELETE_USER_CREDENTIAL
+Prompt: Delete a user credential by id
+Required JSON keys: "realm", "userId", "credentialId"
+
+## MOVE_USER_CREDENTIAL
+Prompt: Change credential order (0-based index; uses move-to-first/after on the server)
+Required JSON keys: "realm", "userId", "credentialId", "newPosition"
+
+## GET_USER_CLIENT_ROLES
+Prompt: List client roles assigned to a user (clientId = internal id from GET_CLIENT)
+Required JSON keys: "realm", "userId", "clientId"
+
+## GET_USER_AVAILABLE_CLIENT_ROLES
+Prompt: List client roles the user can still be assigned (not yet assigned at client scope)
+Required JSON keys: "realm", "userId", "clientId"
+
+## ADD_CLIENT_ROLE_TO_USER
+Prompt: Add a client role to a user (adds a role of the target client, not a realm role)
+Required JSON keys: "realm", "userId", "clientId", "roleName"
+
+## REMOVE_CLIENT_ROLE_FROM_USER
+Prompt: Remove a client role from a user
+Required JSON keys: "realm", "userId", "clientId", "roleName"
+
+## GET_GROUP_CLIENT_ROLES
+Prompt: List client roles assigned to a group
+Required JSON keys: "realm", "groupId", "clientId"
+
+## GET_GROUP_AVAILABLE_CLIENT_ROLES
+Prompt: List client roles the group can still be assigned for the given client
+Required JSON keys: "realm", "groupId", "clientId"
+
+## ADD_CLIENT_ROLE_TO_GROUP
+Prompt: Add a client role to a group
+Required JSON keys: "realm", "groupId", "clientId", "roleName"
+
+## REMOVE_CLIENT_ROLE_FROM_GROUP
+Prompt: Remove a client role from a group
+Required JSON keys: "realm", "groupId", "clientId", "roleName"
+
+## GET_AUTHZ_RESOURCE_SERVER
+Prompt: Get UMA/authorization server settings for a client (client id = internal UUID).
+Required JSON keys: "realm", "clientId"
+
+## UPDATE_AUTHZ_RESOURCE_SERVER
+Prompt: Update authorization service settings for a client (resourceServer object)
+Required JSON keys: "realm", "clientId", "resourceServer"
+
+## LIST_AUTHZ_RESOURCES
+Prompt: List UMA protected resources for a client
+Required JSON keys: "realm", "clientId"
+
+## GET_AUTHZ_RESOURCE
+Prompt: Get an authorization resource by id
+Required JSON keys: "realm", "clientId", "resourceId"
+
+## CREATE_AUTHZ_RESOURCE
+Prompt: Create a protected resource (body in resource)
+Required JSON keys: "realm", "clientId", "resource"
+
+## UPDATE_AUTHZ_RESOURCE
+Prompt: Update a protected resource
+Required JSON keys: "realm", "clientId", "resourceId", "resource"
+
+## DELETE_AUTHZ_RESOURCE
+Prompt: Delete a protected resource
+Required JSON keys: "realm", "clientId", "resourceId"
+
+## LIST_AUTHZ_SCOPES
+Prompt: List authorization scopes for a client
+Required JSON keys: "realm", "clientId"
+
+## GET_AUTHZ_SCOPE
+Prompt: Get an authorization scope by id
+Required JSON keys: "realm", "clientId", "scopeId"
+
+## CREATE_AUTHZ_SCOPE
+Prompt: Create an authorization scope
+Required JSON keys: "realm", "clientId", "scope"
+
+## UPDATE_AUTHZ_SCOPE
+Prompt: Update an authorization scope
+Required JSON keys: "realm", "clientId", "scopeId", "scope"
+
+## DELETE_AUTHZ_SCOPE
+Prompt: Delete an authorization scope
+Required JSON keys: "realm", "clientId", "scopeId"
+
+## LIST_AUTHZ_POLICIES
+Prompt: List policies for a client's authorization service
+Required JSON keys: "realm", "clientId"
+
+## GET_AUTHZ_POLICY
+Prompt: Get a policy by id
+Required JSON keys: "realm", "clientId", "policyId"
+
+## CREATE_AUTHZ_POLICY
+Prompt: Create a policy (type, name, config depend on policy provider)
+Required JSON keys: "realm", "clientId", "policy"
+
+## UPDATE_AUTHZ_POLICY
+Prompt: Update a policy by id
+Required JSON keys: "realm", "clientId", "policyId", "policy"
+
+## DELETE_AUTHZ_POLICY
+Prompt: Delete a policy by id
+Required JSON keys: "realm", "clientId", "policyId"
+
+## GET_AUTHZ_RESOURCE_PERMISSION
+Prompt: Get a resource permission by id
+Required JSON keys: "realm", "clientId", "permissionId"
+
+## CREATE_AUTHZ_RESOURCE_PERMISSION
+Prompt: Create a resource-based permission (permission object)
+Required JSON keys: "realm", "clientId", "permission"
+
+## UPDATE_AUTHZ_RESOURCE_PERMISSION
+Prompt: Update a resource permission by id
+Required JSON keys: "realm", "clientId", "permissionId", "permission"
+
+## DELETE_AUTHZ_RESOURCE_PERMISSION
+Prompt: Delete a resource permission by id
+Required JSON keys: "realm", "clientId", "permissionId"
+
+## LIST_AUTHZ_SCOPE_PERMISSIONS
+Prompt: List scope permissions; optional: name, resourceId, scopeId, first, max (pagination).
+Required JSON keys: "realm", "clientId"
+
+## GET_AUTHZ_SCOPE_PERMISSION
+Prompt: Get a scope-based permission by id
+Required JSON keys: "realm", "clientId", "permissionId"
+
+## CREATE_AUTHZ_SCOPE_PERMISSION
+Prompt: Create a scope-based permission
+Required JSON keys: "realm", "clientId", "permission"
+
+## UPDATE_AUTHZ_SCOPE_PERMISSION
+Prompt: Update a scope-based permission by id
+Required JSON keys: "realm", "clientId", "permissionId", "permission"
+
+## DELETE_AUTHZ_SCOPE_PERMISSION
+Prompt: Delete a scope-based permission by id
+Required JSON keys: "realm", "clientId", "permissionId"
+
+## TEST_LDAP_CONNECTION
+Prompt: Test an LDAP or user federation connection (Keycloak TestLdapConnectionRepresentation JSON in test)
+Required JSON keys: "realm", "test"
+
+## SYNC_USER_STORAGE
+Prompt: Trigger user storage / LDAP sync (e.g. action=triggerFullSync; see Keycloak admin API)
+Required JSON keys: "realm", "userStorageId", "action"
+
+## PUSH_REALM_REVOCATION
+Prompt: Push a notBefore revocation to all cluster nodes (notBefore policy refresh)
+Required JSON keys: "realm"
+
+## LOGOUT_ALL_USERS
+Prompt: Logout all users in the realm (stateful clients receive logout)
+Required JSON keys: "realm"
+
+## GET_REALM_CLIENT_POLICIES
+Prompt: Get realm client policies (includeGlobal optional, default true)
+Required JSON keys: "realm"
+
+## UPDATE_REALM_CLIENT_POLICIES
+Prompt: Update realm client policies JSON (ClientPoliciesRepresentation in policies)
+Required JSON keys: "realm", "policies"
+
+## GET_REALM_CLIENT_PROFILES
+Prompt: Get realm client profiles (includeGlobal optional, default true)
+Required JSON keys: "realm"
+
+## UPDATE_REALM_CLIENT_PROFILES
+Prompt: Update realm client profiles (ClientProfilesRepresentation in profiles)
+Required JSON keys: "realm", "profiles"
+
+## GET_CLIENT_REGISTRATION_PROVIDERS
+Prompt: List client registration policy component types (providers) for the realm
+Required JSON keys: "realm"
+
+## GET_REALM_LOCALES
+Prompt: List custom locales configured for the realm (realm-specific overrides).
+Required JSON keys: "realm"
+
+## GET_LOCALIZATION_TEXTS
+Prompt: Get all translation key/value for a locale (useRealmFallback optional).
+Required JSON keys: "realm", "locale"
+
+## SAVE_LOCALIZATION_TEXT
+Prompt: Create or update a single message key for a locale
+Required JSON keys: "realm", "locale", "key", "text"
+
+## DELETE_LOCALIZATION_TEXTS
+Prompt: Delete all custom translations for a locale in the realm
+Required JSON keys: "realm", "locale"
+
+## DELETE_LOCALIZATION_TEXT
+Prompt: Delete one translation key for a locale
+Required JSON keys: "realm", "locale", "key"
+
+## CREATE_OR_UPDATE_LOCALIZATION_TEXTS
+Prompt: Replace or merge bulk translations (texts: JSON object of key to string).
+Required JSON keys: "realm", "locale", "texts"
+
+## GET_ORGANIZATIONS
+Prompt: List all organizations in the realm (Keycloak 24+ organizations feature).
+Required JSON keys: "realm"
+
+## GET_ORGANIZATION
+Prompt: Get an organization by id
+Required JSON keys: "realm", "orgId"
+
+## CREATE_ORGANIZATION
+Prompt: Create an organization (organization: OrganizationRepresentation JSON).
+Required JSON keys: "realm", "organization"
+
+## UPDATE_ORGANIZATION
+Prompt: Update an organization
+Required JSON keys: "realm", "orgId", "organization"
+
+## DELETE_ORGANIZATION
+Prompt: Delete an organization
+Required JSON keys: "realm", "orgId"
+
+## GET_ORGANIZATION_MEMBERS
+Prompt: List members of an organization
+Required JSON keys: "realm", "orgId"
+
+## ADD_ORGANIZATION_MEMBER
+Prompt: Add a user to an organization
+Required JSON keys: "realm", "orgId", "userId"
+
+## REMOVE_ORGANIZATION_MEMBER
+Prompt: Remove a user from an organization
+Required JSON keys: "realm", "orgId", "userId"
+
+## GET_USER_PROFILE_CONFIG
+Prompt: Get declarative user profile (UPConfig) for the realm
+Required JSON keys: "realm"
+
+## UPDATE_USER_PROFILE_CONFIG
+Prompt: Update declarative user profile (UPConfig JSON in config)
+Required JSON keys: "realm", "config"
+
+## SEARCH_DISCOURSE
+Prompt: Search Keycloak Discourse forum
+Required JSON keys: "query"
+
