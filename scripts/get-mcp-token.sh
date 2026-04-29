@@ -188,21 +188,37 @@ if [ -z "$ACCESS_TOKEN" ] || [ "$ACCESS_TOKEN" = "null" ]; then
     exit 1
 fi
 
+# Decode JWT payload segment: Keycloak uses Base64URL (not RFC 4648 base64). Plain
+# "base64 -d" on the middle segment often truncates JSON and breaks jq.
+jwt_decode_payload() {
+    local b64
+    b64=$(printf '%s' "$1" | cut -d. -f2) || return 1
+    [ -n "$b64" ] || return 1
+    case $(( ${#b64} % 4 )) in
+        2) b64="${b64}==" ;;
+        3) b64="${b64}="  ;;
+    esac
+    printf '%s' "$b64" | tr '_-' '/+' | base64 -d 2>/dev/null
+}
+
 print_success "Access token obtained"
 echo "  Token expires in: $EXPIRES_IN seconds ($(($EXPIRES_IN / 60)) minutes)"
 echo ""
 
 # Decode token to show user info
 print_info "Token information:"
-TOKEN_PAYLOAD=$(echo "$ACCESS_TOKEN" | cut -d'.' -f2 | base64 -d 2>/dev/null | jq .)
-PREFERRED_USERNAME=$(echo "$TOKEN_PAYLOAD" | jq -r '.preferred_username // .sub')
-REALM_ACCESS=$(echo "$TOKEN_PAYLOAD" | jq -r '.realm_access.roles // [] | join(", ")')
-RESOURCE_ACCESS=$(echo "$TOKEN_PAYLOAD" | jq -r '.resource_access | keys | join(", ")')
-
-echo "  Username: $PREFERRED_USERNAME"
-echo "  Realm Roles: $REALM_ACCESS"
-if [ -n "$RESOURCE_ACCESS" ] && [ "$RESOURCE_ACCESS" != "" ]; then
-    echo "  Resource Access: $RESOURCE_ACCESS"
+RAW_PAYLOAD=$(jwt_decode_payload "$ACCESS_TOKEN" || true)
+if [ -n "$RAW_PAYLOAD" ] && printf '%s' "$RAW_PAYLOAD" | jq -e . >/dev/null 2>&1; then
+    PREFERRED_USERNAME=$(printf '%s' "$RAW_PAYLOAD" | jq -r '.preferred_username // .sub' 2>/dev/null)
+    REALM_ACCESS=$(printf '%s' "$RAW_PAYLOAD" | jq -r '.realm_access.roles // [] | join(", ")' 2>/dev/null)
+    RESOURCE_ACCESS=$(printf '%s' "$RAW_PAYLOAD" | jq -r 'try (.resource_access | keys | join(", ")) // empty' 2>/dev/null)
+    echo "  Username: $PREFERRED_USERNAME"
+    echo "  Realm Roles: $REALM_ACCESS"
+    if [ -n "$RESOURCE_ACCESS" ] && [ "$RESOURCE_ACCESS" != "null" ]; then
+        echo "  Resource Access: $RESOURCE_ACCESS"
+    fi
+else
+    print_warning "Could not decode token payload (display only; token is still valid)."
 fi
 echo ""
 
