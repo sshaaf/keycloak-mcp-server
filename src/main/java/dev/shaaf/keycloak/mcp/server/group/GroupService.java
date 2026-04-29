@@ -219,6 +219,25 @@ public class GroupService {
     }
 
     /**
+     * Get subgroups of a group
+     * @param realm The realm where the group resides
+     * @param groupId The ID of the group
+     * @return List of direct child groups or empty list if not found
+     */
+    public List<GroupRepresentation> getSubGroups(String realm, String groupId) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            return keycloak.realm(realm).groups().group(groupId)
+                           .getSubGroups(0, Integer.MAX_VALUE, false);
+        } catch (NotFoundException e) {
+            return Collections.emptyList();
+        } catch (Exception e) {
+            Log.error("Failed to get subgroups for group: " + groupId, e);
+            return Collections.emptyList();
+        }
+    }
+
+    /**
      * Create subgroup
      * @param realm The realm where the parent group resides
      * @param parentGroupId The ID of the parent group
