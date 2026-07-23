@@ -50,73 +50,93 @@ Starts Keycloak and the MCP server together.
 
 ### Unified Tool Design (Parametric Collapse)
 
-The project consolidates 45+ operations into a single `KeycloakTool` class:
+The project consolidates **178** operations into a single `KeycloakTool` class.
+Routing uses CDI-discovered `KeycloakCommand` beans via `CommandRegistry`
+(not a giant switch):
 
 ```
 ┌─────────────────────────────────────────┐
 │           KeycloakTool                  │
 │  executeKeycloakOperation(op, params)   │
 └────────────────┬────────────────────────┘
-                 │ Routes via switch
+                 │ CommandRegistry.getCommand(op)
     ┌────────────┼────────────┐
     ▼            ▼            ▼
+┌────────┐  ┌────────┐  ┌────────┐
+│Command │  │Command │  │Command │ ...  (@RegisteredCommand)
+└───┬────┘  └───┬────┘  └───┬────┘
+    ▼           ▼           ▼
 ┌────────┐  ┌────────┐  ┌────────┐
 │UserSvc │  │RealmSvc│  │ClientSvc│ ...
 └────────┘  └────────┘  └────────┘
 ```
 
 **Benefits:**
-- 1 MCP tool instead of 37+ individual tools
+- 1 MCP tool instead of 178 individual tools
 - Centralized error handling
-- Type-safe operation selection via enum
-- Easier to maintain and extend
+- Type-safe operation selection via `KeycloakOperation` enum
+- Enable/disable operations via `keycloak.mcp.commands.*`
 
 ### Project Structure
 
 ```
 src/main/java/dev/shaaf/keycloak/mcp/server/
-├── KeycloakTool.java           # Unified tool (45+ operations)
-├── KeycloakClientFactory.java  # Request-scoped client creation
-├── user/
-│   └── UserService.java
-├── realm/
-│   └── RealmService.java
-├── client/
-│   └── ClientService.java
-├── role/
-│   └── RoleService.java
-├── group/
-│   └── GroupService.java
-├── idp/
-│   └── IdentityProviderService.java
-└── authentication/
-    └── AuthenticationService.java
+├── KeycloakTool.java              # Unified MCP tool
+├── KeycloakOperation.java         # Enum of all operations
+├── KeycloakClientFactory.java     # JWT / kc.dev.* admin client
+├── commands/                      # One class per operation
+│   ├── CommandRegistry.java
+│   ├── KeycloakCommand.java
+│   ├── AbstractCommand.java
+│   ├── user/, realm/, client/, ...
+│   └── ...
+├── user/, realm/, client/, ...    # Domain services
+└── ...
 ```
 
 ### Adding a New Operation
 
-1. **Add enum value:**
+1. **Add enum value** in `KeycloakOperation`.
+2. **Implement a command** with `@ApplicationScoped` + `@RegisteredCommand`:
 
 ```java
-public enum KeycloakOperation {
-    // ... existing operations
-    MY_NEW_OPERATION
+@ApplicationScoped
+@RegisteredCommand
+public class MyNewCommand extends AbstractCommand {
+    @Inject MyService myService;
+
+    @Override
+    public KeycloakOperation getOperation() {
+        return KeycloakOperation.MY_NEW_OPERATION;
+    }
+
+    @Override
+    public String[] getRequiredParams() {
+        return new String[]{"realm", "param1"};
+    }
+
+    @Override
+    public String getDescription() {
+        return "Does something useful";
+    }
+
+    @Override
+    public String execute(JsonNode params) throws Exception {
+        String realm = requireString(params, "realm");
+        return toJson(myService.doIt(realm, requireString(params, "param1")));
+    }
 }
 ```
 
-2. **Add switch case in `executeKeycloakOperation()`:**
+3. Regenerate prompts and docs:
 
-```java
-case MY_NEW_OPERATION:
-    return myService.myNewMethod(
-        paramsNode.get("param1").asText(),
-        paramsNode.get("param2").asInt()
-    );
+```bash
+python3 scripts/generate-prompts-txt.py
+# With Keycloak on :8180 (admin/admin) and quarkus realm imported:
+mvn -Dtest=OperationsDocGeneratorTest -Dgenerate.operations.docs=true test
 ```
 
-3. **Update tool description** with the new operation name.
-
-## Building Container Images
+See [Operations](operations.md) for the live reference.
 
 Container images are built using Jib (no Docker daemon required):
 

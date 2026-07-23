@@ -46,6 +46,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
+  - Operations: operations.md
   - Authentication: authentication.md
   - Configuration: configuration.md
   - Developers: developers.md

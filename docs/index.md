@@ -5,7 +5,7 @@ A Model Context Protocol (MCP) server that provides programmatic access to Keycl
 ## Features
 
 - **JWT Token Authentication** - Each user authenticates with their own Keycloak credentials
-- **45+ Operations** - Users, realms, clients, roles, groups, identity providers, authentication flows
+- **178 Operations** - Users, realms, clients, roles, groups, identity providers, auth flows, UMA, organizations, and more
 - **SSE Transport** - HTTP-based Server-Sent Events for modern connectivity
 - **Container Ready** - Multi-architecture images (AMD64/ARM64) on [Quay.io](https://quay.io/repository/sshaaf/keycloak-mcp-server)
 - **Native Compilation** - GraalVM native images for fast startup
@@ -53,32 +53,29 @@ docker run -d \
 | Guide | Description |
 |-------|-------------|
 | [Getting Started](getting-started.md) | Deployment options: Docker, OpenShift, native binaries |
+| [Operations](operations.md) | All 178 `executeKeycloakOperation` commands with request/response examples |
 | [Authentication](authentication.md) | JWT token authentication setup and usage |
 | [Configuration](configuration.md) | Environment variables, TLS, and port settings |
 | [Developers](developers.md) | Architecture, building from source, contributing |
 
 ## Available Operations
 
-### User Management
-`GET_USERS`, `GET_USER_BY_ID`, `GET_USER_BY_USERNAME`, `CREATE_USER`, `UPDATE_USER`, `DELETE_USER`, `RESET_PASSWORD`, `SEND_VERIFICATION_EMAIL`, `COUNT_USERS`
+Use the single MCP tool `executeKeycloakOperation(operation, params)`. See the full
+[Operations reference](operations.md) for every command, required JSON fields, and
+validated sample output against Keycloak 26.
 
-### Role & Group Management
-`GET_REALM_ROLES`, `GET_REALM_ROLE`, `ADD_ROLE_TO_USER`, `REMOVE_ROLE_FROM_USER`, `GET_USER_ROLES`, `GET_GROUPS`, `GET_GROUP_MEMBERS`, `CREATE_GROUP`, `UPDATE_GROUP`, `DELETE_GROUP`, `CREATE_SUBGROUP`, `ADD_USER_TO_GROUP`, `REMOVE_USER_FROM_GROUP`, `GET_USER_GROUPS`
+### Highlights
 
-### Realm Management
-`GET_REALMS`, `GET_REALM`, `CREATE_REALM`
-
-### Client Management
-`GET_CLIENTS`, `GET_CLIENT`, `CREATE_CLIENT`, `DELETE_CLIENT`, `GENERATE_CLIENT_SECRET`, `GET_CLIENT_ROLES`, `CREATE_CLIENT_ROLE`, `DELETE_CLIENT_ROLE`
-
-### Identity Providers
-`GET_IDENTITY_PROVIDERS`, `GET_IDENTITY_PROVIDER`, `GET_IDENTITY_PROVIDER_MAPPERS`
-
-### Authentication Flows
-`GET_AUTHENTICATION_FLOWS`, `GET_AUTHENTICATION_FLOW`, `CREATE_AUTHENTICATION_FLOW`, `DELETE_AUTHENTICATION_FLOW`, `GET_FLOW_EXECUTIONS`, `UPDATE_FLOW_EXECUTION`
-
-### Search
-`SEARCH_DISCOURSE` - Search Keycloak community forum
+| Area | Example operations |
+|------|--------------------|
+| Users | `GET_USERS`, `CREATE_USER`, `RESET_PASSWORD`, `COUNT_USERS` |
+| Realms | `GET_REALMS`, `CREATE_REALM`, `SET_REALM_ENABLED` |
+| Clients | `GET_CLIENTS`, `CREATE_CLIENT`, `GENERATE_CLIENT_SECRET` |
+| Roles & groups | `GET_REALM_ROLES`, `CREATE_GROUP`, `ADD_ROLE_TO_USER` |
+| Auth flows & IDPs | `GET_AUTHENTICATION_FLOWS`, `GET_IDENTITY_PROVIDERS` |
+| UMA / Authz | `LIST_AUTHZ_RESOURCES`, `CREATE_AUTHZ_POLICY` |
+| Organizations | `GET_ORGANIZATIONS`, `ADD_ORGANIZATION_MEMBER` |
+| Community | `SEARCH_DISCOURSE` |
 
 ## Environment Variables
 
