@@ -12,8 +12,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.34.6</quarkus.platform.version>
-        <quarkus-plugin.version>3.34.6</quarkus-plugin.version>
+        <quarkus.platform.version>3.37.4</quarkus.platform.version>
+        <quarkus-plugin.version>3.37.4</quarkus-plugin.version>
         <quarkus-plugin-artifact-id>quarkus-maven-plugin</quarkus-plugin-artifact-id>
         <quarkus-plugin-group-id>io.quarkus</quarkus-plugin-group-id>
         <compiler-plugin.version>3.14.1</compiler-plugin.version>
@@ -86,7 +86,7 @@
         <!-- Test dependencies -->
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit5</artifactId>
+            <artifactId>quarkus-junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
