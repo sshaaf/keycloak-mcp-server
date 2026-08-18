@@ -118,6 +118,11 @@ mvn clean package -Pnative
 mvn clean package -Dquarkus.container-image.build=true
 ```
 
+### Tests
+
+* Default unit and integration tests: `mvn test`
+* Prompt / eval coverage notes: [evals/README.md](evals/README.md)
+
 ## Technology Stack
 
 * **Quarkus** - Cloud-native Java framework

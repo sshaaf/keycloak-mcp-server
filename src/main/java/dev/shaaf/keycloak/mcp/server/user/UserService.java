@@ -336,5 +336,60 @@ public class UserService {
         }
     }
 
+    public List<RoleRepresentation> getUserClientRoles(String realm, String userId, String clientInternalId) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            return keycloak.realm(realm).users().get(userId).roles().clientLevel(clientInternalId).listAll();
+        } catch (NotFoundException e) {
+            Log.error("User or client not found: " + userId, e);
+            return Collections.emptyList();
+        } catch (Exception e) {
+            Log.error("Failed to get user client roles: " + userId, e);
+            return Collections.emptyList();
+        }
+    }
+
+    public List<RoleRepresentation> getUserAvailableClientRoles(String realm, String userId, String clientInternalId) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            return keycloak.realm(realm).users().get(userId).roles().clientLevel(clientInternalId).listAvailable();
+        } catch (NotFoundException e) {
+            return Collections.emptyList();
+        } catch (Exception e) {
+            Log.error("Failed to get available client roles for user: " + userId, e);
+            return Collections.emptyList();
+        }
+    }
+
+    public String addClientRoleToUser(String realm, String userId, String clientInternalId, String roleName) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            RoleRepresentation role = keycloak.realm(realm).clients().get(clientInternalId).roles().get(roleName)
+                    .toRepresentation();
+            keycloak.realm(realm).users().get(userId).roles().clientLevel(clientInternalId).add(List.of(role));
+            return "Successfully added client role to user: " + userId + " -> " + roleName;
+        } catch (NotFoundException e) {
+            return "User, client, or role not found: " + userId + " / " + roleName;
+        } catch (Exception e) {
+            Log.error("Failed to add client role to user: " + userId, e);
+            return "Error adding client role: " + e.getMessage();
+        }
+    }
+
+    public String removeClientRoleFromUser(String realm, String userId, String clientInternalId, String roleName) {
+        Keycloak keycloak = clientFactory.createClient();
+        try {
+            RoleRepresentation role = keycloak.realm(realm).clients().get(clientInternalId).roles().get(roleName)
+                    .toRepresentation();
+            keycloak.realm(realm).users().get(userId).roles().clientLevel(clientInternalId).remove(List.of(role));
+            return "Successfully removed client role from user: " + userId + " -> " + roleName;
+        } catch (NotFoundException e) {
+            return "User, client, or role not found: " + userId + " / " + roleName;
+        } catch (Exception e) {
+            Log.error("Failed to remove client role from user: " + userId, e);
+            return "Error removing client role: " + e.getMessage();
+        }
+    }
+
 }
 

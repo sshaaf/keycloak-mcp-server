@@ -199,13 +199,21 @@ public class ClientService {
     /**
      * Get client roles
      * @param realm The realm where the client resides
-     * @param clientId The ID of the client
+     * @param clientId The client ID (clientId field, not internal UUID)
      * @return List of roles for the client or empty list if not found
      */
     public List<RoleRepresentation> getClientRoles(String realm, String clientId) {
         Keycloak keycloak = clientFactory.createClient();
         try {
-            return keycloak.realm(realm).clients().get(clientId).roles().list();
+            // Find client by clientId to get internal UUID
+            Optional<ClientRepresentation> clientOpt = findClientByClientId(realm, clientId);
+            if (clientOpt.isEmpty()) {
+                Log.error("Client not found: " + clientId);
+                return Collections.emptyList();
+            }
+            String internalId = clientOpt.get().getId();
+            
+            return keycloak.realm(realm).clients().get(internalId).roles().list();
         } catch (NotFoundException e) {
             Log.error("Client not found: " + clientId, e);
             return Collections.emptyList();
@@ -218,7 +226,7 @@ public class ClientService {
     /**
      * Create client role
      * @param realm The realm where the client resides
-     * @param clientId The ID of the client
+     * @param clientId The client ID (clientId field, not internal UUID)
      * @param roleName The name of the role
      * @param description The description of the role
      * @return Success or error message
@@ -226,12 +234,19 @@ public class ClientService {
     public String createClientRole(String realm, String clientId, String roleName, String description) {
         Keycloak keycloak = clientFactory.createClient();
         try {
+            // Find client by clientId to get internal UUID
+            Optional<ClientRepresentation> clientOpt = findClientByClientId(realm, clientId);
+            if (clientOpt.isEmpty()) {
+                return "Client not found: " + clientId;
+            }
+            String internalId = clientOpt.get().getId();
+            
             RoleRepresentation role = new RoleRepresentation();
             role.setName(roleName);
             role.setDescription(description);
             role.setClientRole(true);
             
-            RolesResource rolesResource = keycloak.realm(realm).clients().get(clientId).roles();
+            RolesResource rolesResource = keycloak.realm(realm).clients().get(internalId).roles();
             rolesResource.create(role);
             
             return "Successfully created client role: " + roleName;
@@ -246,14 +261,21 @@ public class ClientService {
     /**
      * Delete client role
      * @param realm The realm where the client resides
-     * @param clientId The ID of the client
+     * @param clientId The client ID (clientId field, not internal UUID)
      * @param roleName The name of the role
      * @return Success or error message
      */
     public String deleteClientRole(String realm, String clientId, String roleName) {
         Keycloak keycloak = clientFactory.createClient();
         try {
-            keycloak.realm(realm).clients().get(clientId).roles().deleteRole(roleName);
+            // Find client by clientId to get internal UUID
+            Optional<ClientRepresentation> clientOpt = findClientByClientId(realm, clientId);
+            if (clientOpt.isEmpty()) {
+                return "Client not found: " + clientId;
+            }
+            String internalId = clientOpt.get().getId();
+            
+            keycloak.realm(realm).clients().get(internalId).roles().deleteRole(roleName);
             return "Successfully deleted client role: " + roleName;
         } catch (NotFoundException e) {
             return "Client or role not found: " + clientId + " -> " + roleName;

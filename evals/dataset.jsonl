@@ -1,0 +1,178 @@
+{"operation": "GET_USERS", "prompt": "List all users in a realm", "requiredKeys": ["realm"]}
+{"operation": "GET_USER_BY_USERNAME", "prompt": "Get a user by their username", "requiredKeys": ["realm", "username"]}
+{"operation": "CREATE_USER", "prompt": "Create a new user in a realm", "requiredKeys": ["realm", "username", "email", "password"]}
+{"operation": "DELETE_USER", "prompt": "Delete a user from a realm", "requiredKeys": ["realm", "username"]}
+{"operation": "UPDATE_USER", "prompt": "Update an existing user", "requiredKeys": ["realm", "userId", "userRepresentation"]}
+{"operation": "GET_USER_BY_ID", "prompt": "Get a user by their ID", "requiredKeys": ["realm", "userId"]}
+{"operation": "GET_USER_GROUPS", "prompt": "Get groups a user belongs to", "requiredKeys": ["realm", "userId"]}
+{"operation": "ADD_USER_TO_GROUP", "prompt": "Add a user to a group", "requiredKeys": ["realm", "userId", "groupId"]}
+{"operation": "REMOVE_USER_FROM_GROUP", "prompt": "Remove a user from a group", "requiredKeys": ["realm", "userId", "groupId"]}
+{"operation": "GET_USER_ROLES", "prompt": "Get roles assigned to a user", "requiredKeys": ["realm", "userId"]}
+{"operation": "ADD_ROLE_TO_USER", "prompt": "Add a realm role to a user", "requiredKeys": ["realm", "userId", "roleName"]}
+{"operation": "REMOVE_ROLE_FROM_USER", "prompt": "Remove a realm role from a user", "requiredKeys": ["realm", "userId", "roleName"]}
+{"operation": "RESET_PASSWORD", "prompt": "Reset a user's password", "requiredKeys": ["realm", "userId", "newPassword"]}
+{"operation": "SEND_VERIFICATION_EMAIL", "prompt": "Send email verification to a user", "requiredKeys": ["realm", "userId"]}
+{"operation": "COUNT_USERS", "prompt": "Count users in a realm", "requiredKeys": ["realm"]}
+{"operation": "GET_REALMS", "prompt": "List all realms accessible to the user", "requiredKeys": []}
+{"operation": "GET_REALM", "prompt": "Get details of a specific realm", "requiredKeys": ["realmName"]}
+{"operation": "CREATE_REALM", "prompt": "Create a new realm", "requiredKeys": ["realmName", "displayName"]}
+{"operation": "DELETE_REALM", "prompt": "Delete a realm", "requiredKeys": ["realmName"]}
+{"operation": "UPDATE_REALM", "prompt": "Update an existing realm", "requiredKeys": ["realmName", "realmRepresentation"]}
+{"operation": "SET_REALM_ENABLED", "prompt": "Enable or disable a realm", "requiredKeys": ["realmName", "enabled"]}
+{"operation": "GET_REALM_EVENTS_CONFIG", "prompt": "Get realm events configuration", "requiredKeys": ["realmName"]}
+{"operation": "UPDATE_REALM_EVENTS_CONFIG", "prompt": "Update realm events configuration", "requiredKeys": ["realmName", "eventsConfig"]}
+{"operation": "GET_CLIENTS", "prompt": "List all clients in a realm", "requiredKeys": ["realm"]}
+{"operation": "GET_CLIENT", "prompt": "Get a specific client by client ID", "requiredKeys": ["realm", "clientId"]}
+{"operation": "CREATE_CLIENT", "prompt": "Create a new client in a realm", "requiredKeys": ["realm", "clientId", "redirectUris"]}
+{"operation": "UPDATE_CLIENT", "prompt": "Update an existing client", "requiredKeys": ["realm", "clientId", "clientRepresentation"]}
+{"operation": "DELETE_CLIENT", "prompt": "Delete a client from a realm", "requiredKeys": ["realm", "clientId"]}
+{"operation": "GENERATE_CLIENT_SECRET", "prompt": "Generate a new client secret", "requiredKeys": ["realm", "clientId"]}
+{"operation": "GET_CLIENT_SECRET", "prompt": "Get client secret", "requiredKeys": ["realm", "clientId"]}
+{"operation": "GET_CLIENT_ROLES", "prompt": "Get roles defined for a client", "requiredKeys": ["realm", "clientId"]}
+{"operation": "GET_CLIENT_PROTOCOL_MAPPERS", "prompt": "Get protocol mappers for a client", "requiredKeys": ["realm", "clientId"]}
+{"operation": "ADD_PROTOCOL_MAPPER_TO_CLIENT", "prompt": "Add protocol mapper to a client", "requiredKeys": ["realm", "clientId", "mapper"]}
+{"operation": "GET_SERVICE_ACCOUNT_USER", "prompt": "Get service account user for a client", "requiredKeys": ["realm", "clientId"]}
+{"operation": "CREATE_CLIENT_ROLE", "prompt": "Create a new role for a client", "requiredKeys": ["realm", "clientId", "roleName", "description"]}
+{"operation": "DELETE_CLIENT_ROLE", "prompt": "Delete a role from a client", "requiredKeys": ["realm", "clientId", "roleName"]}
+{"operation": "GET_CLIENT_SCOPES", "prompt": "Get all client scopes in a realm", "requiredKeys": ["realm"]}
+{"operation": "GET_CLIENT_SCOPE", "prompt": "Get a specific client scope", "requiredKeys": ["realm", "clientScopeId"]}
+{"operation": "CREATE_CLIENT_SCOPE", "prompt": "Create a new client scope", "requiredKeys": ["realm", "clientScope"]}
+{"operation": "UPDATE_CLIENT_SCOPE", "prompt": "Update an existing client scope", "requiredKeys": ["realm", "clientScopeId", "clientScope"]}
+{"operation": "DELETE_CLIENT_SCOPE", "prompt": "Delete a client scope", "requiredKeys": ["realm", "clientScopeId"]}
+{"operation": "GET_DEFAULT_CLIENT_SCOPES", "prompt": "Get all default client scopes for realm", "requiredKeys": ["realm"]}
+{"operation": "GET_OPTIONAL_CLIENT_SCOPES", "prompt": "Get all optional client scopes for realm", "requiredKeys": ["realm"]}
+{"operation": "ADD_DEFAULT_CLIENT_SCOPE", "prompt": "Add a client scope as default for realm", "requiredKeys": ["realm", "clientScopeId"]}
+{"operation": "ADD_OPTIONAL_CLIENT_SCOPE", "prompt": "Add a client scope as optional for realm", "requiredKeys": ["realm", "clientScopeId"]}
+{"operation": "REMOVE_DEFAULT_CLIENT_SCOPE", "prompt": "Remove a default client scope from realm", "requiredKeys": ["realm", "clientScopeId"]}
+{"operation": "REMOVE_OPTIONAL_CLIENT_SCOPE", "prompt": "Remove an optional client scope from realm", "requiredKeys": ["realm", "clientScopeId"]}
+{"operation": "GET_CLIENT_SCOPE_PROTOCOL_MAPPERS", "prompt": "Get protocol mappers for a client scope", "requiredKeys": ["realm", "clientScopeId"]}
+{"operation": "ADD_PROTOCOL_MAPPER_TO_CLIENT_SCOPE", "prompt": "Add a protocol mapper to a client scope", "requiredKeys": ["realm", "clientScopeId", "mapper"]}
+{"operation": "UPDATE_CLIENT_SCOPE_PROTOCOL_MAPPER", "prompt": "Update a protocol mapper in a client scope", "requiredKeys": ["realm", "clientScopeId", "mapperId", "mapper"]}
+{"operation": "DELETE_CLIENT_SCOPE_PROTOCOL_MAPPER", "prompt": "Delete a protocol mapper from a client scope", "requiredKeys": ["realm", "clientScopeId", "mapperId"]}
+{"operation": "GET_REALM_ROLES", "prompt": "Get all realm-level roles", "requiredKeys": ["realm"]}
+{"operation": "GET_REALM_ROLE", "prompt": "Get a specific realm role by name", "requiredKeys": ["realm", "roleName"]}
+{"operation": "CREATE_REALM_ROLE", "prompt": "Create a new realm role", "requiredKeys": ["realm", "roleName"]}
+{"operation": "UPDATE_REALM_ROLE", "prompt": "Update an existing realm role", "requiredKeys": ["realm", "roleName", "roleRepresentation"]}
+{"operation": "DELETE_REALM_ROLE", "prompt": "Delete a realm role", "requiredKeys": ["realm", "roleName"]}
+{"operation": "GET_ROLE_COMPOSITES", "prompt": "Get composite roles for a realm role", "requiredKeys": ["realm", "roleName"]}
+{"operation": "ADD_COMPOSITE_TO_ROLE", "prompt": "Add a composite role to a realm role", "requiredKeys": ["realm", "roleName", "compositeRoleName"]}
+{"operation": "REMOVE_COMPOSITE_FROM_ROLE", "prompt": "Remove a composite role from a realm role", "requiredKeys": ["realm", "roleName", "compositeRoleName"]}
+{"operation": "GET_GROUPS", "prompt": "Get all groups in a realm", "requiredKeys": ["realm"]}
+{"operation": "GET_GROUP", "prompt": "Get details of a specific group", "requiredKeys": ["realm", "groupId"]}
+{"operation": "GET_GROUP_MEMBERS", "prompt": "Get members of a group", "requiredKeys": ["realm", "groupId"]}
+{"operation": "GET_SUBGROUPS", "prompt": "List direct subgroups of a group (one level)", "requiredKeys": ["realm", "groupId"]}
+{"operation": "GET_GROUP_ROLES", "prompt": "Get roles assigned to a group", "requiredKeys": ["realm", "groupId"]}
+{"operation": "CREATE_GROUP", "prompt": "Create a new group in a realm", "requiredKeys": ["realm", "groupName"]}
+{"operation": "UPDATE_GROUP", "prompt": "Update an existing group", "requiredKeys": ["realm", "groupId", "groupRepresentation"]}
+{"operation": "DELETE_GROUP", "prompt": "Delete a group from a realm", "requiredKeys": ["realm", "groupId"]}
+{"operation": "CREATE_SUBGROUP", "prompt": "Create a subgroup under a parent group", "requiredKeys": ["realm", "parentGroupId", "subGroupName"]}
+{"operation": "ADD_ROLE_TO_GROUP", "prompt": "Add a role to a group", "requiredKeys": ["realm", "groupId", "roleName"]}
+{"operation": "REMOVE_ROLE_FROM_GROUP", "prompt": "Remove a role from a group", "requiredKeys": ["realm", "groupId", "roleName"]}
+{"operation": "GET_IDENTITY_PROVIDERS", "prompt": "Get all identity providers in a realm", "requiredKeys": ["realm"]}
+{"operation": "GET_IDENTITY_PROVIDER", "prompt": "Get a specific identity provider by alias", "requiredKeys": ["realm", "alias"]}
+{"operation": "CREATE_IDENTITY_PROVIDER", "prompt": "Create a new identity provider", "requiredKeys": ["realm", "identityProvider"]}
+{"operation": "UPDATE_IDENTITY_PROVIDER", "prompt": "Update an existing identity provider", "requiredKeys": ["realm", "alias", "identityProvider"]}
+{"operation": "DELETE_IDENTITY_PROVIDER", "prompt": "Delete an identity provider", "requiredKeys": ["realm", "alias"]}
+{"operation": "GET_IDENTITY_PROVIDER_MAPPERS", "prompt": "Get mappers for an identity provider", "requiredKeys": ["realm", "alias"]}
+{"operation": "CREATE_IDENTITY_PROVIDER_MAPPER", "prompt": "Create an identity provider mapper", "requiredKeys": ["realm", "alias", "mapper"]}
+{"operation": "GET_AUTHENTICATION_FLOWS", "prompt": "Get all authentication flows in a realm", "requiredKeys": ["realm"]}
+{"operation": "GET_AUTHENTICATION_FLOW", "prompt": "Get a specific authentication flow by ID", "requiredKeys": ["realm", "flowId"]}
+{"operation": "CREATE_AUTHENTICATION_FLOW", "prompt": "Create a copy of an existing authentication flow", "requiredKeys": ["realm", "authFlowNameId"]}
+{"operation": "DELETE_AUTHENTICATION_FLOW", "prompt": "Delete an authentication flow", "requiredKeys": ["realm", "flowId"]}
+{"operation": "GET_FLOW_EXECUTIONS", "prompt": "Get executions for an authentication flow", "requiredKeys": ["realm", "flowAlias"]}
+{"operation": "UPDATE_FLOW_EXECUTION", "prompt": "Update an execution in an authentication flow", "requiredKeys": ["realm", "flowAlias", "executionRepresentation"]}
+{"operation": "GET_USER_SESSIONS", "prompt": "Get user sessions", "requiredKeys": ["realm", "userId"]}
+{"operation": "GET_USER_CONSENTS", "prompt": "Get user consents", "requiredKeys": ["realm", "userId"]}
+{"operation": "REVOKE_USER_CONSENT", "prompt": "Revoke user consent for a client", "requiredKeys": ["realm", "userId", "clientId"]}
+{"operation": "LOGOUT_USER", "prompt": "Logout a user from all sessions", "requiredKeys": ["realm", "userId"]}
+{"operation": "GET_OFFLINE_SESSIONS", "prompt": "Get offline sessions for a user", "requiredKeys": ["realm", "userId", "clientId"]}
+{"operation": "GET_CLIENT_USER_SESSIONS", "prompt": "Get user sessions for a client", "requiredKeys": ["realm", "clientId"]}
+{"operation": "GET_CLIENT_OFFLINE_SESSIONS", "prompt": "Get offline sessions for a client", "requiredKeys": ["realm", "clientId"]}
+{"operation": "CLEAR_USER_LOGIN_FAILURES", "prompt": "Clear login failures for a user", "requiredKeys": ["realm", "userId"]}
+{"operation": "CLEAR_ALL_LOGIN_FAILURES", "prompt": "Clear all login failures in a realm", "requiredKeys": ["realm"]}
+{"operation": "GET_USER_BRUTE_FORCE_STATUS", "prompt": "Get brute-force / lockout status for a user (attack detection)", "requiredKeys": ["realm", "userId"]}
+{"operation": "GET_ADMIN_EVENTS", "prompt": "List stored admin events for the realm", "requiredKeys": ["realm"]}
+{"operation": "GET_USER_EVENTS", "prompt": "List stored user login events for the realm", "requiredKeys": ["realm"]}
+{"operation": "CLEAR_ADMIN_EVENTS", "prompt": "Clear the admin event store for the realm", "requiredKeys": ["realm"]}
+{"operation": "CLEAR_USER_EVENTS", "prompt": "Clear the user event store for the realm", "requiredKeys": ["realm"]}
+{"operation": "GET_COMPONENTS", "prompt": "List all components in the realm (user storage, keys, etc.)", "requiredKeys": ["realm"]}
+{"operation": "GET_COMPONENT", "prompt": "Get a component by id", "requiredKeys": ["realm", "componentId"]}
+{"operation": "CREATE_COMPONENT", "prompt": "Create a realm component (e.g. LDAP user federation)", "requiredKeys": ["realm", "component"]}
+{"operation": "UPDATE_COMPONENT", "prompt": "Update a realm component", "requiredKeys": ["realm", "componentId", "component"]}
+{"operation": "DELETE_COMPONENT", "prompt": "Delete a realm component", "requiredKeys": ["realm", "componentId"]}
+{"operation": "GET_SUB_COMPONENTS", "prompt": "List sub-components of a parent component and provider type", "requiredKeys": ["realm", "parentId", "type"]}
+{"operation": "GET_REALM_KEYS", "prompt": "Get realm key metadata (signing, encryption, etc.)", "requiredKeys": ["realm"]}
+{"operation": "GET_REQUIRED_ACTIONS", "prompt": "List required actions for the realm", "requiredKeys": ["realm"]}
+{"operation": "GET_REQUIRED_ACTION", "prompt": "Get a required action by provider alias", "requiredKeys": ["realm", "alias"]}
+{"operation": "UPDATE_REQUIRED_ACTION", "prompt": "Update a required action (enabled, name, etc.)", "requiredKeys": ["realm", "alias", "requiredAction"]}
+{"operation": "EXECUTE_ACTIONS_EMAIL", "prompt": "Send email to the user to execute the listed required actions", "requiredKeys": ["realm", "userId", "actions"]}
+{"operation": "GET_CLIENT_SCOPE_SCOPE_MAPPINGS", "prompt": "Get combined client-scope scope mappings (realm and client role assignments)", "requiredKeys": ["realm", "clientScopeId"]}
+{"operation": "GET_CLIENT_SCOPE_MAPPED_REALM_ROLES", "prompt": "Get realm role mappings for a client scope", "requiredKeys": ["realm", "clientScopeId"]}
+{"operation": "ADD_CLIENT_SCOPE_MAPPED_REALM_ROLES", "prompt": "Add realm roles to a client scope's scope mapping", "requiredKeys": ["realm", "clientScopeId", "roles"]}
+{"operation": "REMOVE_CLIENT_SCOPE_MAPPED_REALM_ROLES", "prompt": "Remove realm roles from a client scope's scope mapping", "requiredKeys": ["realm", "clientScopeId", "roles"]}
+{"operation": "GET_CLIENT_SCOPE_MAPPED_CLIENT_ROLES", "prompt": "Get target-client role mappings for a client scope (internal client id)", "requiredKeys": ["realm", "clientScopeId", "targetClientId"]}
+{"operation": "ADD_CLIENT_SCOPE_MAPPED_CLIENT_ROLES", "prompt": "Add target-client roles to a client scope's scope mapping", "requiredKeys": ["realm", "clientScopeId", "targetClientId", "roles"]}
+{"operation": "REMOVE_CLIENT_SCOPE_MAPPED_CLIENT_ROLES", "prompt": "Remove target-client roles from a client scope's scope mapping", "requiredKeys": ["realm", "clientScopeId", "targetClientId", "roles"]}
+{"operation": "GET_USER_CREDENTIALS", "prompt": "List credentials (password, OTP, webauthn, etc.) for a user", "requiredKeys": ["realm", "userId"]}
+{"operation": "DELETE_USER_CREDENTIAL", "prompt": "Delete a user credential by id", "requiredKeys": ["realm", "userId", "credentialId"]}
+{"operation": "MOVE_USER_CREDENTIAL", "prompt": "Change credential order (0-based index; uses move-to-first/after on the server)", "requiredKeys": ["realm", "userId", "credentialId", "newPosition"]}
+{"operation": "GET_USER_CLIENT_ROLES", "prompt": "List client roles assigned to a user (clientId = internal id from GET_CLIENT)", "requiredKeys": ["realm", "userId", "clientId"]}
+{"operation": "GET_USER_AVAILABLE_CLIENT_ROLES", "prompt": "List client roles the user can still be assigned (not yet assigned at client scope)", "requiredKeys": ["realm", "userId", "clientId"]}
+{"operation": "ADD_CLIENT_ROLE_TO_USER", "prompt": "Add a client role to a user (adds a role of the target client, not a realm role)", "requiredKeys": ["realm", "userId", "clientId", "roleName"]}
+{"operation": "REMOVE_CLIENT_ROLE_FROM_USER", "prompt": "Remove a client role from a user", "requiredKeys": ["realm", "userId", "clientId", "roleName"]}
+{"operation": "GET_GROUP_CLIENT_ROLES", "prompt": "List client roles assigned to a group", "requiredKeys": ["realm", "groupId", "clientId"]}
+{"operation": "GET_GROUP_AVAILABLE_CLIENT_ROLES", "prompt": "List client roles the group can still be assigned for the given client", "requiredKeys": ["realm", "groupId", "clientId"]}
+{"operation": "ADD_CLIENT_ROLE_TO_GROUP", "prompt": "Add a client role to a group", "requiredKeys": ["realm", "groupId", "clientId", "roleName"]}
+{"operation": "REMOVE_CLIENT_ROLE_FROM_GROUP", "prompt": "Remove a client role from a group", "requiredKeys": ["realm", "groupId", "clientId", "roleName"]}
+{"operation": "GET_AUTHZ_RESOURCE_SERVER", "prompt": "Get UMA/authorization server settings for a client (client id = internal UUID).", "requiredKeys": ["realm", "clientId"]}
+{"operation": "UPDATE_AUTHZ_RESOURCE_SERVER", "prompt": "Update authorization service settings for a client (resourceServer object)", "requiredKeys": ["realm", "clientId", "resourceServer"]}
+{"operation": "LIST_AUTHZ_RESOURCES", "prompt": "List UMA protected resources for a client", "requiredKeys": ["realm", "clientId"]}
+{"operation": "GET_AUTHZ_RESOURCE", "prompt": "Get an authorization resource by id", "requiredKeys": ["realm", "clientId", "resourceId"]}
+{"operation": "CREATE_AUTHZ_RESOURCE", "prompt": "Create a protected resource (body in resource)", "requiredKeys": ["realm", "clientId", "resource"]}
+{"operation": "UPDATE_AUTHZ_RESOURCE", "prompt": "Update a protected resource", "requiredKeys": ["realm", "clientId", "resourceId", "resource"]}
+{"operation": "DELETE_AUTHZ_RESOURCE", "prompt": "Delete a protected resource", "requiredKeys": ["realm", "clientId", "resourceId"]}
+{"operation": "LIST_AUTHZ_SCOPES", "prompt": "List authorization scopes for a client", "requiredKeys": ["realm", "clientId"]}
+{"operation": "GET_AUTHZ_SCOPE", "prompt": "Get an authorization scope by id", "requiredKeys": ["realm", "clientId", "scopeId"]}
+{"operation": "CREATE_AUTHZ_SCOPE", "prompt": "Create an authorization scope", "requiredKeys": ["realm", "clientId", "scope"]}
+{"operation": "UPDATE_AUTHZ_SCOPE", "prompt": "Update an authorization scope", "requiredKeys": ["realm", "clientId", "scopeId", "scope"]}
+{"operation": "DELETE_AUTHZ_SCOPE", "prompt": "Delete an authorization scope", "requiredKeys": ["realm", "clientId", "scopeId"]}
+{"operation": "LIST_AUTHZ_POLICIES", "prompt": "List policies for a client's authorization service", "requiredKeys": ["realm", "clientId"]}
+{"operation": "GET_AUTHZ_POLICY", "prompt": "Get a policy by id", "requiredKeys": ["realm", "clientId", "policyId"]}
+{"operation": "CREATE_AUTHZ_POLICY", "prompt": "Create a policy (type, name, config depend on policy provider)", "requiredKeys": ["realm", "clientId", "policy"]}
+{"operation": "UPDATE_AUTHZ_POLICY", "prompt": "Update a policy by id", "requiredKeys": ["realm", "clientId", "policyId", "policy"]}
+{"operation": "DELETE_AUTHZ_POLICY", "prompt": "Delete a policy by id", "requiredKeys": ["realm", "clientId", "policyId"]}
+{"operation": "GET_AUTHZ_RESOURCE_PERMISSION", "prompt": "Get a resource permission by id", "requiredKeys": ["realm", "clientId", "permissionId"]}
+{"operation": "CREATE_AUTHZ_RESOURCE_PERMISSION", "prompt": "Create a resource-based permission (permission object)", "requiredKeys": ["realm", "clientId", "permission"]}
+{"operation": "UPDATE_AUTHZ_RESOURCE_PERMISSION", "prompt": "Update a resource permission by id", "requiredKeys": ["realm", "clientId", "permissionId", "permission"]}
+{"operation": "DELETE_AUTHZ_RESOURCE_PERMISSION", "prompt": "Delete a resource permission by id", "requiredKeys": ["realm", "clientId", "permissionId"]}
+{"operation": "LIST_AUTHZ_SCOPE_PERMISSIONS", "prompt": "List scope permissions; optional: name, resourceId, scopeId, first, max (pagination).", "requiredKeys": ["realm", "clientId"]}
+{"operation": "GET_AUTHZ_SCOPE_PERMISSION", "prompt": "Get a scope-based permission by id", "requiredKeys": ["realm", "clientId", "permissionId"]}
+{"operation": "CREATE_AUTHZ_SCOPE_PERMISSION", "prompt": "Create a scope-based permission", "requiredKeys": ["realm", "clientId", "permission"]}
+{"operation": "UPDATE_AUTHZ_SCOPE_PERMISSION", "prompt": "Update a scope-based permission by id", "requiredKeys": ["realm", "clientId", "permissionId", "permission"]}
+{"operation": "DELETE_AUTHZ_SCOPE_PERMISSION", "prompt": "Delete a scope-based permission by id", "requiredKeys": ["realm", "clientId", "permissionId"]}
+{"operation": "TEST_LDAP_CONNECTION", "prompt": "Test an LDAP or user federation connection (Keycloak TestLdapConnectionRepresentation JSON in test)", "requiredKeys": ["realm", "test"]}
+{"operation": "SYNC_USER_STORAGE", "prompt": "Trigger user storage / LDAP sync (e.g. action=triggerFullSync; see Keycloak admin API)", "requiredKeys": ["realm", "userStorageId", "action"]}
+{"operation": "PUSH_REALM_REVOCATION", "prompt": "Push a notBefore revocation to all cluster nodes (notBefore policy refresh)", "requiredKeys": ["realm"]}
+{"operation": "LOGOUT_ALL_USERS", "prompt": "Logout all users in the realm (stateful clients receive logout)", "requiredKeys": ["realm"]}
+{"operation": "GET_REALM_CLIENT_POLICIES", "prompt": "Get realm client policies (includeGlobal optional, default true)", "requiredKeys": ["realm"]}
+{"operation": "UPDATE_REALM_CLIENT_POLICIES", "prompt": "Update realm client policies JSON (ClientPoliciesRepresentation in policies)", "requiredKeys": ["realm", "policies"]}
+{"operation": "GET_REALM_CLIENT_PROFILES", "prompt": "Get realm client profiles (includeGlobal optional, default true)", "requiredKeys": ["realm"]}
+{"operation": "UPDATE_REALM_CLIENT_PROFILES", "prompt": "Update realm client profiles (ClientProfilesRepresentation in profiles)", "requiredKeys": ["realm", "profiles"]}
+{"operation": "GET_CLIENT_REGISTRATION_PROVIDERS", "prompt": "List client registration policy component types (providers) for the realm", "requiredKeys": ["realm"]}
+{"operation": "GET_REALM_LOCALES", "prompt": "List custom locales configured for the realm (realm-specific overrides).", "requiredKeys": ["realm"]}
+{"operation": "GET_LOCALIZATION_TEXTS", "prompt": "Get all translation key/value for a locale (useRealmFallback optional).", "requiredKeys": ["realm", "locale"]}
+{"operation": "SAVE_LOCALIZATION_TEXT", "prompt": "Create or update a single message key for a locale", "requiredKeys": ["realm", "locale", "key", "text"]}
+{"operation": "DELETE_LOCALIZATION_TEXTS", "prompt": "Delete all custom translations for a locale in the realm", "requiredKeys": ["realm", "locale"]}
+{"operation": "DELETE_LOCALIZATION_TEXT", "prompt": "Delete one translation key for a locale", "requiredKeys": ["realm", "locale", "key"]}
+{"operation": "CREATE_OR_UPDATE_LOCALIZATION_TEXTS", "prompt": "Replace or merge bulk translations (texts: JSON object of key to string).", "requiredKeys": ["realm", "locale", "texts"]}
+{"operation": "GET_ORGANIZATIONS", "prompt": "List all organizations in the realm (Keycloak 24+ organizations feature).", "requiredKeys": ["realm"]}
+{"operation": "GET_ORGANIZATION", "prompt": "Get an organization by id", "requiredKeys": ["realm", "orgId"]}
+{"operation": "CREATE_ORGANIZATION", "prompt": "Create an organization (organization: OrganizationRepresentation JSON).", "requiredKeys": ["realm", "organization"]}
+{"operation": "UPDATE_ORGANIZATION", "prompt": "Update an organization", "requiredKeys": ["realm", "orgId", "organization"]}
+{"operation": "DELETE_ORGANIZATION", "prompt": "Delete an organization", "requiredKeys": ["realm", "orgId"]}
+{"operation": "GET_ORGANIZATION_MEMBERS", "prompt": "List members of an organization", "requiredKeys": ["realm", "orgId"]}
+{"operation": "ADD_ORGANIZATION_MEMBER", "prompt": "Add a user to an organization", "requiredKeys": ["realm", "orgId", "userId"]}
+{"operation": "REMOVE_ORGANIZATION_MEMBER", "prompt": "Remove a user from an organization", "requiredKeys": ["realm", "orgId", "userId"]}
+{"operation": "GET_USER_PROFILE_CONFIG", "prompt": "Get declarative user profile (UPConfig) for the realm", "requiredKeys": ["realm"]}
+{"operation": "UPDATE_USER_PROFILE_CONFIG", "prompt": "Update declarative user profile (UPConfig JSON in config)", "requiredKeys": ["realm", "config"]}
+{"operation": "SEARCH_DISCOURSE", "prompt": "Search Keycloak Discourse forum", "requiredKeys": ["query"]}

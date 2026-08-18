@@ -38,20 +38,20 @@ public class AuthenticationService {
     }
 
     /**
-     * Get a specific authentication flow
+     * Get a specific authentication flow by ID or alias
      * @param realm The realm where the authentication flow resides
-     * @param flowId The ID of the authentication flow
+     * @param flowIdOrAlias The ID or alias of the authentication flow
      * @return The authentication flow representation or null if not found
      */
-    public AuthenticationFlowRepresentation getAuthenticationFlow(String realm, String flowId) {
+    public AuthenticationFlowRepresentation getAuthenticationFlow(String realm, String flowIdOrAlias) {
         try {
-            // Get all flows and find the one with the matching ID
+            // Get all flows and find the one with the matching ID or alias
             return getAuthenticationFlows(realm).stream()
-                    .filter(flow -> flowId.equals(flow.getId()))
+                    .filter(flow -> flowIdOrAlias.equals(flow.getId()) || flowIdOrAlias.equals(flow.getAlias()))
                     .findFirst()
                     .orElse(null);
         } catch (Exception e) {
-            Log.error("Failed to get authentication flow: " + flowId, e);
+            Log.error("Failed to get authentication flow: " + flowIdOrAlias, e);
             return null;
         }
     }
