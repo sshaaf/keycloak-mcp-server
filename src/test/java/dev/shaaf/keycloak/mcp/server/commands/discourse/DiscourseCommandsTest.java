@@ -5,6 +5,7 @@ import dev.shaaf.keycloak.mcp.server.KeycloakTool;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests for Discourse search command.
  * Note: This test requires network access to Keycloak Discourse.
  */
+@Tag("testcontainers")
 @QuarkusTest
 public class DiscourseCommandsTest {
 

@@ -12,6 +12,7 @@ import io.quarkus.test.junit.TestProfile;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.Tag;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Run:
  * {@code mvn -Dtest=OperationsDocGeneratorTest -Dgenerate.operations.docs=true test}
  */
+@Tag("testcontainers")
 @QuarkusTest
 @TestProfile(DocsKeycloakTestProfile.class)
 public class OperationsDocGeneratorTest {

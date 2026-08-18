@@ -5,6 +5,7 @@ import dev.shaaf.keycloak.mcp.server.KeycloakTool;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Uses Keycloak TestContainers with quarkus-realm.json pre-loaded.
  * Pre-existing roles: admin, user, confidential, offline_access, uma_authorization
  */
+@Tag("testcontainers")
 @QuarkusTest
 public class RoleCommandsTest {
 

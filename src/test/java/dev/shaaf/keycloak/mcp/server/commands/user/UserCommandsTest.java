@@ -8,6 +8,7 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Tag;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Uses Keycloak TestContainers with quarkus-realm.json pre-loaded.
  * Pre-existing users: admin, alice, jdoe
  */
+@Tag("testcontainers")
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserCommandsTest {
