@@ -53,31 +53,7 @@ Each JSONL line looks like:
 
 **Cost / CI:** LLM evals are usually **nightly** or **manual** because of cost and flakiness; keep **PromptsFileCoverageTest** in every PR.
 
-## 3. Dokimos (Java, optional Maven profile)
-
-**Goal:** In-repo regression that a **live LLM** selects the right Keycloak admin operation and JSON parameters for natural-language prompts, using the same admin semantics as production (`KeycloakTool`). Dokimos also runs an optional **LLM-as-judge** scorer on the assistant’s final text.
-
-**Constraints:**
-
-- **Not part of default CI:** plain `mvn test` excludes tests tagged `dokimos` and does **not** compile Dokimos-specific sources (they live under `src/dokimos/` and activate only with the profile below).
-- **Requires API keys:** tests are skipped unless `OPENAI_API_KEY` is set (JUnit `@EnabledIfEnvironmentVariable`).
-- **LangChain4j tool name:** the eval uses `invokeKeycloakOperation` as the LangChain4j `@Tool` method name so it does not collide with the MCP-registered `executeKeycloakOperation` tool from `KeycloakTool` at Quarkus build time.
-
-**Run:**
-
-```bash
-cd keycloak-mcp-server   # directory containing pom.xml
-export OPENAI_API_KEY=...   # required
-# optional: export DOKIMOS_OPENAI_MODEL=gpt-4o-mini
-
-mvn test -Pdokimos
-```
-
-**Dataset:** [`src/dokimos/resources/dokimos/keycloak-tool-use.json`](../src/dokimos/resources/dokimos/keycloak-tool-use.json) mirrors **[`evals/dataset.jsonl`](dataset.jsonl)** for a **representative subset** of operations (natural-language `input`, expected `invokeKeycloakOperation` + params, optional `metadata.operation` / `requiredKeys`). Realm-scoped rows use **`master`** unless you customize JSON. The JSONL file lists **all** operations; the Dokimos JSON intentionally stays small for cost and stability.
-
-**Implementation sketch:** [`src/dokimos/java/.../eval/dokimos/`](../src/dokimos/java/dev/shaaf/keycloak/mcp/server/eval/dokimos/) (`KeycloakToolInvoker`, `KeycloakToolUseDokimosTest`).
-
-## 4. Relationship to `AllKeycloakOperationsRegisteredTest`
+## 3. Relationship to `AllKeycloakOperationsRegisteredTest`
 
 `AllKeycloakOperationsRegisteredTest` already ensures every `KeycloakOperation` has a command. `PromptsFileCoverageTest` adds: **the human-facing `prompts.txt` must stay complete and in sync** with the enum, which those tests do not check.
 
@@ -89,4 +65,3 @@ mvn test -Pdokimos
 | `scripts/prompts-to-eval-dataset.py` | `prompts.txt` → `evals/dataset.jsonl` |
 | `evals/dataset.jsonl` | **Generated** — add to `.gitignore` or commit, team choice |
 | `src/test/.../PromptsFileCoverageTest.java` | CI coverage of all prompts |
-| `src/dokimos/` | Opt-in Dokimos + LangChain4j sources and datasets (`mvn test -Pdokimos`) |

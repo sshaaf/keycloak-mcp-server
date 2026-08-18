@@ -121,7 +121,7 @@ mvn clean package -Dquarkus.container-image.build=true
 ### Tests
 
 * Default unit and integration tests: `mvn test`
-* Optional **Dokimos** LLM evals (live OpenAI + Keycloak): `mvn test -Pdokimos` with `OPENAI_API_KEY` set — see [evals/README.md](evals/README.md)
+* Prompt / eval coverage notes: [evals/README.md](evals/README.md)
 
 ## Technology Stack
 

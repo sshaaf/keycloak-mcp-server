@@ -12,16 +12,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>3.37.4</quarkus.platform.version>
-        <quarkus-plugin.version>3.37.4</quarkus-plugin.version>
+        <quarkus.platform.version>3.38.2</quarkus.platform.version>
+        <quarkus-plugin.version>3.38.2</quarkus-plugin.version>
         <quarkus-plugin-artifact-id>quarkus-maven-plugin</quarkus-plugin-artifact-id>
         <quarkus-plugin-group-id>io.quarkus</quarkus-plugin-group-id>
         <compiler-plugin.version>3.14.1</compiler-plugin.version>
         <maven.compiler.release>21</maven.compiler.release>
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
-        <!-- Opt-in LLM evals (profile dokimos only); aligned with dokimos-langchain4j -->
-        <dokimos.version>0.14.2</dokimos.version>
-        <langchain4j.version>1.9.1</langchain4j.version>
     </properties>
 
     <dependencyManagement>
@@ -51,8 +48,8 @@
         </dependency>
         <dependency>
             <groupId>io.quarkiverse.mcp</groupId>
-            <artifactId>quarkus-mcp-server-sse</artifactId>
-            <version>1.12.0</version>
+            <artifactId>quarkus-mcp-server-http</artifactId>
+            <version>1.13.1</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -144,8 +141,6 @@
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
-                    <!-- Dokimos LLM evals: run only with mvn test -Pdokimos -->
-                    <excludedGroups>dokimos</excludedGroups>
                 </configuration>
             </plugin>
             <plugin>
@@ -189,89 +184,6 @@
                 <skipITs>false</skipITs>
                 <quarkus.package.type>native</quarkus.package.type>
             </properties>
-        </profile>
-        <profile>
-            <id>dokimos</id>
-            <dependencies>
-                <dependency>
-                    <groupId>dev.dokimos</groupId>
-                    <artifactId>dokimos-core</artifactId>
-                    <version>${dokimos.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>dev.dokimos</groupId>
-                    <artifactId>dokimos-junit</artifactId>
-                    <version>${dokimos.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>dev.dokimos</groupId>
-                    <artifactId>dokimos-langchain4j</artifactId>
-                    <version>${dokimos.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>dev.langchain4j</groupId>
-                    <artifactId>langchain4j</artifactId>
-                    <version>${langchain4j.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>dev.langchain4j</groupId>
-                    <artifactId>langchain4j-open-ai</artifactId>
-                    <version>${langchain4j.version}</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <version>3.6.1</version>
-                        <executions>
-                            <execution>
-                                <id>dokimos-add-test-sources</id>
-                                <phase>generate-test-sources</phase>
-                                <goals>
-                                    <goal>add-test-source</goal>
-                                </goals>
-                                <configuration>
-                                    <sources>
-                                        <source>src/dokimos/java</source>
-                                    </sources>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>dokimos-add-test-resources</id>
-                                <phase>generate-test-resources</phase>
-                                <goals>
-                                    <goal>add-test-resource</goal>
-                                </goals>
-                                <configuration>
-                                    <resources>
-                                        <resource>
-                                            <directory>src/dokimos/resources</directory>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration combine.self="override">
-                            <argLine>@{argLine} --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
-                            <systemPropertyVariables>
-                                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                                <maven.home>${maven.home}</maven.home>
-                            </systemPropertyVariables>
-                            <groups>dokimos</groups>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
 </project>
