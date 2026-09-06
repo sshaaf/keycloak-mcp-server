@@ -97,6 +97,12 @@
             <artifactId>quarkus-test-keycloak-server</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.github.senor14</groupId>
+            <artifactId>mcp-java-testkit</artifactId>
+            <version>0.7.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
